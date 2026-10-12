@@ -1,0 +1,61 @@
+server:
+  port: ${APP_PORT:8081}
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    name: commercial-it-bootcamp
+
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/commercial_it_bootcamp?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: root
+    password: localroot
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: false
+
+  thymeleaf:
+    cache: ${THYMELEAF_CACHE:false}
+
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            provider: keycloak
+            client-id: commercial-it-bootcamp
+            client-authentication-method: none
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope:
+              - openid
+              - profile
+              - email
+        provider:
+          keycloak:
+            issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/commercial-it-bootcamp}
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/commercial-it-bootcamp}
+          jwk-set-uri: ${KEYCLOAK_JWK_SET_URI:http://localhost:8080/realms/commercial-it-bootcamp/protocol/openid-connect/certs}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when_authorized
+
+info:
+  app:
+    name: Commercial IT Bootcamp
+    purpose: Training portal and ecommerce reference implementation

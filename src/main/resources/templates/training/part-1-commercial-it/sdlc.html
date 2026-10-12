@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('Software Development Life Cycle', 'Trace a commercial software change from idea through analysis, design, implementation, testing, release, production operations and continuous improvement.', ~{::main})}">
+<main>
+
+    <style>
+        /* =============================================================
+           SDLC lesson — polished presentation layer
+           ============================================================= */
+        #objectives,
+        .lesson-section {
+            scroll-margin-top: 95px;
+        }
+
+        .sdlc-hero {
+            box-shadow: 0 .45rem 1.3rem rgba(24,62,110,.08);
+        }
+
+        .lesson-number {
+            width: 2rem;
+            height: 2rem;
+            min-width: 2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #0d6efd;
+            color: #fff;
+            font-size: .82rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-top: .05rem;
+            box-shadow: 0 0 0 4px rgba(13,110,253,.08);
+        }
+
+        .lesson-number-light {
+            background: rgba(255,255,255,.96);
+            color: #0d6efd;
+            box-shadow: 0 0 0 4px rgba(255,255,255,.14);
+        }
+
+        .objective-item,
+        .lab-step,
+        .recap-item {
+            min-width: 0;
+        }
+
+        .objective-item > div,
+        .lab-step > div,
+        .recap-item > div {
+            min-width: 0;
+        }
+
+        .objective-item strong,
+        .lab-step strong,
+        .recap-item strong {
+            display: block;
+            margin-bottom: .22rem;
+        }
+
+        .objective-item small,
+        .lab-step p,
+        .recap-item small {
+            display: block;
+            line-height: 1.5;
+            margin-bottom: 0;
+        }
+
+        .lab-step {
+            padding: 1rem 0;
+        }
+
+        .lab-step + .lab-step {
+            border-top: 1px solid rgba(15,23,42,.08);
+        }
+
+        /* Common table shell */
+        .sdlc-table-wrap,
+        .stage-table-wrap,
+        .criteria-table-wrap,
+        .quality-table-wrap,
+        .environment-table-wrap,
+        .reference-table-wrap,
+        .failure-table-wrap,
+        .career-table-wrap {
+            border: 1px solid #d8e7fb;
+            border-radius: 1rem;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 .35rem 1.1rem rgba(27,64,112,.06);
+        }
+
+        .sdlc-table thead th,
+        .stage-table thead th,
+        .criteria-table thead th,
+        .quality-table thead th,
+        .environment-table thead th,
+        .reference-table thead th,
+        .failure-table thead th,
+        .career-table thead th {
+            padding: .9rem 1rem;
+            border: 0;
+            background: linear-gradient(135deg, #143c73 0%, #0d6efd 100%);
+            color: #fff;
+            font-size: .76rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .045em;
+            white-space: nowrap;
+        }
+
+        .sdlc-table tbody td,
+        .stage-table tbody td,
+        .criteria-table tbody td,
+        .quality-table tbody td,
+        .environment-table tbody td,
+        .reference-table tbody td,
+        .failure-table tbody td,
+        .career-table tbody td {
+            padding: 1rem 1.05rem;
+            border-color: rgba(28,54,87,.08);
+            line-height: 1.5;
+            vertical-align: top;
+        }
+
+        .sdlc-table tbody tr:nth-child(odd) td,
+        .stage-table tbody tr:nth-child(odd) td,
+        .criteria-table tbody tr:nth-child(odd) td,
+        .quality-table tbody tr:nth-child(odd) td,
+        .environment-table tbody tr:nth-child(odd) td,
+        .reference-table tbody tr:nth-child(odd) td,
+        .failure-table tbody tr:nth-child(odd) td,
+        .career-table tbody tr:nth-child(odd) td {
+            background: #fbfdff;
+        }
+
+        .sdlc-table tbody tr:nth-child(even) td,
+        .stage-table tbody tr:nth-child(even) td,
+        .criteria-table tbody tr:nth-child(even) td,
+        .quality-table tbody tr:nth-child(even) td,
+        .environment-table tbody tr:nth-child(even) td,
+        .reference-table tbody tr:nth-child(even) td,
+        .failure-table tbody tr:nth-child(even) td,
+        .career-table tbody tr:nth-child(even) td {
+            background: #f2f7fe;
+        }
+
+        .sdlc-table tbody tr:hover td,
+        .stage-table tbody tr:hover td,
+        .criteria-table tbody tr:hover td,
+        .quality-table tbody tr:hover td,
+        .environment-table tbody tr:hover td,
+        .reference-table tbody tr:hover td,
+        .failure-table tbody tr:hover td,
+        .career-table tbody tr:hover td {
+            background: #e8f2ff !important;
+        }
+
+        .sdlc-seq,
+        .stage-seq,
+        .criteria-seq,
+        .quality-seq,
+        .env-seq,
+        .reference-seq,
+        .career-seq {
+            text-align: center;
+        }
+
+        .sdlc-seq span,
+        .stage-seq span,
+        .criteria-seq span,
+        .quality-seq span,
+        .env-seq span,
+        .reference-seq span,
+        .career-seq span {
+            width: 2.35rem;
+            height: 2.35rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #0d6efd;
+            color: #fff;
+            font-size: .76rem;
+            font-weight: 800;
+            box-shadow: 0 0 0 4px rgba(13,110,253,.08);
+        }
+
+        .failure-seq {
+            text-align: center;
+        }
+
+        .failure-seq span {
+            width: 2.35rem;
+            height: 2.35rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #b02a37;
+            color: #fff;
+            font-weight: 900;
+            box-shadow: 0 0 0 4px rgba(176,42,55,.08);
+        }
+
+        /* Story panel */
+        .story-panel {
+            border: 1px solid #d8e7fb;
+            border-radius: 1rem;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 .35rem 1.1rem rgba(27,64,112,.05);
+        }
+
+        .story-panel-row {
+            display: grid;
+            grid-template-columns: 125px 1fr;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem 1.15rem;
+        }
+
+        .story-panel-row:nth-child(odd) {
+            background: #fbfdff;
+        }
+
+        .story-panel-row:nth-child(even) {
+            background: #f2f7fe;
+        }
+
+        .story-panel-row + .story-panel-row {
+            border-top: 1px solid rgba(28,54,87,.08);
+        }
+
+        .story-panel-row > span {
+            display: inline-flex;
+            justify-content: center;
+            padding: .32rem .55rem;
+            border-radius: 999px;
+            background: #0d6efd;
+            color: #fff;
+            font-size: .72rem;
+            font-weight: 800;
+            letter-spacing: .04em;
+        }
+
+        /* Existing problem cards */
+        .sdlc-risk-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0,1fr));
+            gap: .8rem;
+        }
+
+        .sdlc-risk-grid > div {
+            padding: 1rem;
+            border: 1px solid #dce9f7;
+            border-radius: .85rem;
+            background: #fbfdff;
+        }
+
+        .sdlc-risk-grid strong {
+            display: block;
+            color: #172033;
+            margin-bottom: .3rem;
+        }
+
+        .sdlc-risk-grid span {
+            display: block;
+            color: #647184;
+            line-height: 1.5;
+        }
+
+        .scenario-box,
+        .lab-brief {
+            border: 1px solid #dce9f7;
+            border-radius: .9rem;
+            background: linear-gradient(180deg, #fff 0%, #f8fbff 100%);
+            box-shadow: 0 .25rem .7rem rgba(27,64,112,.04);
+            padding: 1.05rem;
+        }
+
+        .scenario-label,
+        .lab-title > span {
+            display: inline-block;
+            padding: .28rem .55rem;
+            border-radius: 999px;
+            background: #e9f3ff;
+            color: #0b57b7;
+            font-size: .7rem;
+            font-weight: 800;
+            letter-spacing: .055em;
+        }
+
+        .lesson-insight {
+            padding: 1rem 1.15rem;
+            border-left: 4px solid #0d6efd;
+            border-radius: 0 .9rem .9rem 0;
+            background: #eef6ff;
+            line-height: 1.55;
+        }
+
+        .lesson-section > p.text-secondary,
+        .lesson-section > p.lead {
+            line-height: 1.65;
+        }
+
+        @media (max-width: 991.98px) {
+            .sdlc-table,
+            .stage-table,
+            .criteria-table,
+            .quality-table,
+            .environment-table,
+            .reference-table,
+            .failure-table,
+            .career-table {
+                min-width: 900px;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .sdlc-risk-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .story-panel-row {
+                grid-template-columns: 1fr;
+                gap: .45rem;
+            }
+
+            .story-panel-row > span {
+                justify-self: start;
+            }
+
+            .lesson-number {
+                width: 1.85rem;
+                height: 1.85rem;
+                min-width: 1.85rem;
+                font-size: .76rem;
+            }
+        }
+    </style>
+
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a th:href="@{/training}">Training</a></li>
+            <li class="breadcrumb-item" th:text="${section.title}">Part I — How Commercial IT Works</li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${lesson.title}">Software Development Life Cycle</li>
+        </ol>
+    </nav>
+
+
+    <!-- Lesson hero -->
+    <section class="lesson-hero p-4 p-lg-5 mb-4 sdlc-hero">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <span class="lesson-chip">PART I</span>
+                    <span class="lesson-chip">LESSON <span th:text="${lesson.number}">6</span></span>
+                    <span class="lesson-chip">BEGINNER</span>
+                    <span class="lesson-chip">50–60 MIN</span>
+                </div>
+                <div class="small text-uppercase fw-bold opacity-75 mb-2">How Commercial IT Works</div>
+                <h1 class="display-5 fw-bold mb-3">Software Development Life Cycle</h1>
+                <p class="lead mb-0 opacity-90">
+                    Follow one commercial software change from business intent through analysis,
+                    architecture, implementation, verification, release, production operations and continuous improvement.
+                </p>
+            </div>
+            <div class="col-lg-4">
+                <div class="lesson-hero-callout">
+                    <div class="fw-bold mb-2">Core mental model</div>
+                    <div class="small opacity-90">
+                        Discover → Analyze → Design → Build → Verify → Release → Operate → Improve.
+                        The SDLC is a risk-reduction and evidence system, not just a list of phases.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <div class="row g-4">
+        <div class="col-xl-9">
+            <section id="objectives" class="soft-card p-4 p-lg-5 mb-4 lesson-section shadow-sm">
+                <div class="section-kicker">Learning objectives</div>
+                <h2 class="h4 fw-bold mb-3">By the end of this lesson, you should be able to</h2>
+                <div class="row g-3">
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">1</span><div class="flex-grow-1"><strong>Explain the purpose of the SDLC</strong><small>Understand how organizations reduce risk while turning business needs into maintainable production software.</small></div></div></div>
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">2</span><div class="flex-grow-1"><strong>Trace the major SDLC stages</strong><small>Requirement, analysis, design, implementation, verification, release, operations and improvement.</small></div></div></div>
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">3</span><div class="flex-grow-1"><strong>Identify the people and evidence at each stage</strong><small>Know who participates and what artifacts prove that work is ready to move forward.</small></div></div></div>
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">4</span><div class="flex-grow-1"><strong>Connect SDLC theory to the reference application</strong><small>Map an e-commerce order-cancellation change through Product, Architecture, Spring Boot, QA, security and operations.</small></div></div></div>
+                </div>
+            </section>
+
+            <section id="problem" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Start with the delivery problem</div>
+                <h2 class="h3 fw-bold">A business request is not production software</h2>
+                <div class="scenario-box mt-3">
+                    <div class="scenario-label">COMMERCIAL SCENARIO</div>
+                    <h3 class="h5 fw-bold">“Allow customers to cancel an order before fulfillment begins.”</h3>
+                    <p class="mb-0 text-secondary">The sentence sounds simple. But the production capability may affect customer identity, order state, inventory, refunds, audit logs, APIs, UI behavior, database transactions, security policy, testing, deployment, monitoring and support.</p>
+                </div>
+                <div class="sdlc-risk-grid mt-3">
+                    <div><strong>Wrong problem</strong><span>Engineering can perfectly implement the wrong business rule.</span></div>
+                    <div><strong>Wrong design</strong><span>A local code change can break integrations, security boundaries or data consistency.</span></div>
+                    <div><strong>Wrong release</strong><span>Correct code can still fail because configuration, infrastructure or dependencies are wrong.</span></div>
+                    <div><strong>Wrong operations</strong><span>A feature is incomplete if nobody can detect, diagnose or support its failure.</span></div>
+                </div>
+                <div class="lesson-insight mt-3"><strong>Core idea:</strong> The SDLC is the managed path from business intent to reliable operational capability. It exists to make assumptions, risks, decisions, quality and ownership visible.</div>
+            </section>
+
+            <section id="lifecycle" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">End-to-end mental model</div>
+    <h2 class="h3 fw-bold mb-2">The SDLC is a feedback loop, not a one-way assembly line</h2>
+    <p class="text-secondary mb-4">
+        Every stage reduces a different kind of uncertainty. Agile teams may execute these activities continuously
+        and in small increments, while regulated or high-risk environments may require stronger gates and evidence.
+    </p>
+
+    <div class="sdlc-table-wrap">
+        <div class="table-responsive">
+            <table class="table sdlc-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Stage</th>
+                        <th style="width:22%;">Lifecycle activity</th>
+                        <th style="width:25%;">Primary focus</th>
+                        <th>What the team is trying to prove</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="sdlc-seq"><span>01</span></td><td><strong>Discover</strong></td><td>Business need</td><td>There is a real problem or opportunity worth solving.</td></tr>
+                    <tr><td class="sdlc-seq"><span>02</span></td><td><strong>Analyze</strong></td><td>Rules &amp; scope</td><td>The expected behavior, boundaries, dependencies and constraints are understood.</td></tr>
+                    <tr><td class="sdlc-seq"><span>03</span></td><td><strong>Design</strong></td><td>Architecture</td><td>The solution can fit safely into the wider application, data, security and operational landscape.</td></tr>
+                    <tr><td class="sdlc-seq"><span>04</span></td><td><strong>Build</strong></td><td>Code &amp; configuration</td><td>The intended behavior has been implemented in a maintainable form.</td></tr>
+                    <tr><td class="sdlc-seq"><span>05</span></td><td><strong>Verify</strong></td><td>Quality &amp; security</td><td>The system behaves correctly, safely and predictably under expected and failure conditions.</td></tr>
+                    <tr><td class="sdlc-seq"><span>06</span></td><td><strong>Release</strong></td><td>Controlled deployment</td><td>The approved change can move into production repeatably and with rollback options.</td></tr>
+                    <tr><td class="sdlc-seq"><span>07</span></td><td><strong>Operate</strong></td><td>Observe &amp; support</td><td>The capability remains healthy for real users and business processes.</td></tr>
+                    <tr><td class="sdlc-seq"><span>08</span></td><td><strong>Improve</strong></td><td>Learn &amp; iterate</td><td>Production evidence and business feedback inform the next change.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+            <section id="stages" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Stage-by-stage</div>
+    <h2 class="h3 fw-bold mb-2">What actually happens at each stage</h2>
+    <p class="text-secondary mb-4">
+        Each SDLC stage has a different purpose, different participants and different evidence.
+        The exact names vary by organization, but the responsibilities are widely recognizable.
+    </p>
+
+    <div class="stage-table-wrap">
+        <div class="table-responsive">
+            <table class="table stage-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Stage</th>
+                        <th style="width:24%;">Activity</th>
+                        <th>What happens</th>
+                        <th style="width:27%;">Participants &amp; evidence</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="stage-seq"><span>01</span></td><td><strong>Discovery &amp; Business Requirement</strong></td><td>Clarify business outcome, affected users, value, constraints, policy and measurable success.</td><td><b>Participants:</b> Business, Product, SMEs, Architect.<br><b>Evidence:</b> problem statement, epic, business rules, success criteria.</td></tr>
+                    <tr><td class="stage-seq"><span>02</span></td><td><strong>Analysis &amp; Refinement</strong></td><td>Break the need into bounded behavior. Identify edge cases, dependencies, data, integrations, NFRs and acceptance criteria.</td><td><b>Participants:</b> Product, Architect, Engineering, QA, Security.<br><b>Evidence:</b> refined stories, acceptance criteria, dependency map.</td></tr>
+                    <tr><td class="stage-seq"><span>03</span></td><td><strong>Architecture &amp; Design</strong></td><td>Decide component boundaries, API contracts, data changes, transactions, security controls, failure handling and operational expectations.</td><td><b>Participants:</b> Architects, Tech Leads, Engineers, Security, Data/Platform.<br><b>Evidence:</b> diagrams, ADRs, API design, schema changes.</td></tr>
+                    <tr><td class="stage-seq"><span>04</span></td><td><strong>Implementation</strong></td><td>Write code, tests, configuration and infrastructure changes while following engineering and source-control practices.</td><td><b>Participants:</b> Engineers.<br><b>Evidence:</b> commits, pull requests, automated tests, build output.</td></tr>
+                    <tr><td class="stage-seq"><span>05</span></td><td><strong>Verification &amp; Validation</strong></td><td>Prove the capability behaves correctly across functional, integration, security, regression and non-functional scenarios.</td><td><b>Participants:</b> QA, Engineers, Security, Product/UAT users.<br><b>Evidence:</b> test results, defect closure, acceptance/UAT.</td></tr>
+                    <tr><td class="stage-seq"><span>06</span></td><td><strong>Release &amp; Deployment</strong></td><td>Package an immutable artifact, apply configuration/database changes and deploy through controlled automation.</td><td><b>Participants:</b> DevOps/Platform, Engineering, Release Management.<br><b>Evidence:</b> artifact version, pipeline record, release notes, approvals.</td></tr>
+                    <tr><td class="stage-seq"><span>07</span></td><td><strong>Production Operations</strong></td><td>Observe health, logs, metrics and traces; respond to incidents and support real users.</td><td><b>Participants:</b> SRE/Operations, Support, Engineering, Product.<br><b>Evidence:</b> dashboards, alerts, incidents, support tickets, business metrics.</td></tr>
+                    <tr><td class="stage-seq"><span>08</span></td><td><strong>Feedback, Maintenance &amp; Retirement</strong></td><td>Correct defects, improve performance, address vulnerabilities, reduce technical debt and retire obsolete capabilities safely.</td><td><b>Participants:</b> Cross-functional team.<br><b>Evidence:</b> backlog items, RCA actions, deprecation plan, archival/retention decisions.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+            <section id="requirements" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Requirements and acceptance</div>
+    <h2 class="h3 fw-bold mb-2">Good delivery starts with testable behavior</h2>
+    <p class="text-secondary mb-4">
+        Requirements should make business intent understandable and acceptance observable before implementation begins.
+    </p>
+
+    <div class="story-panel mb-4">
+        <div class="story-panel-row"><span>AS A</span><strong>customer</strong></div>
+        <div class="story-panel-row"><span>I WANT</span><strong>to cancel an eligible order</strong></div>
+        <div class="story-panel-row"><span>SO THAT</span><strong>I do not receive goods I no longer need</strong></div>
+    </div>
+
+    <div class="criteria-table-wrap">
+        <div class="table-responsive">
+            <table class="table criteria-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Case</th>
+                        <th style="width:28%;">Acceptance condition</th>
+                        <th>Expected behavior</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="criteria-seq"><span>01</span></td><td><strong>Ownership</strong></td><td>Customer may cancel only an order they own.</td></tr>
+                    <tr><td class="criteria-seq"><span>02</span></td><td><strong>Allowed State</strong></td><td>Cancellation is permitted only before the configured fulfillment boundary.</td></tr>
+                    <tr><td class="criteria-seq"><span>03</span></td><td><strong>Persistence</strong></td><td>A successful cancellation persists the new order status and returns a clear response.</td></tr>
+                    <tr><td class="criteria-seq"><span>04</span></td><td><strong>Failure Integrity</strong></td><td>An invalid cancellation fails predictably without corrupting order state.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+            <section id="quality" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Quality is built in</div>
+    <h2 class="h3 fw-bold mb-2">Testing is not a single stage performed by QA at the end</h2>
+    <p class="text-secondary mb-4">
+        Different test layers answer different questions and provide different kinds of confidence.
+    </p>
+
+    <div class="quality-table-wrap">
+        <div class="table-responsive">
+            <table class="table quality-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Layer</th>
+                        <th style="width:29%;">Verification type</th>
+                        <th>What it proves</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="quality-seq"><span>01</span></td><td><strong>Unit / Component</strong></td><td>Fast developer feedback around isolated business behavior and code-level rules.</td></tr>
+                    <tr><td class="quality-seq"><span>02</span></td><td><strong>Integration / API</strong></td><td>Database, messaging, service-to-service and contract interactions behave correctly together.</td></tr>
+                    <tr><td class="quality-seq"><span>03</span></td><td><strong>End-to-End / UAT</strong></td><td>Critical user workflows and business outcomes behave as expected across the integrated system.</td></tr>
+                    <tr><td class="quality-seq"><span>04</span></td><td><strong>Production Verification</strong></td><td>Health checks, synthetic checks, monitoring and business KPIs confirm the capability remains healthy after release.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="lesson-insight mt-4">
+        <strong>Shift-left does not mean “do everything early.”</strong>
+        It means surface risks as early as practical: testability during design, security during architecture,
+        automated checks during development and operational readiness before release.
+    </div>
+</section>
+
+            <section id="environments" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Promotion through environments</div>
+    <h2 class="h3 fw-bold mb-2">The same change gains confidence as it moves toward production</h2>
+    <p class="text-secondary mb-4">
+        Environment names differ by organization. The important principle is controlled, repeatable promotion
+        with environment-specific configuration and increasing confidence.
+    </p>
+
+    <div class="environment-table-wrap">
+        <div class="table-responsive">
+            <table class="table environment-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Step</th>
+                        <th style="width:22%;">Environment</th>
+                        <th style="width:26%;">Primary purpose</th>
+                        <th>Typical evidence / concern</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="env-seq"><span>01</span></td><td><strong>LOCAL</strong></td><td>Developer feedback</td><td>Fast iteration, unit tests and local behavior.</td></tr>
+                    <tr><td class="env-seq"><span>02</span></td><td><strong>DEV</strong></td><td>Integrated development</td><td>Multiple components work together in a shared environment.</td></tr>
+                    <tr><td class="env-seq"><span>03</span></td><td><strong>TEST / QA</strong></td><td>Verification &amp; regression</td><td>Functional, integration and regression testing against controlled builds.</td></tr>
+                    <tr><td class="env-seq"><span>04</span></td><td><strong>UAT / STAGE</strong></td><td>Production-like validation</td><td>Business acceptance, release readiness and near-production configuration validation.</td></tr>
+                    <tr><td class="env-seq"><span>05</span></td><td><strong>PROD</strong></td><td>Real users &amp; business</td><td>Monitoring, supportability, auditability, business outcomes and rollback readiness.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <p class="small text-secondary mt-3 mb-0">
+        Controlled promotion, repeatability, segregation of duties where required,
+        and evidence that the same intended change is being promoted matter more than the exact environment names.
+    </p>
+</section>
+
+            <section id="reference" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Reference application</div>
+    <h2 class="h3 fw-bold mb-2">Trace the order-cancellation capability through this Spring Boot application</h2>
+    <p class="text-secondary mb-4">
+        The reference application makes the SDLC concrete by showing how one business rule appears
+        across user entry points, service logic, persistence, security, testing and operations.
+    </p>
+
+    <div class="reference-table-wrap">
+        <div class="table-responsive">
+            <table class="table reference-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Step</th>
+                        <th style="width:24%;">Application concern</th>
+                        <th>Reference application example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="reference-seq"><span>01</span></td><td><strong>Business Rule</strong></td><td>Customer cancellation allowed only for eligible order states.</td></tr>
+                    <tr><td class="reference-seq"><span>02</span></td><td><strong>Web / API</strong></td><td><code>EcommerceController</code> and <code>OrderRestController</code> expose user and API entry points.</td></tr>
+                    <tr><td class="reference-seq"><span>03</span></td><td><strong>Service</strong></td><td><code>OrderService</code> coordinates business behavior and state changes.</td></tr>
+                    <tr><td class="reference-seq"><span>04</span></td><td><strong>Persistence</strong></td><td>Repository/entity classes persist order state to MySQL.</td></tr>
+                    <tr><td class="reference-seq"><span>05</span></td><td><strong>Security</strong></td><td>Spring Security + Keycloak establish identity and authorization boundaries.</td></tr>
+                    <tr><td class="reference-seq"><span>06</span></td><td><strong>Verification</strong></td><td>Unit, integration, API and authorization tests prove allowed and denied behavior.</td></tr>
+                    <tr><td class="reference-seq"><span>07</span></td><td><strong>Operations</strong></td><td>Logs, health endpoints and monitoring provide evidence after deployment.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+            <section id="failure-modes" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Common failure modes</div>
+    <h2 class="h3 fw-bold mb-2">What weak SDLC practice looks like</h2>
+    <p class="text-secondary mb-4">
+        Weak lifecycle discipline usually appears as missing decisions, late risk discovery,
+        uncontrolled deployment or lack of production ownership.
+    </p>
+
+    <div class="failure-table-wrap">
+        <div class="table-responsive">
+            <table class="table failure-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Risk</th>
+                        <th style="width:31%;">Weak practice</th>
+                        <th>Why it is dangerous</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="failure-seq"><span>!</span></td><td><strong>“Just Start Coding”</strong></td><td>Implementation begins before the team agrees on behavior, scope and acceptance.</td></tr>
+                    <tr><td class="failure-seq"><span>!</span></td><td><strong>QA Is the Quality Department</strong></td><td>Developers treat correctness as somebody else's responsibility.</td></tr>
+                    <tr><td class="failure-seq"><span>!</span></td><td><strong>Security Review at the End</strong></td><td>Late discovery of identity, authorization or data-protection problems causes expensive redesign.</td></tr>
+                    <tr><td class="failure-seq"><span>!</span></td><td><strong>Manual Production Changes</strong></td><td>Unrepeatable deployments create drift, hidden state and difficult rollback.</td></tr>
+                    <tr><td class="failure-seq"><span>!</span></td><td><strong>“Works on My Machine”</strong></td><td>Local success is mistaken for integrated, environment-independent readiness.</td></tr>
+                    <tr><td class="failure-seq"><span>!</span></td><td><strong>Release Equals Completion</strong></td><td>No one checks production health, adoption or whether the business outcome was achieved.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+            <section id="lab" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Hands-on lab</div>
+    <h2 class="h3 fw-bold mb-2">Create an SDLC evidence map for one application change</h2>
+
+    <div class="lab-brief mt-3 mb-4">
+        <div class="lab-title"><span>LAB</span><strong>Feature: customer changes a shipping address before fulfillment</strong></div>
+        <p class="mb-0">Do not code first. Walk the change through the lifecycle as a commercial team would.</p>
+    </div>
+
+    <div class="lab-list">
+        <div class="lab-step d-flex align-items-start gap-3">
+            <span class="lesson-number flex-shrink-0">1</span>
+            <div class="flex-grow-1"><strong>Write the business rule</strong><p>Who may change the address, until what order state, and what must happen if the change is rejected?</p></div>
+        </div>
+        <div class="lab-step d-flex align-items-start gap-3">
+            <span class="lesson-number flex-shrink-0">2</span>
+            <div class="flex-grow-1"><strong>Identify impacted layers</strong><p>UI, controller/API, service, persistence, security, validation, integrations and logs.</p></div>
+        </div>
+        <div class="lab-step d-flex align-items-start gap-3">
+            <span class="lesson-number flex-shrink-0">3</span>
+            <div class="flex-grow-1"><strong>Write acceptance criteria</strong><p>Include success, unauthorized access, invalid order state, invalid address and concurrency/error behavior.</p></div>
+        </div>
+        <div class="lab-step d-flex align-items-start gap-3">
+            <span class="lesson-number flex-shrink-0">4</span>
+            <div class="flex-grow-1"><strong>Define verification</strong><p>List unit, integration/API, security and UAT tests.</p></div>
+        </div>
+        <div class="lab-step d-flex align-items-start gap-3">
+            <span class="lesson-number flex-shrink-0">5</span>
+            <div class="flex-grow-1"><strong>Define release evidence</strong><p>Artifact version, migration/configuration needs, rollback approach, logs/metrics and production verification.</p></div>
+        </div>
+    </div>
+</section>
+
+            <section id="knowledge" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Knowledge check</div>
+                <h2 class="h3 fw-bold">Can you reason about delivery, not just development?</h2>
+                <div class="knowledge-check mt-3">
+                    <details><summary>1. Does Agile eliminate the SDLC?</summary><p>No. Agile changes how work is organized and delivered. Requirements, design, implementation, verification, release and operations still exist, often in smaller iterative slices.</p></details>
+                    <details><summary>2. When should security become involved?</summary><p>As early as the risk requires. Identity, authorization, data sensitivity and trust-boundary decisions often need attention during refinement and design, not after coding.</p></details>
+                    <details><summary>3. Is production deployment the final SDLC activity?</summary><p>No. Production operation, monitoring, incident response, maintenance, feedback and eventual retirement are lifecycle activities too.</p></details>
+                    <details><summary>4. Who owns software quality?</summary><p>The delivery team collectively. QA provides specialized expertise, but Product, architecture, developers, security, platform and operations all contribute to quality.</p></details>
+                </div>
+            </section>
+
+            <section id="recap" class="recap-panel p-4 p-lg-5 mb-4">
+                <div class="section-kicker text-info">Lesson recap</div>
+                <h2 class="h3 fw-bold text-white">Six things to remember</h2>
+                <div class="recap-grid mt-3">
+                    <div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">1</span><div class="flex-grow-1"><strong>Start with outcome</strong><small>Code is not the requirement.</small></div></div>
+                    <div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">2</span><div class="flex-grow-1"><strong>Design before irreversible decisions</strong><small>Make boundaries and trade-offs explicit.</small></div></div>
+                    <div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">3</span><div class="flex-grow-1"><strong>Quality is continuous</strong><small>Testing and security are built in.</small></div></div>
+                    <div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">4</span><div class="flex-grow-1"><strong>Automate promotion</strong><small>Repeatable releases reduce operational risk.</small></div></div>
+                    <div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">5</span><div class="flex-grow-1"><strong>Production is part of engineering</strong><small>Observe what you ship.</small></div></div>
+                    <div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">6</span><div class="flex-grow-1"><strong>Feedback closes the loop</strong><small>Real usage informs the next change.</small></div></div>
+                </div>
+            </section>
+
+            <section id="career" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Career perspective</div>
+    <h2 class="h3 fw-bold mb-2">Senior engineers think across the lifecycle</h2>
+    <p class="lead mb-4">
+        A junior engineer often asks, “What code should I write?” A strong commercial engineer also asks,
+        “What problem are we solving, how will we prove it works, how will we release it safely,
+        and how will we know when it fails?”
+    </p>
+
+    <div class="career-table-wrap">
+        <div class="table-responsive">
+            <table class="table career-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:100px;">Stage</th>
+                        <th style="width:35%;">Engineering mindset</th>
+                        <th>What is developing</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="career-seq"><span>01</span></td><td><strong>Implement Assigned Change</strong></td><td>Learn how to deliver code within established requirements and team practices.</td></tr>
+                    <tr><td class="career-seq"><span>02</span></td><td><strong>Understand Acceptance &amp; Dependencies</strong></td><td>Connect implementation work to business behavior, data, integration and test expectations.</td></tr>
+                    <tr><td class="career-seq"><span>03</span></td><td><strong>Anticipate Lifecycle Risks</strong></td><td>Reason about architecture, security, deployment, operational readiness and failure modes.</td></tr>
+                    <tr><td class="career-seq"><span>04</span></td><td><strong>Shape Reliable Delivery Systems</strong></td><td>Improve how the organization designs, verifies, releases and operates software at scale.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+            <section class="lesson-next p-4 p-lg-5 mb-4">
+                <div><div class="section-kicker">Lesson 6 complete</div><h2 class="h5 fw-bold mb-1">Next: Git, Branching, Pull Requests and Team Development</h2><p class="text-secondary mb-0">Now follow the implementation stage more deeply: how teams safely change a shared codebase without overwriting, destabilizing or losing each other's work.</p></div>
+                <div class="lesson-next-actions"><a class="btn btn-outline-primary" th:href="@{/training/part-1-commercial-it/jira-confluence}">← Previous</a><a class="btn btn-primary" th:href="@{/training/part-1-commercial-it/git-team-development}">Continue →</a></div>
+            </section>
+        </div>
+
+        <aside class="col-xl-3">
+            <div class="soft-card p-4 sticky-xl-top lesson-nav" style="top:90px;">
+                <div class="section-kicker">In this lesson</div><h2 class="h5 fw-bold">Lesson navigation</h2>
+                <nav><a href="#objectives">Learning objectives</a><a href="#problem">Delivery problem</a><a href="#lifecycle">SDLC mental model</a><a href="#stages">Stage-by-stage</a><a href="#requirements">Requirements</a><a href="#quality">Quality</a><a href="#environments">Environments</a><a href="#reference">Reference application</a><a href="#failure-modes">Failure modes</a><a href="#lab">Hands-on lab</a><a href="#knowledge">Knowledge check</a><a href="#recap">Lesson recap</a><a href="#career">Career perspective</a></nav>
+                <hr><p class="small text-secondary mb-0"><strong>Instructor note:</strong> Teach the lifecycle as a system of evidence and risk reduction — not as a memorization exercise about phase names.</p>
+            </div>
+        </aside>
+    </div>
+</main>
+</html>

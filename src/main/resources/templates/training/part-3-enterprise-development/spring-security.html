@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('Spring Security Fundamentals', 'Understand filter chains, authentication, authorization and secured application boundaries.', ~{::main})}">
+<main>
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a th:href="@{/training}">Training</a></li>
+            <li class="breadcrumb-item" th:text="${section.title}">Section</li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${lesson.title}">Lesson</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4">
+        <div class="col-xl-8">
+            <div class="video-stage mb-4">
+                <div class="video-play">▶</div>
+                <div class="small text-uppercase fw-bold opacity-75">Future LMS Video · Lesson <span th:text="${lesson.number}">19</span></div>
+                <h1 class="h3 mt-2 mb-2" th:text="${lesson.title}">Spring Security Fundamentals</h1>
+                <p class="mb-0 opacity-75">Replace this stage with the final video embed or LMS handoff when the lesson is produced.</p>
+            </div>
+
+            <div class="soft-card p-4 mb-4">
+                <div class="section-kicker">Learning objective</div>
+                <p class="lead mb-0" th:text="${lesson.objective}">Understand filter chains, authentication, authorization and secured application boundaries.</p>
+            </div>
+
+            <div class="soft-card p-4">
+                <h2 class="h5 fw-bold">Lesson content placeholder</h2>
+                <p class="text-secondary">This is intentionally an individual file so future requests can replace only this lesson while preserving the shared <code>base.html</code>, navigation, security and visual design.</p>
+                <div class="row g-3 mt-1">
+                    <div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Concepts</strong><div class="small text-secondary mt-1">Definitions, mental models and diagrams.</div></div></div>
+                    <div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Industry Example</strong><div class="small text-secondary mt-1">A commercial scenario that explains why the technology exists.</div></div></div>
+                    <div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Hands-on Lab</strong><div class="small text-secondary mt-1">Commands, code or workflow connected to the reference application.</div></div></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4">
+            <div class="soft-card p-4 sticky-xl-top" style="top: 90px;">
+                <div class="section-kicker">Video page contract</div>
+                <h2 class="h5 fw-bold">Use this structure when expanding the lesson</h2>
+                <ol class="small text-secondary ps-3 mb-0">
+                    <li class="mb-2">Business or engineering problem</li>
+                    <li class="mb-2">Core terminology</li>
+                    <li class="mb-2">Architecture or workflow</li>
+                    <li class="mb-2">Working demonstration</li>
+                    <li class="mb-2">Common failure modes</li>
+                    <li>Practice task and recap</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</main>
+</html>

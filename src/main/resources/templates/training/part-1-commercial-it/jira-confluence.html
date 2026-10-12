@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('Jira and Confluence in Daily Work', 'Learn how commercial IT teams use Jira to manage delivery work and Confluence to preserve requirements, decisions, architecture and shared knowledge.', ~{::main})}">
+<main>
+
+    <style>
+        /* =============================================================
+           Jira / Confluence lesson — polished presentation layer
+           ============================================================= */
+        #objectives,
+        .lesson-section {
+            scroll-margin-top: 95px;
+        }
+
+        .jira-hero {
+            box-shadow: 0 .45rem 1.3rem rgba(24,62,110,.08);
+        }
+
+        /* Number badges */
+        .lesson-number {
+            width: 2rem;
+            height: 2rem;
+            min-width: 2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #0d6efd;
+            color: #fff;
+            font-size: .82rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-top: .05rem;
+            box-shadow: 0 0 0 4px rgba(13,110,253,.08);
+        }
+
+        .lesson-number-light {
+            background: rgba(255,255,255,.96);
+            color: #0d6efd;
+            box-shadow: 0 0 0 4px rgba(255,255,255,.14);
+        }
+
+        .objective-item,
+        .lab-step,
+        .recap-item {
+            min-width: 0;
+        }
+
+        .objective-item > div,
+        .lab-step > div,
+        .recap-item > div {
+            min-width: 0;
+        }
+
+        .objective-item strong,
+        .lab-step strong,
+        .recap-item strong {
+            display: block;
+            margin-bottom: .22rem;
+        }
+
+        .objective-item small,
+        .lab-step p,
+        .recap-item small {
+            display: block;
+            line-height: 1.5;
+            margin-bottom: 0;
+        }
+
+        .lab-step {
+            padding: 1rem 0;
+        }
+
+        .lab-step + .lab-step {
+            border-top: 1px solid rgba(15,23,42,.08);
+        }
+
+        /* Common polished table shell */
+        .tool-comparison-wrap,
+        .issue-table-wrap,
+        .jira-fields-wrap,
+        .criteria-table-wrap,
+        .workflow-table-wrap,
+        .knowledge-table-wrap,
+        .questions-table-wrap,
+        .adr-table-wrap,
+        .trace-table-wrap,
+        .day-table-wrap,
+        .reference-table-wrap,
+        .anti-table-wrap,
+        .career-table-wrap {
+            border: 1px solid #d8e7fb;
+            border-radius: 1rem;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 .35rem 1.1rem rgba(27,64,112,.06);
+        }
+
+        .tool-comparison-table thead th,
+        .issue-table thead th,
+        .jira-fields-table thead th,
+        .criteria-table thead th,
+        .workflow-table thead th,
+        .knowledge-table thead th,
+        .questions-table thead th,
+        .adr-table thead th,
+        .trace-table thead th,
+        .day-table thead th,
+        .reference-table thead th,
+        .anti-table thead th,
+        .career-table thead th {
+            padding: .9rem 1rem;
+            border: 0;
+            background: linear-gradient(135deg, #143c73 0%, #0d6efd 100%);
+            color: #fff;
+            font-size: .76rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .045em;
+            white-space: nowrap;
+        }
+
+        .tool-comparison-table tbody td,
+        .issue-table tbody td,
+        .jira-fields-table tbody td,
+        .criteria-table tbody td,
+        .workflow-table tbody td,
+        .knowledge-table tbody td,
+        .questions-table tbody td,
+        .adr-table tbody td,
+        .trace-table tbody td,
+        .day-table tbody td,
+        .reference-table tbody td,
+        .anti-table tbody td,
+        .career-table tbody td {
+            padding: 1rem 1.05rem;
+            border-color: rgba(28,54,87,.08);
+            line-height: 1.48;
+            vertical-align: top;
+        }
+
+        .tool-comparison-table tbody tr:nth-child(odd) td,
+        .issue-table tbody tr:nth-child(odd) td,
+        .jira-fields-table tbody tr:nth-child(odd) td,
+        .criteria-table tbody tr:nth-child(odd) td,
+        .workflow-table tbody tr:nth-child(odd) td,
+        .knowledge-table tbody tr:nth-child(odd) td,
+        .questions-table tbody tr:nth-child(odd) td,
+        .adr-table tbody tr:nth-child(odd) td,
+        .trace-table tbody tr:nth-child(odd) td,
+        .day-table tbody tr:nth-child(odd) td,
+        .reference-table tbody tr:nth-child(odd) td,
+        .anti-table tbody tr:nth-child(odd) td,
+        .career-table tbody tr:nth-child(odd) td {
+            background: #fbfdff;
+        }
+
+        .tool-comparison-table tbody tr:nth-child(even) td,
+        .issue-table tbody tr:nth-child(even) td,
+        .jira-fields-table tbody tr:nth-child(even) td,
+        .criteria-table tbody tr:nth-child(even) td,
+        .workflow-table tbody tr:nth-child(even) td,
+        .knowledge-table tbody tr:nth-child(even) td,
+        .questions-table tbody tr:nth-child(even) td,
+        .adr-table tbody tr:nth-child(even) td,
+        .trace-table tbody tr:nth-child(even) td,
+        .day-table tbody tr:nth-child(even) td,
+        .reference-table tbody tr:nth-child(even) td,
+        .anti-table tbody tr:nth-child(even) td,
+        .career-table tbody tr:nth-child(even) td {
+            background: #f2f7fe;
+        }
+
+        .tool-comparison-table tbody tr:hover td,
+        .issue-table tbody tr:hover td,
+        .jira-fields-table tbody tr:hover td,
+        .criteria-table tbody tr:hover td,
+        .workflow-table tbody tr:hover td,
+        .knowledge-table tbody tr:hover td,
+        .questions-table tbody tr:hover td,
+        .adr-table tbody tr:hover td,
+        .trace-table tbody tr:hover td,
+        .day-table tbody tr:hover td,
+        .reference-table tbody tr:hover td,
+        .anti-table tbody tr:hover td,
+        .career-table tbody tr:hover td {
+            background: #e8f2ff !important;
+        }
+
+        /* Sequence markers */
+        .issue-seq,
+        .criteria-seq,
+        .workflow-seq,
+        .knowledge-seq,
+        .question-seq,
+        .trace-seq,
+        .reference-seq,
+        .anti-seq,
+        .career-seq {
+            text-align: center;
+        }
+
+        .issue-seq span,
+        .criteria-seq span,
+        .workflow-seq span,
+        .knowledge-seq span,
+        .question-seq span,
+        .trace-seq span,
+        .reference-seq span,
+        .anti-seq span,
+        .career-seq span {
+            min-width: 2.35rem;
+            height: 2.35rem;
+            padding: 0 .5rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            background: #0d6efd;
+            color: #fff;
+            font-size: .74rem;
+            font-weight: 800;
+            box-shadow: 0 0 0 4px rgba(13,110,253,.08);
+        }
+
+        /* Jira vs Confluence */
+        .tool-name-cell {
+            vertical-align: middle !important;
+            text-align: center;
+        }
+
+        .tool-badge-table {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 7rem;
+            height: 2.55rem;
+            padding: 0 .75rem;
+            border-radius: .75rem;
+            color: #fff;
+            font-size: .77rem;
+            font-weight: 900;
+            letter-spacing: .06em;
+        }
+
+        .jira-badge {
+            background: #0d6efd;
+        }
+
+        .confluence-badge {
+            background: #5b4db7;
+        }
+
+        .jira-row td {
+            background: #f4f8ff !important;
+        }
+
+        .confluence-row td {
+            background: #f8f6ff !important;
+        }
+
+        .capability-pill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .4rem;
+        }
+
+        .capability-pill-list span {
+            padding: .3rem .56rem;
+            border-radius: 999px;
+            background: #fff;
+            border: 1px solid #d7e5f5;
+            color: #314d6d;
+            font-size: .76rem;
+            font-weight: 600;
+        }
+
+        /* Story */
+        .story-panel {
+            border: 1px solid #d8e7fb;
+            border-radius: 1rem;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 .35rem 1.1rem rgba(27,64,112,.05);
+        }
+
+        .story-panel-row {
+            display: grid;
+            grid-template-columns: 125px 1fr;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem 1.15rem;
+        }
+
+        .story-panel-row:nth-child(odd) {
+            background: #fbfdff;
+        }
+
+        .story-panel-row:nth-child(even) {
+            background: #f2f7fe;
+        }
+
+        .story-panel-row + .story-panel-row {
+            border-top: 1px solid rgba(28,54,87,.08);
+        }
+
+        .story-panel-row > span {
+            display: inline-flex;
+            justify-content: center;
+            padding: .32rem .55rem;
+            border-radius: 999px;
+            background: #0d6efd;
+            color: #fff;
+            font-size: .72rem;
+            font-weight: 800;
+            letter-spacing: .04em;
+        }
+
+        .story-panel-row strong {
+            color: #172033;
+        }
+
+        /* ADR */
+        .adr-status {
+            display: inline-block;
+            padding: .3rem .62rem;
+            border-radius: 999px;
+            background: #e8f7ee;
+            border: 1px solid #c9e8d5;
+            color: #146c43;
+            font-size: .78rem;
+            font-weight: 800;
+        }
+
+        /* Existing supporting cards */
+        .scenario-box,
+        .workflow-principle,
+        .myth-card,
+        .lab-brief {
+            border: 1px solid #dce9f7;
+            border-radius: .9rem;
+            background: linear-gradient(180deg, #fff 0%, #f8fbff 100%);
+            box-shadow: 0 .25rem .7rem rgba(27,64,112,.04);
+        }
+
+        .scenario-box,
+        .workflow-principle,
+        .myth-card,
+        .lab-brief {
+            padding: 1.05rem;
+        }
+
+        .workflow-principle strong,
+        .myth-card strong {
+            display: block;
+            color: #172033;
+            margin-bottom: .35rem;
+        }
+
+        .workflow-principle span,
+        .myth-card p {
+            color: #647184;
+            line-height: 1.55;
+            margin-bottom: 0;
+        }
+
+        .scenario-label,
+        .lab-title > span {
+            display: inline-block;
+            padding: .28rem .55rem;
+            border-radius: 999px;
+            background: #e9f3ff;
+            color: #0b57b7;
+            font-size: .7rem;
+            font-weight: 800;
+            letter-spacing: .055em;
+        }
+
+        /* Problem grid */
+        .tool-problem-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0,1fr));
+            gap: .8rem;
+        }
+
+        .tool-problem-grid > div {
+            padding: 1rem;
+            border: 1px solid #dce9f7;
+            border-radius: .85rem;
+            background: #fbfdff;
+        }
+
+        .tool-problem-grid strong {
+            display: block;
+            color: #172033;
+            margin-bottom: .3rem;
+        }
+
+        .tool-problem-grid span {
+            display: block;
+            color: #647184;
+            line-height: 1.5;
+        }
+
+        /* Time */
+        .time-chip {
+            display: inline-flex;
+            justify-content: center;
+            min-width: 84px;
+            padding: .38rem .58rem;
+            border-radius: 999px;
+            background: #e8f2ff;
+            border: 1px solid #cfe2ff;
+            color: #0b57b7;
+            font-size: .78rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        /* Insight and spacing */
+        .lesson-insight {
+            padding: 1rem 1.15rem;
+            border-left: 4px solid #0d6efd;
+            border-radius: 0 .9rem .9rem 0;
+            background: #eef6ff;
+            line-height: 1.55;
+        }
+
+        .lesson-section > p.text-secondary,
+        .lesson-section > p.lead {
+            line-height: 1.65;
+        }
+
+        @media (max-width: 991.98px) {
+            .tool-comparison-table,
+            .issue-table,
+            .jira-fields-table,
+            .criteria-table,
+            .workflow-table,
+            .knowledge-table,
+            .questions-table,
+            .adr-table,
+            .trace-table,
+            .day-table,
+            .reference-table,
+            .anti-table,
+            .career-table {
+                min-width: 900px;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .tool-problem-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .story-panel-row {
+                grid-template-columns: 1fr;
+                gap: .45rem;
+            }
+
+            .story-panel-row > span {
+                justify-self: start;
+            }
+
+            .lesson-number {
+                width: 1.85rem;
+                height: 1.85rem;
+                min-width: 1.85rem;
+                font-size: .76rem;
+            }
+        }
+    </style>
+
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a th:href="@{/training}">Training</a></li>
+            <li class="breadcrumb-item" th:text="${section.title}">Part I — How Commercial IT Works</li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${lesson.title}">Jira and Confluence in Daily Work</li>
+        </ol>
+    </nav>
+
+
+    <!-- Lesson hero -->
+    <section class="lesson-hero p-4 p-lg-5 mb-4 jira-hero">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <span class="lesson-chip">PART I</span>
+                    <span class="lesson-chip">LESSON <span th:text="${lesson.number}">5</span></span>
+                    <span class="lesson-chip">BEGINNER</span>
+                    <span class="lesson-chip">50–60 MIN</span>
+                </div>
+                <div class="small text-uppercase fw-bold opacity-75 mb-2">How Commercial IT Works</div>
+                <h1 class="display-5 fw-bold mb-3">Jira and Confluence in Daily Work</h1>
+                <p class="lead mb-0 opacity-90">
+                    Learn how commercial teams make work visible in Jira, preserve durable knowledge in Confluence,
+                    connect requirements to implementation, and maintain traceability long after a release.
+                </p>
+            </div>
+            <div class="col-lg-4">
+                <div class="lesson-hero-callout">
+                    <div class="fw-bold mb-2">Core mental model</div>
+                    <div class="small opacity-90">
+                        Jira answers “What work are we doing and where is it?” Confluence answers
+                        “What do we know, why did we decide it, and how should others understand it?”
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <div class="row g-4">
+        <div class="col-xl-9">
+            <section id="objectives" class="soft-card p-4 p-lg-5 mb-4 lesson-section shadow-sm">
+                <div class="section-kicker">Learning objectives</div>
+                <h2 class="h4 fw-bold mb-3">By the end of this lesson, you should be able to</h2>
+                <div class="row g-3">
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">1</span><div class="flex-grow-1"><strong>Explain the different jobs Jira and Confluence perform</strong><small>Jira manages visible work and workflow; Confluence preserves shared context, decisions and knowledge.</small></div></div></div>
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">2</span><div class="flex-grow-1"><strong>Read and write useful work items</strong><small>Understand epics, stories, tasks, bugs, subtasks, acceptance criteria, priorities, ownership and dependencies.</small></div></div></div>
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">3</span><div class="flex-grow-1"><strong>Follow work through a delivery workflow</strong><small>Trace a requirement from backlog through refinement, implementation, review, testing, release and completion.</small></div></div></div>
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">4</span><div class="flex-grow-1"><strong>Create durable project knowledge</strong><small>Know what belongs in Confluence: requirements, architecture, ADRs, runbooks, meeting outcomes and operational knowledge.</small></div></div></div>
+                </div>
+            </section>
+
+            <section id="problem" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Start with the coordination problem</div>
+                <h2 class="h3 fw-bold">A software team cannot run on memory, chat messages and hallway conversations</h2>
+                <div class="scenario-box mt-3">
+                    <div class="scenario-label">COMMERCIAL SCENARIO</div>
+                    <h3 class="h5 fw-bold">The business asks: “Allow a customer to cancel an eligible order before shipment.”</h3>
+                    <p class="mb-0 text-secondary">Product discusses the rule with Operations. An architect identifies an integration dependency. A developer implements the API. Security asks about authorization. QA finds an edge case. Two months later Support asks why cancellation is blocked after fulfillment begins.</p>
+                </div>
+                <div class="tool-problem-grid mt-3">
+                    <div><strong>Who owns the work?</strong><span>Without a system of record, assignments and accountability become ambiguous.</span></div>
+                    <div><strong>What exactly was agreed?</strong><span>Chat and meetings disappear into history unless decisions are recorded.</span></div>
+                    <div><strong>Where is the work now?</strong><span>Stakeholders need visibility without interrupting engineers for status.</span></div>
+                    <div><strong>Why was this designed this way?</strong><span>Future engineers need the reasoning, not only the final code.</span></div>
+                </div>
+                <div class="lesson-insight mt-3"><strong>Core idea:</strong> Jira makes work observable. Confluence makes knowledge durable. Used together, they create traceability from business intent to implementation and operational support.</div>
+            </section>
+
+            <section id="mental-model" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Mental model</div>
+    <h2 class="h3 fw-bold mb-2">Jira answers “What are we doing?”; Confluence answers “What do we know?”</h2>
+    <p class="text-secondary mb-4">
+        The tools complement each other. Jira is strongest when representing work and workflow;
+        Confluence is strongest when preserving reusable context, reasoning and team knowledge.
+    </p>
+
+    <div class="tool-comparison-wrap mb-4">
+        <div class="table-responsive">
+            <table class="table tool-comparison-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:19%;">Tool</th>
+                        <th style="width:28%;">Primary job</th>
+                        <th>What belongs there</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="jira-row">
+                        <td class="tool-name-cell"><span class="tool-badge-table jira-badge">JIRA</span></td>
+                        <td><strong>Work management and workflow</strong></td>
+                        <td>
+                            <div class="capability-pill-list">
+                                <span>Backlog</span><span>Epics</span><span>Stories</span><span>Tasks</span>
+                                <span>Bugs</span><span>Assignees</span><span>Status</span><span>Sprints</span>
+                                <span>Dependencies</span><span>Delivery Evidence</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="confluence-row">
+                        <td class="tool-name-cell"><span class="tool-badge-table confluence-badge">CONFLUENCE</span></td>
+                        <td><strong>Shared knowledge and durable context</strong></td>
+                        <td>
+                            <div class="capability-pill-list">
+                                <span>Requirements</span><span>Process Notes</span><span>Architecture</span>
+                                <span>ADRs</span><span>API Guidance</span><span>Meeting Outcomes</span>
+                                <span>Runbooks</span><span>Troubleshooting</span><span>Onboarding</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="myth-card h-100">
+                <span class="myth">BAD PRACTICE</span>
+                <strong>Copy the entire design document into a Jira ticket.</strong>
+                <p>Keep the actionable delivery item concise and link to durable design context when substantial explanation is required.</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="myth-card h-100">
+                <span class="myth">BAD PRACTICE</span>
+                <strong>Put every decision only in a meeting or chat thread.</strong>
+                <p>Important decisions need a discoverable home that survives team turnover and time.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+            <section id="jira" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Jira fundamentals</div>
+    <h2 class="h3 fw-bold mb-2">Work items form a hierarchy of intent and execution</h2>
+    <p class="text-secondary mb-4">
+        Organizations configure Jira differently, but the underlying model is consistent:
+        large outcomes are decomposed into smaller deliverable units with enough context to understand,
+        estimate, implement and verify.
+    </p>
+
+    <div class="issue-table-wrap mb-4">
+        <div class="table-responsive">
+            <table class="table issue-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Level</th>
+                        <th style="width:27%;">Work item</th>
+                        <th style="width:31%;">Example</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="issue-seq"><span>01</span></td>
+                        <td><strong>Epic / Initiative-sized Outcome</strong></td>
+                        <td>Self-service Order Management</td>
+                        <td>Represents a larger business or product outcome that will be delivered through multiple smaller items.</td>
+                    </tr>
+                    <tr>
+                        <td class="issue-seq"><span>02</span></td>
+                        <td><strong>User Story / Feature Slice</strong></td>
+                        <td>Customer can cancel an eligible order before shipment</td>
+                        <td>Expresses a focused piece of customer or business value that can be discussed, delivered and verified.</td>
+                    </tr>
+                    <tr>
+                        <td class="issue-seq"><span>03A</span></td>
+                        <td><strong>Task</strong></td>
+                        <td>Add cancel endpoint</td>
+                        <td>Represents implementation work required to support the feature.</td>
+                    </tr>
+                    <tr>
+                        <td class="issue-seq"><span>03B</span></td>
+                        <td><strong>Task</strong></td>
+                        <td>Add UI action</td>
+                        <td>Captures a separate implementation responsibility or work package.</td>
+                    </tr>
+                    <tr>
+                        <td class="issue-seq"><span>03C</span></td>
+                        <td><strong>Task</strong></td>
+                        <td>Add automated tests</td>
+                        <td>Makes required quality work visible instead of assuming it will happen implicitly.</td>
+                    </tr>
+                    <tr>
+                        <td class="issue-seq"><span>03D</span></td>
+                        <td><strong>Bug</strong></td>
+                        <td>Fix refund edge case</td>
+                        <td>Tracks incorrect behavior that must be investigated and corrected.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h3 class="h5 fw-bold mb-3">What makes a Jira item useful?</h3>
+    <div class="jira-fields-wrap">
+        <div class="table-responsive">
+            <table class="table jira-fields-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Field / concept</th>
+                        <th>What it should tell the team</th>
+                        <th>Weak example</th>
+                        <th>Better example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Summary</strong></td><td>What change or problem is this?</td><td>“Cancellation work”</td><td>“Allow customer to cancel eligible order before shipment”</td></tr>
+                    <tr><td><strong>Description</strong></td><td>Why does it matter and what context is required?</td><td>“Please implement.”</td><td>Business rule, scope, assumptions and relevant links.</td></tr>
+                    <tr><td><strong>Acceptance Criteria</strong></td><td>How will we know behavior is correct?</td><td>“Works properly.”</td><td>Given/when/then or other explicit, testable conditions.</td></tr>
+                    <tr><td><strong>Priority</strong></td><td>Relative business urgency or sequencing.</td><td>Everything = Highest</td><td>Priority reflects actual trade-offs.</td></tr>
+                    <tr><td><strong>Assignee</strong></td><td>Who currently owns progressing the item?</td><td>Random team member</td><td>Current responsible owner.</td></tr>
+                    <tr><td><strong>Dependencies</strong></td><td>What other work, system or decision can block progress?</td><td>Hidden in comments</td><td>Explicit relationship and blocker visibility.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+            <section id="story" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Writing useful stories</div>
+    <h2 class="h3 fw-bold mb-2">A Jira story is a conversation anchor, not a substitute for thinking</h2>
+    <p class="text-secondary mb-4">
+        The common “As a / I want / So that” format helps teams express actor, behavior and value,
+        but the real goal is shared understanding—not filling out a template mechanically.
+    </p>
+
+    <div class="story-panel mb-4">
+        <div class="story-panel-row"><span>AS A</span><strong>customer</strong></div>
+        <div class="story-panel-row"><span>I WANT</span><strong>to cancel an order that has not entered shipment</strong></div>
+        <div class="story-panel-row"><span>SO THAT</span><strong>I can correct a purchase without contacting customer support</strong></div>
+    </div>
+
+    <h3 class="h5 fw-bold mb-3">Acceptance criteria make intent testable</h3>
+    <div class="criteria-table-wrap">
+        <div class="table-responsive">
+            <table class="table criteria-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Case</th>
+                        <th style="width:23%;">Scenario</th>
+                        <th>Observable expectation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="criteria-seq"><span>01</span></td><td><strong>Allowed State</strong></td><td>Given the authenticated customer owns an order in CREATED or PAID state, when cancellation is requested, then the order is cancelled.</td></tr>
+                    <tr><td class="criteria-seq"><span>02</span></td><td><strong>Forbidden State</strong></td><td>Given an order has already shipped, when cancellation is requested, then the request is rejected with an understandable message.</td></tr>
+                    <tr><td class="criteria-seq"><span>03</span></td><td><strong>Wrong Customer</strong></td><td>Given Customer A attempts to cancel Customer B's order, authorization prevents the operation.</td></tr>
+                    <tr><td class="criteria-seq"><span>04</span></td><td><strong>Quality Evidence</strong></td><td>Cancellation behavior is covered by automated tests and produces appropriate operational logging.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="lesson-insight mt-4">
+        <strong>Important:</strong> Acceptance criteria describe observable behavior.
+        They should not unnecessarily dictate implementation details unless those details are part of an architectural or compliance constraint.
+    </div>
+</section>
+
+            <section id="workflow" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Workflow</div>
+    <h2 class="h3 fw-bold mb-2">A ticket should show the current state of the work—not become a status graveyard</h2>
+    <p class="text-secondary mb-4">
+        A good workflow models meaningful delivery states. It gives stakeholders visibility while helping
+        the team identify blockers, current ownership and what must happen next.
+    </p>
+
+    <div class="workflow-table-wrap mb-4">
+        <div class="table-responsive">
+            <table class="table workflow-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Step</th>
+                        <th style="width:22%;">Status</th>
+                        <th>What this state should mean</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="workflow-seq"><span>01</span></td><td><strong>Backlog</strong></td><td>Known work that has not yet been committed into active delivery.</td></tr>
+                    <tr><td class="workflow-seq"><span>02</span></td><td><strong>Ready</strong></td><td>Clear enough to begin, with necessary context and major blockers addressed.</td></tr>
+                    <tr><td class="workflow-seq"><span>03</span></td><td><strong>In Progress</strong></td><td>Someone is actively progressing the work.</td></tr>
+                    <tr><td class="workflow-seq"><span>04</span></td><td><strong>Review</strong></td><td>Implementation or design is being independently reviewed.</td></tr>
+                    <tr><td class="workflow-seq"><span>05</span></td><td><strong>Test</strong></td><td>Behavior is being validated against expected outcomes and quality requirements.</td></tr>
+                    <tr><td class="workflow-seq"><span>06</span></td><td><strong>Done</strong></td><td>The item satisfies the team's agreed completion criteria and required evidence exists.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <p class="small text-secondary mb-4">
+        Real organizations may use different status names and additional gates. The principle is to model meaningful state transitions,
+        not to create dozens of administrative statuses.
+    </p>
+
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="workflow-principle h-100">
+                <strong>Visible blockers</strong>
+                <span>If an API contract, environment or business decision blocks work, make the dependency explicit.</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="workflow-principle h-100">
+                <strong>Meaningful ownership</strong>
+                <span>The assignee/status should reflect who can move the work forward now.</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="workflow-principle h-100">
+                <strong>Evidence at completion</strong>
+                <span>Link code, tests, design, release notes or validation evidence where useful.</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+            <section id="confluence" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Confluence fundamentals</div>
+    <h2 class="h3 fw-bold mb-2">Documentation should preserve context that the code cannot explain by itself</h2>
+    <p class="text-secondary mb-4">
+        Good documentation helps future engineers, operators, product teams and auditors understand the
+        business context, architecture, decisions, operating model and ownership behind a system.
+    </p>
+
+    <div class="knowledge-table-wrap mb-4">
+        <div class="table-responsive">
+            <table class="table knowledge-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Area</th>
+                        <th style="width:26%;">Knowledge domain</th>
+                        <th>Typical Confluence content</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="knowledge-seq"><span>01</span></td><td><strong>Business &amp; Product</strong></td><td>Problem statements, process maps, requirements, definitions and stakeholder decisions.</td></tr>
+                    <tr><td class="knowledge-seq"><span>02</span></td><td><strong>Architecture</strong></td><td>Context diagrams, component design, integrations, NFRs, data flows and threat considerations.</td></tr>
+                    <tr><td class="knowledge-seq"><span>03</span></td><td><strong>Engineering</strong></td><td>Development conventions, API guidance, setup instructions and dependency notes.</td></tr>
+                    <tr><td class="knowledge-seq"><span>04</span></td><td><strong>Delivery</strong></td><td>Release notes, readiness checklists, implementation plans and decision history.</td></tr>
+                    <tr><td class="knowledge-seq"><span>05</span></td><td><strong>Operations</strong></td><td>Runbooks, dashboards, alerts, troubleshooting, escalation and recovery procedures.</td></tr>
+                    <tr><td class="knowledge-seq"><span>06</span></td><td><strong>Team Knowledge</strong></td><td>Onboarding, ways of working, recurring processes, useful links and ownership.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h3 class="h5 fw-bold mb-3">A good page answers five questions</h3>
+    <div class="questions-table-wrap">
+        <div class="table-responsive">
+            <table class="table questions-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Question</th>
+                        <th style="width:23%;">Focus</th>
+                        <th>What readers should learn</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="question-seq"><span>01</span></td><td><strong>Why?</strong></td><td>What problem or decision caused this document to exist?</td></tr>
+                    <tr><td class="question-seq"><span>02</span></td><td><strong>What?</strong></td><td>What system, process, capability or rule is being described?</td></tr>
+                    <tr><td class="question-seq"><span>03</span></td><td><strong>Who?</strong></td><td>Who owns it, decides, operates it or should be consulted?</td></tr>
+                    <tr><td class="question-seq"><span>04</span></td><td><strong>How?</strong></td><td>How does it work, integrate, fail and recover?</td></tr>
+                    <tr><td class="question-seq"><span>05</span></td><td><strong>When?</strong></td><td>When was the information valid, reviewed or superseded?</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+            <section id="decision-records" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Architecture Decision Records</div>
+    <h2 class="h3 fw-bold mb-2">Record important decisions while the reasoning is still fresh</h2>
+    <p class="text-secondary mb-4">
+        A lightweight Architecture Decision Record (ADR) prevents future teams from repeatedly asking,
+        “Why did they build it this way?”
+    </p>
+
+    <div class="adr-table-wrap">
+        <div class="table-responsive">
+            <table class="table adr-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:22%;">ADR field</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Status</strong></td><td><span class="adr-status">Accepted</span></td></tr>
+                    <tr><td><strong>Decision</strong></td><td>Use Keycloak/OIDC for interactive authentication instead of local application passwords.</td></tr>
+                    <tr><td><strong>Context</strong></td><td>The application needs centralized authentication, role claims and an enterprise-style identity provider.</td></tr>
+                    <tr><td><strong>Alternatives</strong></td><td>Local database authentication; custom token service.</td></tr>
+                    <tr><td><strong>Consequences</strong></td><td>The application depends on IdP availability and OIDC configuration, but gains centralized identity, standard protocols and cleaner security boundaries.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="lesson-insight mt-4">
+        <strong>Rule of thumb:</strong> document decisions that are expensive to reverse,
+        affect multiple teams, introduce important constraints, or will be questioned later.
+    </div>
+</section>
+
+            <section id="traceability" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Traceability</div>
+    <h2 class="h3 fw-bold mb-2">Connect business intent, knowledge, code and release evidence</h2>
+    <p class="text-secondary mb-4">
+        Traceability lets teams move from a production symptom back to the business rule,
+        design decision, implementation change and release that produced the behavior.
+    </p>
+
+    <div class="trace-table-wrap mb-4">
+        <div class="table-responsive">
+            <table class="table trace-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Step</th>
+                        <th style="width:20%;">System / source</th>
+                        <th style="width:27%;">Artifact</th>
+                        <th>What it preserves</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="trace-seq"><span>01</span></td><td><strong>Business</strong></td><td>Need / outcome</td><td>Why the capability exists and what business result is expected.</td></tr>
+                    <tr><td class="trace-seq"><span>02</span></td><td><strong>Confluence</strong></td><td>Requirement &amp; design</td><td>Durable context, process, architecture and decision reasoning.</td></tr>
+                    <tr><td class="trace-seq"><span>03</span></td><td><strong>Jira</strong></td><td>Epic / story / tasks</td><td>Visible delivery work, ownership, workflow and dependencies.</td></tr>
+                    <tr><td class="trace-seq"><span>04</span></td><td><strong>Git</strong></td><td>Branch / commit / PR</td><td>Exact source changes, review history and implementation evidence.</td></tr>
+                    <tr><td class="trace-seq"><span>05</span></td><td><strong>CI/CD</strong></td><td>Build / test / deploy</td><td>Automated quality checks and which artifact reached which environment.</td></tr>
+                    <tr><td class="trace-seq"><span>06</span></td><td><strong>Operations</strong></td><td>Monitor / support</td><td>Production behavior, incidents, operational ownership and feedback.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="scenario-box">
+        <div class="scenario-label">TRACEABILITY QUESTION</div>
+        <h3 class="h5 fw-bold">Six months after release, a production incident occurs. Can the team quickly answer:</h3>
+        <p class="mb-0 text-secondary">
+            Which business rule drove this behavior? Which design decision was made? Which ticket implemented it?
+            Which code changed? Which release deployed it? Who operates the affected service?
+        </p>
+    </div>
+</section>
+
+            <section id="daily-work" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">A day in the life</div>
+    <h2 class="h3 fw-bold mb-2">How an engineer actually uses these tools during a workday</h2>
+    <p class="text-secondary mb-4">
+        Jira and Confluence are woven into normal delivery activities rather than being separate administrative tasks.
+    </p>
+
+    <div class="day-table-wrap">
+        <div class="table-responsive">
+            <table class="table day-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:120px;">Time</th>
+                        <th style="width:27%;">Activity</th>
+                        <th>How Jira / Confluence supports the work</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="time-chip">9:00 AM</span></td><td><strong>Daily Scrum</strong></td><td>Open the board, discuss progress toward the Sprint Goal, blockers and changed plans.</td></tr>
+                    <tr><td><span class="time-chip">9:30 AM</span></td><td><strong>Pick Up a Story</strong></td><td>Read description, acceptance criteria, linked design page and dependencies before touching code.</td></tr>
+                    <tr><td><span class="time-chip">10:15 AM</span></td><td><strong>Clarify Ambiguity</strong></td><td>Ask Product/Architecture questions and update shared decisions instead of keeping answers private.</td></tr>
+                    <tr><td><span class="time-chip">11:00 AM</span></td><td><strong>Implement</strong></td><td>Create branch, code and tests while keeping the work item connected to delivery evidence.</td></tr>
+                    <tr><td><span class="time-chip">2:00 PM</span></td><td><strong>Peer Review</strong></td><td>Submit pull request, respond to review comments and keep ticket state accurate.</td></tr>
+                    <tr><td><span class="time-chip">3:30 PM</span></td><td><strong>QA / Integration</strong></td><td>Help reproduce defects, clarify acceptance criteria and attach useful evidence.</td></tr>
+                    <tr><td><span class="time-chip">4:30 PM</span></td><td><strong>Close the Loop</strong></td><td>Update documentation when behavior, operations or architectural knowledge has changed.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+            <section id="reference-app" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Reference application</div>
+    <h2 class="h3 fw-bold mb-2">Apply Jira and Confluence thinking to this Commercial IT Bootcamp project</h2>
+    <p class="text-secondary mb-4">
+        One business requirement should remain understandable as it moves through design, delivery,
+        source code, security, persistence and completion evidence.
+    </p>
+
+    <div class="reference-table-wrap">
+        <div class="table-responsive">
+            <table class="table reference-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Step</th>
+                        <th style="width:23%;">Artifact / concern</th>
+                        <th>Example in the Bootcamp project</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="reference-seq"><span>01</span></td><td><strong>Business Requirement</strong></td><td>Customer can cancel an eligible order before shipment.</td></tr>
+                    <tr><td class="reference-seq"><span>02</span></td><td><strong>Confluence Page</strong></td><td>Order Cancellation — business rules, architecture, security and API behavior.</td></tr>
+                    <tr><td class="reference-seq"><span>03</span></td><td><strong>Jira Story</strong></td><td>Implement authenticated self-service order cancellation.</td></tr>
+                    <tr><td class="reference-seq"><span>04</span></td><td><strong>Java</strong></td><td>Controller → Service → Repository / Entity.</td></tr>
+                    <tr><td class="reference-seq"><span>05</span></td><td><strong>Security</strong></td><td>Spring Security + Keycloak identity / authorization context.</td></tr>
+                    <tr><td class="reference-seq"><span>06</span></td><td><strong>Database</strong></td><td>MySQL order state updated according to business policy.</td></tr>
+                    <tr><td class="reference-seq"><span>07</span></td><td><strong>Test / Done</strong></td><td>Allowed and rejected transitions verified; story satisfies Definition of Done.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+            <section id="anti-patterns" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Common failure modes</div>
+    <h2 class="h3 fw-bold mb-2">Tools do not create discipline automatically</h2>
+    <p class="text-secondary mb-4">
+        Jira and Confluence can improve transparency and knowledge—or become bureaucracy.
+        The difference is whether teams use them to support real decisions and delivery.
+    </p>
+
+    <div class="anti-table-wrap">
+        <div class="table-responsive">
+            <table class="table anti-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Risk</th>
+                        <th style="width:30%;">Failure mode</th>
+                        <th>Why it damages delivery</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="anti-seq"><span>01</span></td><td><strong>Ticket = Vague Sentence</strong></td><td>Engineers cannot reliably infer business intent, scope and acceptance criteria.</td></tr>
+                    <tr><td class="anti-seq"><span>02</span></td><td><strong>Status Is Fiction</strong></td><td>The board says “In Progress” for weeks although nobody is actively progressing the item.</td></tr>
+                    <tr><td class="anti-seq"><span>03</span></td><td><strong>Everything Is Urgent</strong></td><td>When every item has the highest priority, prioritization communicates nothing.</td></tr>
+                    <tr><td class="anti-seq"><span>04</span></td><td><strong>Documentation Graveyard</strong></td><td>Pages are created but never owned, reviewed, linked, maintained or retired.</td></tr>
+                    <tr><td class="anti-seq"><span>05</span></td><td><strong>Decision by Chat</strong></td><td>A critical architectural choice disappears into a private or transient message thread.</td></tr>
+                    <tr><td class="anti-seq"><span>06</span></td><td><strong>Tool Bureaucracy</strong></td><td>The process collects fields nobody uses instead of improving delivery, decisions or traceability.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+            <section id="lab" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Hands-on lab</div>
+    <h2 class="h3 fw-bold mb-2">Model a real feature before writing code</h2>
+
+    <div class="lab-brief mt-3 mb-4">
+        <div class="lab-title"><span>LAB</span><strong>Create the delivery package for “Update Shipping Address”</strong></div>
+        <p class="mb-0">The customer may update the shipping address only while the order is in an allowed pre-shipment state.</p>
+    </div>
+
+    <div class="lab-list">
+        <div class="lab-step d-flex align-items-start gap-3">
+            <span class="lesson-number flex-shrink-0">1</span>
+            <div class="flex-grow-1"><strong>Write the Jira story</strong><p>Include user value, business context and a concise summary.</p></div>
+        </div>
+        <div class="lab-step d-flex align-items-start gap-3">
+            <span class="lesson-number flex-shrink-0">2</span>
+            <div class="flex-grow-1"><strong>Write 4–6 acceptance criteria</strong><p>Cover allowed state, forbidden state, wrong customer, invalid address and successful persistence.</p></div>
+        </div>
+        <div class="lab-step d-flex align-items-start gap-3">
+            <span class="lesson-number flex-shrink-0">3</span>
+            <div class="flex-grow-1"><strong>Decompose the work</strong><p>Create likely engineering tasks: UI, API, service policy, persistence and tests.</p></div>
+        </div>
+        <div class="lab-step d-flex align-items-start gap-3">
+            <span class="lesson-number flex-shrink-0">4</span>
+            <div class="flex-grow-1"><strong>Design the Confluence page</strong><p>Include business rule, sequence/workflow, API contract, security assumptions and failure behavior.</p></div>
+        </div>
+        <div class="lab-step d-flex align-items-start gap-3">
+            <span class="lesson-number flex-shrink-0">5</span>
+            <div class="flex-grow-1"><strong>Create traceability</strong><p>State which Jira item links to which design page and which code areas would implement it.</p></div>
+        </div>
+    </div>
+
+    <div class="lab-output mt-3">
+        <strong>Deliverable:</strong> one story, acceptance criteria, task breakdown and a one-page design outline.
+        The goal is not tool clicking; the goal is learning how commercial teams make work and knowledge explicit.
+    </div>
+</section>
+
+            <section id="knowledge-check" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Knowledge check</div>
+                <h2 class="h3 fw-bold">Test your understanding</h2>
+                <div class="accordion mt-3" id="jiraQuiz">
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#jq1">1. What is the simplest distinction between Jira and Confluence?</button></h3><div id="jq1" class="accordion-collapse collapse" data-bs-parent="#jiraQuiz"><div class="accordion-body"><strong>Jira primarily manages work and workflow; Confluence primarily manages shared knowledge and durable context.</strong> Teams link them so implementation remains connected to requirements and decisions.</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#jq2">2. Why are acceptance criteria important?</button></h3><div id="jq2" class="accordion-collapse collapse" data-bs-parent="#jiraQuiz"><div class="accordion-body">They convert ambiguous intent into <strong>observable, testable conditions</strong> that Product, Engineering and QA can use to agree on expected behavior.</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#jq3">3. Should every Jira ticket contain a complete architecture document?</button></h3><div id="jq3" class="accordion-collapse collapse" data-bs-parent="#jiraQuiz"><div class="accordion-body"><strong>No.</strong> Keep the work item actionable and link to durable architecture/design documentation when the context is substantial or shared across multiple items.</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#jq4">4. What problem does an ADR solve?</button></h3><div id="jq4" class="accordion-collapse collapse" data-bs-parent="#jiraQuiz"><div class="accordion-body">It records an important architectural decision together with its context, alternatives and consequences so future teams understand <strong>why</strong> the choice was made.</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#jq5">5. Why is an accurate workflow status valuable?</button></h3><div id="jq5" class="accordion-collapse collapse" data-bs-parent="#jiraQuiz"><div class="accordion-body">It makes delivery state visible, helps expose blockers and reduces the need for manual status chasing. The workflow should represent meaningful state, not administrative ceremony.</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#jq6">6. What does traceability connect?</button></h3><div id="jq6" class="accordion-collapse collapse" data-bs-parent="#jiraQuiz"><div class="accordion-body">Ideally it connects <strong>business intent → requirement/design → work item → code/change → build/release → operational behavior</strong>, allowing teams to investigate changes and incidents efficiently.</div></div></div>
+                </div>
+            </section>
+
+            <section id="recap" class="lesson-recap p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker text-info">Lesson recap</div>
+                <h2 class="h3 fw-bold">Six things to remember</h2>
+                <div class="row g-3 mt-1">
+                    <div class="col-md-6 col-lg"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">1</span><div class="flex-grow-1"><strong>Jira makes work visible</strong><small>Ownership, state, priority and dependencies become observable.</small></div></div></div>
+                    <div class="col-md-6 col-lg"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">2</span><div class="flex-grow-1"><strong>Confluence preserves context</strong><small>Requirements, architecture, decisions and operations outlive conversations.</small></div></div></div>
+                    <div class="col-md-6 col-lg"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">3</span><div class="flex-grow-1"><strong>Stories need clarity</strong><small>Value + context + testable acceptance criteria.</small></div></div></div>
+                    <div class="col-md-6 col-lg"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">4</span><div class="flex-grow-1"><strong>Workflow should tell the truth</strong><small>Status represents meaningful delivery state.</small></div></div></div>
+                    <div class="col-md-6 col-lg"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">5</span><div class="flex-grow-1"><strong>Record important decisions</strong><small>Future engineers need the reasoning, not only the result.</small></div></div></div>
+                    <div class="col-md-6 col-lg"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">6</span><div class="flex-grow-1"><strong>Traceability closes the loop</strong><small>Connect intent, knowledge, implementation and production.</small></div></div></div>
+                </div>
+            </section>
+
+            <section id="career" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Career perspective</div>
+    <h2 class="h3 fw-bold mb-2">The difference between “ticket taker” and commercial engineer is context</h2>
+    <p class="lead mb-4">
+        A strong engineer does not blindly implement the sentence in a ticket. They understand the outcome,
+        find missing information, surface dependencies, preserve important decisions and keep delivery evidence
+        understandable to the rest of the organization.
+    </p>
+
+    <div class="career-table-wrap">
+        <div class="table-responsive">
+            <table class="table career-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:100px;">Stage</th>
+                        <th style="width:38%;">Typical mindset</th>
+                        <th>What is developing</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="career-seq"><span>01</span></td><td><strong>“Assign me a ticket.”</strong></td><td>Learning how to execute clearly defined work in the team's process.</td></tr>
+                    <tr><td class="career-seq"><span>02</span></td><td><strong>“I understand the acceptance criteria.”</strong></td><td>Connecting implementation to expected business behavior.</td></tr>
+                    <tr><td class="career-seq"><span>03</span></td><td><strong>“I can identify missing decisions and dependencies.”</strong></td><td>Thinking beyond the ticket to risk, ownership, architecture and coordination.</td></tr>
+                    <tr><td class="career-seq"><span>04</span></td><td><strong>“I help create organizational knowledge and traceability.”</strong></td><td>Helping the wider organization preserve context, decisions and evidence for future teams.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+            <section class="soft-card lesson-complete p-4 p-lg-5 mb-4">
+                <div class="row align-items-center g-3">
+                    <div class="col-md"><div class="section-kicker">Lesson 5 complete</div><h2 class="h5 fw-bold mb-1">Next: Software Development Life Cycle</h2><p class="text-secondary mb-0">Now that you can follow work and documentation, learn the broader lifecycle that moves software from idea through requirements, design, development, testing, deployment, operation and retirement.</p></div>
+                    <div class="col-md-auto d-flex gap-2"><a class="btn btn-outline-primary" th:href="@{/training/part-1-commercial-it/agile-scrum}">← Previous</a><a class="btn btn-primary" th:href="@{/training/part-1-commercial-it/sdlc}">Continue →</a></div>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-xl-3">
+            <aside class="soft-card p-4 sticky-xl-top lesson-nav-card" style="top: 90px;">
+                <div class="section-kicker">In this lesson</div>
+                <h2 class="h5 fw-bold">Lesson navigation</h2>
+                <nav class="lesson-toc mt-3">
+                    <a href="#objectives">Learning objectives</a>
+                    <a href="#problem">Coordination problem</a>
+                    <a href="#mental-model">Jira vs. Confluence</a>
+                    <a href="#jira">Jira fundamentals</a>
+                    <a href="#story">Stories & acceptance criteria</a>
+                    <a href="#workflow">Workflow</a>
+                    <a href="#confluence">Confluence fundamentals</a>
+                    <a href="#decision-records">Decision records</a>
+                    <a href="#traceability">Traceability</a>
+                    <a href="#daily-work">Day in the life</a>
+                    <a href="#reference-app">Reference application</a>
+                    <a href="#anti-patterns">Failure modes</a>
+                    <a href="#lab">Hands-on lab</a>
+                    <a href="#knowledge-check">Knowledge check</a>
+                    <a href="#recap">Lesson recap</a>
+                    <a href="#career">Career perspective</a>
+                </nav>
+                <hr>
+                <p class="small text-secondary mb-0"><strong>Instructor note:</strong> Teach the information-flow problem first. Jira and Confluence are tools; the transferable skill is making work, decisions, ownership and context explicit.</p>
+            </aside>
+        </div>
+    </div>
+</main>
+</html>

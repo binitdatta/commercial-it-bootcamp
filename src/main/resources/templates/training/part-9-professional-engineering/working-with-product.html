@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('Working with Product and Business Teams', 'Learn how engineers collaborate with Product Owners, Product Managers and business stakeholders to turn ambiguous needs into valuable, testable software outcomes.', ~{::main})}">
+<main>
+<nav aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb small">
+    <li class="breadcrumb-item"><a th:href="@{/training}">Training</a></li>
+    <li class="breadcrumb-item" th:text="${section.title}">Part IX — Professional Engineering</li>
+    <li class="breadcrumb-item active" th:text="${lesson.title}">Working with Product and Business Teams</li>
+  </ol>
+</nav>
+
+<div class="row g-4">
+<div class="col-xl-9">
+
+<section id="s1" class="lesson-hero p-4 p-lg-5 mb-4">
+  <div class="video-play">▶</div>
+  <div class="small text-uppercase fw-bold opacity-75">Future LMS Video · Lesson 55</div>
+  <h1 class="display-6 fw-bold mt-2">Working with Product and Business Teams</h1>
+  <p class="lead mb-0">Learn how engineers collaborate with Product Owners, Product Managers and business stakeholders to turn ambiguous needs into valuable, testable software outcomes.</p>
+</section>
+
+<section id="s2" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Learning objectives</div>
+  <h2 class="h4 fw-bold">By the end of this lesson, you should be able to</h2>
+  <div class="row g-3 mt-1">
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Think beyond your immediate task</strong><p class="small text-secondary mb-0">Understand the broader business, architecture, team and operational consequences of engineering decisions.</p></div></div>
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Communicate decisions clearly</strong><p class="small text-secondary mb-0">Explain intent, trade-offs, risk and evidence to both technical and non-technical stakeholders.</p></div></div>
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Use professional engineering controls</strong><p class="small text-secondary mb-0">Apply review, documentation, security, quality and ownership practices consistently.</p></div></div>
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Operate as part of a team</strong><p class="small text-secondary mb-0">Recognize that commercial software is a shared organizational product, not an individual coding exercise.</p></div></div>
+  </div>
+</section>
+
+<section id="s3" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Start with the professional problem</div>
+  <h2 class="h3 fw-bold">Many failed projects do not fail because developers cannot code. They fail because teams build the wrong thing, misunderstand the business process or optimize technology instead of business value.</h2>
+  <p class="lead">Professional engineering is the discipline of making good technical decisions in a business, team and production context.</p>
+  <div class="p-3 rounded-3 bg-light border-start border-primary border-4"><strong>Commercial principle:</strong> Seniority is not only deeper coding skill. It is broader judgment, better communication, stronger risk awareness and the ability to improve outcomes across team boundaries.</div>
+</section>
+
+<section id="s4" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Core concepts</div>
+  <h2 class="h3 fw-bold">Vocabulary and mental models</h2>
+  <div class="row g-3 mt-1"><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Business Outcome</strong><div class="small text-secondary mt-1">The measurable result the organization wants to achieve.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Product Requirement</strong><div class="small text-secondary mt-1">A statement of desired user or business capability, not implementation detail.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Acceptance Criteria</strong><div class="small text-secondary mt-1">Observable conditions that define when a requirement is satisfied.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Domain Expert</strong><div class="small text-secondary mt-1">A person with deep understanding of the business process, policy, exceptions and terminology.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Constraint</strong><div class="small text-secondary mt-1">A business, legal, technical, budget, timeline or operational limitation.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Feedback Loop</strong><div class="small text-secondary mt-1">A recurring mechanism for validating assumptions with users and stakeholders.</div></div></div></div>
+</section>
+
+<section id="s5" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Professional workflow</div>
+  <h2 class="h3 fw-bold">How experienced engineers approach the work</h2>
+  <div class="row g-3 mt-1"><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">1</span><strong>Understand the problem</strong><p class="small text-secondary mt-2 mb-0">Ask what is happening today, who is affected and why it matters.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">2</span><strong>Map the business process</strong><p class="small text-secondary mt-2 mb-0">Identify actors, decisions, handoffs, data and exceptions.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">3</span><strong>Clarify outcome</strong><p class="small text-secondary mt-2 mb-0">Translate vague requests into measurable behavior or business results.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">4</span><strong>Expose constraints</strong><p class="small text-secondary mt-2 mb-0">Discuss policy, compliance, integration, data, timing and operational realities.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">5</span><strong>Shape solution options</strong><p class="small text-secondary mt-2 mb-0">Present trade-offs in business language, not only implementation terms.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">6</span><strong>Validate incrementally</strong><p class="small text-secondary mt-2 mb-0">Use demos, prototypes and acceptance criteria to confirm direction early.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">7</span><strong>Measure outcome</strong><p class="small text-secondary mt-2 mb-0">After release, determine whether the intended business effect actually occurred.</p></div></div></div>
+</section>
+
+<section id="s6" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Commercial scenario</div>
+  <h2 class="h3 fw-bold">Apply judgment in a real team context</h2>
+  <p class="lead">A stakeholder asks, “Add a cancel button.” A professional engineer asks when cancellation is allowed, who may cancel, what happens to payment, inventory, shipment, customer notification and audit history before writing code.</p>
+</section>
+
+<section id="s7" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Reference application</div>
+  <h2 class="h3 fw-bold">Use the Bootcamp platform as the working example</h2>
+  <p>Use the Bootcamp order-cancellation flow to create a business-process map from user intent through authorization, policy, database update and downstream consequences.</p>
+  <div class="row g-3">
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Business</strong><div class="small text-secondary">What outcome or policy is the system serving?</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Architecture</strong><div class="small text-secondary">What boundaries and dependencies shape the solution?</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Engineering</strong><div class="small text-secondary">How is the change implemented, tested and reviewed?</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Operations</strong><div class="small text-secondary">How will the team deploy, observe, support and recover it?</div></div></div>
+  </div>
+</section>
+
+<section id="s8" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Common failure modes</div>
+  <h2 class="h3 fw-bold">What weak professional practice looks like</h2>
+  <div class="row g-3"><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Taking requirements literally</strong><p class="small text-secondary mt-2 mb-0">The stated feature is implemented without understanding the underlying business problem.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Jargon overload</strong><p class="small text-secondary mt-2 mb-0">Engineers explain implementation details instead of consequences stakeholders can evaluate.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>No exception discovery</strong><p class="small text-secondary mt-2 mb-0">Happy-path requirements ignore real business edge cases.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>No post-release validation</strong><p class="small text-secondary mt-2 mb-0">The feature ships, but nobody measures whether it solved the original problem.</p></div></div></div>
+</section>
+
+<section id="s9" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Hands-on lab</div>
+  <h2 class="h3 fw-bold">Practice the professional skill</h2>
+  <p>Write discovery questions for a new &#x27;partial order cancellation&#x27; feature. Cover actors, policy, payment, inventory, fulfillment, audit, customer communication, reporting and failure recovery.</p>
+  <div class="alert alert-primary mb-0"><strong>Deliverable:</strong> Produce something another engineer or stakeholder could actually use: a decision record, review checklist, documentation map, discovery artifact, communication pack or threat model.</div>
+</section>
+
+<section id="s10" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Knowledge check</div>
+  <h2 class="h3 fw-bold">Can you explain the reasoning?</h2>
+  <ol>
+    <li class="mb-2">What is the business or engineering outcome being protected?</li>
+    <li class="mb-2">Which decision or responsibility boundary matters most?</li>
+    <li class="mb-2">What evidence would another engineer need to trust the work?</li>
+    <li class="mb-2">What could fail after this reaches production?</li>
+    <li class="mb-2">Who else needs to understand or approve the decision?</li>
+    <li>How will future team members recover the context?</li>
+  </ol>
+</section>
+
+<section id="s11" class="lesson-hero p-4 mb-4">
+  <div class="section-kicker text-info">Lesson recap</div>
+  <h2 class="h3 fw-bold">Five things to remember</h2>
+  <div class="row g-3">
+    <div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">1. Start with the problem.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">2. Business process comes before implementation.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">3. Acceptance criteria reduce ambiguity.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">4. Translate trade-offs into business consequences.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">5. Value is validated after release.</div></div>
+  </div>
+</section>
+
+<section id="s12" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Career perspective</div>
+  <h2 class="h3 fw-bold">Professional judgment is what makes technical depth valuable at scale</h2>
+  <p class="lead mb-0">As you progress from Engineer to Senior Engineer, Tech Lead, Architect, Manager or specialist, your leverage increasingly comes from helping many people make better decisions—not merely writing more code yourself.</p>
+</section>
+
+<section class="soft-card p-4 border-top border-primary border-4">
+  <div class="section-kicker">Lesson 55 complete</div>
+  <h2 class="h4 fw-bold">Next: Technical Communication</h2>
+  <p class="text-secondary mb-0">Continue developing the professional practices that make technical knowledge effective in commercial IT.</p>
+</section>
+
+</div>
+
+<aside class="col-xl-3">
+  <div class="soft-card p-4 sticky-xl-top" style="top:90px">
+    <div class="section-kicker">In this lesson</div>
+    <h2 class="h5 fw-bold">Lesson navigation</h2>
+    <div class="small lh-lg">
+      <a href="#s1">Course video</a> ·
+      <a href="#s2">Learning objectives</a> ·
+      <a href="#s3">Professional problem</a> ·
+      <a href="#s4">Core concepts</a> ·
+      <a href="#s5">Professional workflow</a> ·
+      <a href="#s6">Commercial scenario</a> ·
+      <a href="#s7">Reference application</a> ·
+      <a href="#s8">Failure modes</a> ·
+      <a href="#s9">Hands-on lab</a> ·
+      <a href="#s10">Knowledge check</a> ·
+      <a href="#s11">Lesson recap</a> ·
+      <a href="#s12">Career perspective</a>
+    </div>
+    <hr>
+    <p class="small text-secondary mb-0"><strong>Instructor note:</strong> Teach professional engineering as judgment and shared responsibility. Tools and titles vary; the underlying behaviors are transferable.</p>
+  </div>
+</aside>
+</div>
+</main>
+</html>

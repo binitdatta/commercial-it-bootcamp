@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('Architecture Thinking', 'Learn how professional engineers reason about boundaries, trade-offs, quality attributes, dependencies and long-term consequences before code becomes expensive to change.', ~{::main})}">
+<main>
+<nav aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb small">
+    <li class="breadcrumb-item"><a th:href="@{/training}">Training</a></li>
+    <li class="breadcrumb-item" th:text="${section.title}">Part IX — Professional Engineering</li>
+    <li class="breadcrumb-item active" th:text="${lesson.title}">Architecture Thinking</li>
+  </ol>
+</nav>
+
+<div class="row g-4">
+<div class="col-xl-9">
+
+<section id="s1" class="lesson-hero p-4 p-lg-5 mb-4">
+  <div class="video-play">▶</div>
+  <div class="small text-uppercase fw-bold opacity-75">Future LMS Video · Lesson 52</div>
+  <h1 class="display-6 fw-bold mt-2">Architecture Thinking</h1>
+  <p class="lead mb-0">Learn how professional engineers reason about boundaries, trade-offs, quality attributes, dependencies and long-term consequences before code becomes expensive to change.</p>
+</section>
+
+<section id="s2" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Learning objectives</div>
+  <h2 class="h4 fw-bold">By the end of this lesson, you should be able to</h2>
+  <div class="row g-3 mt-1">
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Think beyond your immediate task</strong><p class="small text-secondary mb-0">Understand the broader business, architecture, team and operational consequences of engineering decisions.</p></div></div>
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Communicate decisions clearly</strong><p class="small text-secondary mb-0">Explain intent, trade-offs, risk and evidence to both technical and non-technical stakeholders.</p></div></div>
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Use professional engineering controls</strong><p class="small text-secondary mb-0">Apply review, documentation, security, quality and ownership practices consistently.</p></div></div>
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Operate as part of a team</strong><p class="small text-secondary mb-0">Recognize that commercial software is a shared organizational product, not an individual coding exercise.</p></div></div>
+  </div>
+</section>
+
+<section id="s3" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Start with the professional problem</div>
+  <h2 class="h3 fw-bold">A solution can be technically functional and still be architecturally weak if it creates unnecessary coupling, unclear ownership, poor security boundaries or expensive operational consequences.</h2>
+  <p class="lead">Professional engineering is the discipline of making good technical decisions in a business, team and production context.</p>
+  <div class="p-3 rounded-3 bg-light border-start border-primary border-4"><strong>Commercial principle:</strong> Seniority is not only deeper coding skill. It is broader judgment, better communication, stronger risk awareness and the ability to improve outcomes across team boundaries.</div>
+</section>
+
+<section id="s4" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Core concepts</div>
+  <h2 class="h3 fw-bold">Vocabulary and mental models</h2>
+  <div class="row g-3 mt-1"><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Architecture</strong><div class="small text-secondary mt-1">The significant structural decisions that shape how a system is decomposed, connected, secured, operated and evolved.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Quality Attribute</strong><div class="small text-secondary mt-1">A non-functional property such as availability, performance, security, scalability, maintainability or recoverability.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Trade-off</strong><div class="small text-secondary mt-1">A deliberate decision that improves one quality or constraint while accepting cost somewhere else.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Boundary</strong><div class="small text-secondary mt-1">A separation of responsibility between modules, services, teams, trust zones or data domains.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Coupling</strong><div class="small text-secondary mt-1">The degree to which components depend on each other&#x27;s internal behavior or availability.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Architecture Decision Record</strong><div class="small text-secondary mt-1">A durable record of a significant decision, its context, alternatives and consequences.</div></div></div></div>
+</section>
+
+<section id="s5" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Professional workflow</div>
+  <h2 class="h3 fw-bold">How experienced engineers approach the work</h2>
+  <div class="row g-3 mt-1"><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">1</span><strong>Understand the business outcome</strong><p class="small text-secondary mt-2 mb-0">Clarify users, value, critical workflows, constraints and consequences of failure.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">2</span><strong>Identify quality attributes</strong><p class="small text-secondary mt-2 mb-0">Make performance, security, availability, compliance and operability expectations explicit.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">3</span><strong>Map boundaries</strong><p class="small text-secondary mt-2 mb-0">Separate domain responsibilities, data ownership, trust zones and integration contracts.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">4</span><strong>Evaluate options</strong><p class="small text-secondary mt-2 mb-0">Compare alternatives using cost, complexity, risk, team capability and future change.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">5</span><strong>Make the decision</strong><p class="small text-secondary mt-2 mb-0">Choose the simplest architecture that satisfies the important constraints.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">6</span><strong>Document rationale</strong><p class="small text-secondary mt-2 mb-0">Capture the why, not only the diagram.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">7</span><strong>Validate in production</strong><p class="small text-secondary mt-2 mb-0">Use telemetry, incidents and change experience to confirm whether the decision still holds.</p></div></div></div>
+</section>
+
+<section id="s6" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Commercial scenario</div>
+  <h2 class="h3 fw-bold">Apply judgment in a real team context</h2>
+  <p class="lead">A retailer can implement order cancellation inside one monolith, split it into microservices, or route through an orchestration layer. The correct answer depends on business ownership, failure isolation, release independence, security and operational cost—not on which architecture is fashionable.</p>
+</section>
+
+<section id="s7" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Reference application</div>
+  <h2 class="h3 fw-bold">Use the Bootcamp platform as the working example</h2>
+  <p>Use the Bootcamp e-commerce platform to identify Controller, Service, Repository, Security and database boundaries. Then decide which boundaries are architectural and which are merely framework layers.</p>
+  <div class="row g-3">
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Business</strong><div class="small text-secondary">What outcome or policy is the system serving?</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Architecture</strong><div class="small text-secondary">What boundaries and dependencies shape the solution?</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Engineering</strong><div class="small text-secondary">How is the change implemented, tested and reviewed?</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Operations</strong><div class="small text-secondary">How will the team deploy, observe, support and recover it?</div></div></div>
+  </div>
+</section>
+
+<section id="s8" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Common failure modes</div>
+  <h2 class="h3 fw-bold">What weak professional practice looks like</h2>
+  <div class="row g-3"><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Diagram-driven architecture</strong><p class="small text-secondary mt-2 mb-0">Teams draw boxes before understanding the business process or quality attributes.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Pattern worship</strong><p class="small text-secondary mt-2 mb-0">Microservices, events or serverless are selected because they are modern rather than necessary.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Ignoring operations</strong><p class="small text-secondary mt-2 mb-0">Designs look elegant but are difficult to deploy, observe, recover or support.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Architecture without ownership</strong><p class="small text-secondary mt-2 mb-0">No team is accountable for maintaining the boundaries and decisions over time.</p></div></div></div>
+</section>
+
+<section id="s9" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Hands-on lab</div>
+  <h2 class="h3 fw-bold">Practice the professional skill</h2>
+  <p>Create one ADR for a realistic Bootcamp decision: keep order management in a modular monolith or split it into a separate service. Include context, constraints, options, decision, trade-offs and operational consequences.</p>
+  <div class="alert alert-primary mb-0"><strong>Deliverable:</strong> Produce something another engineer or stakeholder could actually use: a decision record, review checklist, documentation map, discovery artifact, communication pack or threat model.</div>
+</section>
+
+<section id="s10" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Knowledge check</div>
+  <h2 class="h3 fw-bold">Can you explain the reasoning?</h2>
+  <ol>
+    <li class="mb-2">What is the business or engineering outcome being protected?</li>
+    <li class="mb-2">Which decision or responsibility boundary matters most?</li>
+    <li class="mb-2">What evidence would another engineer need to trust the work?</li>
+    <li class="mb-2">What could fail after this reaches production?</li>
+    <li class="mb-2">Who else needs to understand or approve the decision?</li>
+    <li>How will future team members recover the context?</li>
+  </ol>
+</section>
+
+<section id="s11" class="lesson-hero p-4 mb-4">
+  <div class="section-kicker text-info">Lesson recap</div>
+  <h2 class="h3 fw-bold">Five things to remember</h2>
+  <div class="row g-3">
+    <div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">1. Architecture begins with business and quality attributes.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">2. Boundaries should reflect responsibility.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">3. Trade-offs are unavoidable.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">4. Simple is valuable when it satisfies constraints.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">5. Architecture must survive production reality.</div></div>
+  </div>
+</section>
+
+<section id="s12" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Career perspective</div>
+  <h2 class="h3 fw-bold">Professional judgment is what makes technical depth valuable at scale</h2>
+  <p class="lead mb-0">As you progress from Engineer to Senior Engineer, Tech Lead, Architect, Manager or specialist, your leverage increasingly comes from helping many people make better decisions—not merely writing more code yourself.</p>
+</section>
+
+<section class="soft-card p-4 border-top border-primary border-4">
+  <div class="section-kicker">Lesson 52 complete</div>
+  <h2 class="h4 fw-bold">Next: Code Review and Engineering Quality</h2>
+  <p class="text-secondary mb-0">Continue developing the professional practices that make technical knowledge effective in commercial IT.</p>
+</section>
+
+</div>
+
+<aside class="col-xl-3">
+  <div class="soft-card p-4 sticky-xl-top" style="top:90px">
+    <div class="section-kicker">In this lesson</div>
+    <h2 class="h5 fw-bold">Lesson navigation</h2>
+    <div class="small lh-lg">
+      <a href="#s1">Course video</a> ·
+      <a href="#s2">Learning objectives</a> ·
+      <a href="#s3">Professional problem</a> ·
+      <a href="#s4">Core concepts</a> ·
+      <a href="#s5">Professional workflow</a> ·
+      <a href="#s6">Commercial scenario</a> ·
+      <a href="#s7">Reference application</a> ·
+      <a href="#s8">Failure modes</a> ·
+      <a href="#s9">Hands-on lab</a> ·
+      <a href="#s10">Knowledge check</a> ·
+      <a href="#s11">Lesson recap</a> ·
+      <a href="#s12">Career perspective</a>
+    </div>
+    <hr>
+    <p class="small text-secondary mb-0"><strong>Instructor note:</strong> Teach professional engineering as judgment and shared responsibility. Tools and titles vary; the underlying behaviors are transferable.</p>
+  </div>
+</aside>
+</div>
+</main>
+</html>

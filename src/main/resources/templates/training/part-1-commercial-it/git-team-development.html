@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('Git, Branching, Pull Requests and Team Development', 'Learn how commercial engineering teams use Git, branches, commits, pull requests, reviews and merge controls to collaborate safely on a shared codebase.', ~{::main})}">
+<main>
+
+    <style>
+        /* =============================================================
+           Git / Team Development lesson — polished presentation layer
+           ============================================================= */
+        #objectives,
+        .lesson-section {
+            scroll-margin-top: 95px;
+        }
+
+        .git-hero {
+            box-shadow: 0 .45rem 1.3rem rgba(24,62,110,.08);
+        }
+
+        .lesson-number {
+            width: 2rem;
+            height: 2rem;
+            min-width: 2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #0d6efd;
+            color: #fff;
+            font-size: .82rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-top: .05rem;
+            box-shadow: 0 0 0 4px rgba(13,110,253,.08);
+        }
+
+        .lesson-number-light {
+            background: rgba(255,255,255,.96);
+            color: #0d6efd;
+            box-shadow: 0 0 0 4px rgba(255,255,255,.14);
+        }
+
+        .objective-item,
+        .lab-step,
+        .recap-item {
+            min-width: 0;
+        }
+
+        .objective-item > div,
+        .lab-step > div,
+        .recap-item > div {
+            min-width: 0;
+        }
+
+        .objective-item strong,
+        .lab-step strong,
+        .recap-item strong {
+            display: block;
+            margin-bottom: .22rem;
+        }
+
+        .objective-item small,
+        .lab-step p,
+        .recap-item small {
+            display: block;
+            line-height: 1.5;
+            margin-bottom: 0;
+        }
+
+        .lab-step {
+            padding: 1rem 0;
+        }
+
+        .lab-step + .lab-step {
+            border-top: 1px solid rgba(15,23,42,.08);
+        }
+
+        /* Common table shell */
+        .git-state-table-wrap,
+        #commands .table-responsive,
+        .branch-table-wrap,
+        .branch-rules-table-wrap,
+        .pr-table-wrap,
+        .controls-table-wrap,
+        .security-table-wrap,
+        .reference-git-wrap,
+        .day-table-wrap,
+        .anti-table-wrap,
+        .career-table-wrap {
+            border: 1px solid #d8e7fb;
+            border-radius: 1rem;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 .35rem 1.1rem rgba(27,64,112,.06);
+        }
+
+        .git-state-table thead th,
+        #commands .lesson-table thead th,
+        .branch-table thead th,
+        .branch-rules-table thead th,
+        .pr-table thead th,
+        .controls-table thead th,
+        .security-table thead th,
+        .reference-git-table thead th,
+        .day-table thead th,
+        .anti-table thead th,
+        .career-table thead th {
+            padding: .9rem 1rem;
+            border: 0;
+            background: linear-gradient(135deg, #143c73 0%, #0d6efd 100%);
+            color: #fff;
+            font-size: .76rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .045em;
+            white-space: nowrap;
+        }
+
+        .git-state-table tbody td,
+        #commands .lesson-table tbody td,
+        .branch-table tbody td,
+        .branch-rules-table tbody td,
+        .pr-table tbody td,
+        .controls-table tbody td,
+        .security-table tbody td,
+        .reference-git-table tbody td,
+        .day-table tbody td,
+        .anti-table tbody td,
+        .career-table tbody td {
+            padding: 1rem 1.05rem;
+            border-color: rgba(28,54,87,.08);
+            line-height: 1.48;
+            vertical-align: top;
+        }
+
+        .git-state-table tbody tr:nth-child(odd) td,
+        #commands .lesson-table tbody tr:nth-child(odd) td,
+        .branch-table tbody tr:nth-child(odd) td,
+        .branch-rules-table tbody tr:nth-child(odd) td,
+        .pr-table tbody tr:nth-child(odd) td,
+        .controls-table tbody tr:nth-child(odd) td,
+        .security-table tbody tr:nth-child(odd) td,
+        .reference-git-table tbody tr:nth-child(odd) td,
+        .day-table tbody tr:nth-child(odd) td,
+        .anti-table tbody tr:nth-child(odd) td,
+        .career-table tbody tr:nth-child(odd) td {
+            background: #fbfdff;
+        }
+
+        .git-state-table tbody tr:nth-child(even) td,
+        #commands .lesson-table tbody tr:nth-child(even) td,
+        .branch-table tbody tr:nth-child(even) td,
+        .branch-rules-table tbody tr:nth-child(even) td,
+        .pr-table tbody tr:nth-child(even) td,
+        .controls-table tbody tr:nth-child(even) td,
+        .security-table tbody tr:nth-child(even) td,
+        .reference-git-table tbody tr:nth-child(even) td,
+        .day-table tbody tr:nth-child(even) td,
+        .anti-table tbody tr:nth-child(even) td,
+        .career-table tbody tr:nth-child(even) td {
+            background: #f2f7fe;
+        }
+
+        .git-state-table tbody tr:hover td,
+        #commands .lesson-table tbody tr:hover td,
+        .branch-table tbody tr:hover td,
+        .branch-rules-table tbody tr:hover td,
+        .pr-table tbody tr:hover td,
+        .controls-table tbody tr:hover td,
+        .security-table tbody tr:hover td,
+        .reference-git-table tbody tr:hover td,
+        .day-table tbody tr:hover td,
+        .anti-table tbody tr:hover td,
+        .career-table tbody tr:hover td {
+            background: #e8f2ff !important;
+        }
+
+        .git-state-table td strong,
+        .branch-table td strong,
+        .branch-rules-table td strong,
+        .pr-table td strong,
+        .controls-table td strong,
+        .security-table td strong,
+        .reference-git-table td strong,
+        .day-table td strong,
+        .anti-table td strong,
+        .career-table td strong {
+            color: #172033;
+        }
+
+        .git-state-table td small {
+            display: block;
+            margin-top: .2rem;
+            color: #6b7787;
+        }
+
+        /* Sequence markers */
+        .git-seq,
+        .rule-seq,
+        .pr-seq,
+        .control-seq,
+        .security-seq,
+        .reference-seq,
+        .career-seq {
+            text-align: center;
+        }
+
+        .git-seq span,
+        .rule-seq span,
+        .pr-seq span,
+        .control-seq span,
+        .security-seq span,
+        .reference-seq span,
+        .career-seq span {
+            width: 2.35rem;
+            height: 2.35rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #0d6efd;
+            color: #fff;
+            font-size: .76rem;
+            font-weight: 800;
+            box-shadow: 0 0 0 4px rgba(13,110,253,.08);
+        }
+
+        .branch-seq {
+            text-align: center;
+        }
+
+        .branch-seq span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 4.8rem;
+            height: 2.35rem;
+            padding: 0 .55rem;
+            border-radius: .7rem;
+            background: #173b67;
+            color: #fff;
+            font-size: .7rem;
+            font-weight: 800;
+            letter-spacing: .03em;
+        }
+
+        .anti-seq {
+            text-align: center;
+        }
+
+        .anti-seq span {
+            width: 2.35rem;
+            height: 2.35rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #b02a37;
+            color: #fff;
+            font-weight: 900;
+            box-shadow: 0 0 0 4px rgba(176,42,55,.08);
+        }
+
+        /* Existing support cards */
+        .scenario-box,
+        .workflow-principle,
+        .pr-card,
+        .lab-brief {
+            border: 1px solid #dce9f7;
+            border-radius: .9rem;
+            background: linear-gradient(180deg, #fff 0%, #f8fbff 100%);
+            box-shadow: 0 .25rem .7rem rgba(27,64,112,.04);
+        }
+
+        .scenario-box,
+        .workflow-principle,
+        .pr-card,
+        .lab-brief {
+            padding: 1.05rem;
+        }
+
+        .workflow-principle strong,
+        .pr-card strong {
+            display: block;
+            color: #172033;
+            margin-bottom: .35rem;
+        }
+
+        .workflow-principle span,
+        .pr-card p {
+            color: #647184;
+            line-height: 1.55;
+        }
+
+        .pr-label,
+        .scenario-label {
+            display: inline-block;
+            padding: .28rem .55rem;
+            border-radius: 999px;
+            background: #e9f3ff;
+            color: #0b57b7;
+            font-size: .7rem;
+            font-weight: 800;
+            letter-spacing: .055em;
+            margin-bottom: .65rem;
+        }
+
+        /* Problem cards */
+        .git-problem-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0,1fr));
+            gap: .8rem;
+        }
+
+        .git-problem-grid > div {
+            padding: 1rem;
+            border: 1px solid #dce9f7;
+            border-radius: .85rem;
+            background: #fbfdff;
+        }
+
+        .git-problem-grid strong {
+            display: block;
+            color: #172033;
+            margin-bottom: .3rem;
+        }
+
+        .git-problem-grid span {
+            display: block;
+            color: #647184;
+            line-height: 1.5;
+        }
+
+        /* Conflict example */
+        .conflict-box {
+            border: 1px solid #d8e7fb;
+            border-radius: 1rem;
+            overflow: hidden;
+            background: #0b1726;
+            box-shadow: 0 .35rem 1.1rem rgba(27,64,112,.08);
+        }
+
+        .conflict-box pre {
+            margin: 0;
+            padding: 1.25rem;
+            color: #edf5ff;
+            background: transparent;
+            overflow-x: auto;
+        }
+
+        /* Time */
+        .time-chip {
+            display: inline-flex;
+            justify-content: center;
+            min-width: 82px;
+            padding: .38rem .58rem;
+            border-radius: 999px;
+            background: #e8f2ff;
+            border: 1px solid #cfe2ff;
+            color: #0b57b7;
+            font-size: .78rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        /* Insight */
+        .lesson-insight {
+            padding: 1rem 1.15rem;
+            border-left: 4px solid #0d6efd;
+            border-radius: 0 .9rem .9rem 0;
+            background: #eef6ff;
+            line-height: 1.55;
+        }
+
+        .lesson-section > p.text-secondary,
+        .lesson-section > p.lead {
+            line-height: 1.65;
+        }
+
+        @media (max-width: 991.98px) {
+            .git-state-table,
+            #commands .lesson-table,
+            .branch-table,
+            .branch-rules-table,
+            .pr-table,
+            .controls-table,
+            .security-table,
+            .reference-git-table,
+            .day-table,
+            .anti-table,
+            .career-table {
+                min-width: 900px;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .git-problem-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .lesson-number {
+                width: 1.85rem;
+                height: 1.85rem;
+                min-width: 1.85rem;
+                font-size: .76rem;
+            }
+        }
+    </style>
+
+    <nav aria-label="breadcrumb" class="mb-3"><ol class="breadcrumb small"><li class="breadcrumb-item"><a th:href="@{/training}">Training</a></li><li class="breadcrumb-item" th:text="${section.title}">Part I — How Commercial IT Works</li><li class="breadcrumb-item active" th:text="${lesson.title}">Git, Branching, Pull Requests and Team Development</li></ol></nav>
+
+    <!-- Lesson hero -->
+    <section class="lesson-hero p-4 p-lg-5 mb-4 git-hero">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <span class="lesson-chip">PART I</span>
+                    <span class="lesson-chip">LESSON <span th:text="${lesson.number}">7</span></span>
+                    <span class="lesson-chip">BEGINNER</span>
+                    <span class="lesson-chip">50–60 MIN</span>
+                </div>
+                <div class="small text-uppercase fw-bold opacity-75 mb-2">How Commercial IT Works</div>
+                <h1 class="display-5 fw-bold mb-3">Git, Branching, Pull Requests and Team Development</h1>
+                <p class="lead mb-0 opacity-90">
+                    Learn how professional engineering teams safely evolve one shared codebase through
+                    branches, commits, pull requests, automated checks, review, merge controls and traceable history.
+                </p>
+            </div>
+            <div class="col-lg-4">
+                <div class="lesson-hero-callout">
+                    <div class="fw-bold mb-2">Core mental model</div>
+                    <div class="small opacity-90">
+                        Edit locally → stage intentionally → commit coherently → push a branch →
+                        review through a pull request → merge only after controls succeed.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <div class="row g-4">
+        <div class="col-xl-9">
+            <section id="objectives" class="soft-card p-4 p-lg-5 mb-4 lesson-section shadow-sm"><div class="section-kicker">Learning objectives</div><h2 class="h4 fw-bold mb-3">By the end of this lesson, you should be able to</h2><div class="row g-3">
+                <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">1</span><div class="flex-grow-1"><strong>Explain Git's mental model</strong><small>Working tree, staging area, commit history, local repository and remote repository.</small></div></div></div>
+                <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">2</span><div class="flex-grow-1"><strong>Work safely with branches</strong><small>Create focused branches, synchronize with shared work and understand merge/rebase at a conceptual level.</small></div></div></div>
+                <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">3</span><div class="flex-grow-1"><strong>Understand professional pull requests</strong><small>Know why teams require review, automated checks, approvals and protected branches.</small></div></div></div>
+                <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">4</span><div class="flex-grow-1"><strong>Handle collaboration problems</strong><small>Reason about merge conflicts, secrets, large commits, broken builds, rollback and code ownership.</small></div></div></div>
+            </div></section>
+
+            <section id="problem" class="soft-card p-4 p-lg-5 mb-4 lesson-section"><div class="section-kicker">Start with the collaboration problem</div><h2 class="h3 fw-bold">Twenty developers cannot safely edit “the latest copy” of an application</h2>
+                <div class="scenario-box mt-3"><div class="scenario-label">COMMERCIAL SCENARIO</div><h3 class="h5 fw-bold">Three engineers change the order service during the same Sprint</h3><p class="mb-0 text-secondary">One adds cancellation. One fixes address validation. One changes audit logging. QA needs a reproducible build. Security needs review evidence. Operations needs to know exactly which code was released. Git provides the history and collaboration model that makes this possible.</p></div>
+                <div class="git-problem-grid mt-3"><div><strong>Parallel work</strong><span>Developers need isolation without copying the whole project into disconnected folders.</span></div><div><strong>History</strong><span>The team needs to know who changed what, when and why.</span></div><div><strong>Review</strong><span>Important changes should be inspectable before entering the shared branch.</span></div><div><strong>Recovery</strong><span>The organization needs a known path to compare, revert or restore changes.</span></div></div>
+                <div class="lesson-insight mt-3"><strong>Core idea:</strong> Git is not merely a backup tool. It is the source-control foundation for collaborative engineering, traceability, automated delivery and controlled change.</div>
+            </section>
+
+            <section id="mental-model" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Git mental model</div>
+    <h2 class="h3 fw-bold mb-2">A file moves through several states before teammates ever see it</h2>
+    <p class="text-secondary mb-4">
+        Git becomes much easier once you understand which repository state each command changes.
+        The commands are not magic—they move changes through a controlled sequence.
+    </p>
+
+    <div class="git-state-table-wrap mb-4">
+        <div class="table-responsive">
+            <table class="table git-state-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Stage</th>
+                        <th style="width:23%;">Git state</th>
+                        <th style="width:20%;">Typical command</th>
+                        <th>What it means</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="git-seq"><span>01</span></td>
+                        <td><strong>Working Tree</strong><small>Your editable files</small></td>
+                        <td><code>edit files</code></td>
+                        <td>You create, modify or delete files in your local project directory.</td>
+                    </tr>
+                    <tr>
+                        <td class="git-seq"><span>02</span></td>
+                        <td><strong>Staging Area</strong><small>Selected next commit</small></td>
+                        <td><code>git add</code></td>
+                        <td>You deliberately choose which changes should be included in the next commit.</td>
+                    </tr>
+                    <tr>
+                        <td class="git-seq"><span>03</span></td>
+                        <td><strong>Local Repository</strong><small>Recorded local history</small></td>
+                        <td><code>git commit</code></td>
+                        <td>Git records the staged snapshot, author identity, timestamp, message and parent history.</td>
+                    </tr>
+                    <tr>
+                        <td class="git-seq"><span>04</span></td>
+                        <td><strong>Remote Repository</strong><small>Shared collaboration</small></td>
+                        <td><code>git push</code></td>
+                        <td>Your local commits become available to teammates and CI/CD systems on the shared remote.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="workflow-principle h-100">
+                <strong>Commit</strong>
+                <span>A recorded snapshot with identity, timestamp, parent history and message.</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="workflow-principle h-100">
+                <strong>Branch</strong>
+                <span>A movable name pointing to a line of development.</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="workflow-principle h-100">
+                <strong>Remote</strong>
+                <span>A shared repository such as GitHub, GitLab or Bitbucket used for collaboration.</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+            <section id="commands" class="soft-card p-4 p-lg-5 mb-4 lesson-section"><div class="section-kicker">Essential command flow</div><h2 class="h3 fw-bold">Understand what each command changes</h2>
+                <div class="table-responsive mt-3"><table class="table lesson-table align-middle mb-0"><thead><tr><th>Command</th><th>Purpose</th><th>Important idea</th></tr></thead><tbody>
+                    <tr><td><code>git clone</code></td><td>Create a local repository from a remote.</td><td>You now have local history plus a working tree.</td></tr>
+                    <tr><td><code>git status</code></td><td>See modified, staged and untracked files.</td><td>Use it constantly before committing.</td></tr>
+                    <tr><td><code>git diff</code></td><td>Inspect uncommitted differences.</td><td>Review your own change before asking others.</td></tr>
+                    <tr><td><code>git add</code></td><td>Stage selected changes.</td><td>A commit does not automatically include every changed file.</td></tr>
+                    <tr><td><code>git commit</code></td><td>Record staged work locally.</td><td>Prefer coherent, explainable commits.</td></tr>
+                    <tr><td><code>git pull</code></td><td>Bring remote work into your local branch.</td><td>Synchronize intentionally; know whether your team uses merge or rebase.</td></tr>
+                    <tr><td><code>git push</code></td><td>Publish local commits to the remote.</td><td>Push is not the same as merging to the protected main branch.</td></tr>
+                    <tr><td><code>git log</code></td><td>Inspect commit history.</td><td>History is an engineering diagnostic tool.</td></tr>
+                </tbody></table></div>
+            </section>
+
+            <section id="branching" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Branching</div>
+    <h2 class="h3 fw-bold mb-2">A branch isolates a change without isolating the engineer</h2>
+    <p class="text-secondary mb-4">
+        A feature branch gives one piece of work a clear boundary while still preserving a common repository,
+        shared history and a controlled path back into the team's main line of development.
+    </p>
+
+    <div class="branch-table-wrap mb-4">
+        <div class="table-responsive">
+            <table class="table branch-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Track</th>
+                        <th style="width:27%;">Branch</th>
+                        <th style="width:24%;">Purpose</th>
+                        <th>Professional practice</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="branch-seq"><span>MAIN</span></td>
+                        <td><strong><code>main</code></strong></td>
+                        <td>Shared, protected integration branch.</td>
+                        <td>Represents team-approved history and should accept changes through controlled merge policies.</td>
+                    </tr>
+                    <tr>
+                        <td class="branch-seq"><span>FEATURE</span></td>
+                        <td><strong><code>feature/order-cancel</code></strong></td>
+                        <td>Focused line of development for one coherent capability.</td>
+                        <td>Developers commit and push changes here, then propose merging them through a pull request.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="branch-rules-table-wrap">
+        <div class="table-responsive">
+            <table class="table branch-rules-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Rule</th>
+                        <th style="width:30%;">Recommended practice</th>
+                        <th>Why it matters</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="rule-seq"><span>01</span></td><td><strong>Keep branches focused</strong></td><td>One coherent capability or fix is easier to understand, test, review and revert.</td></tr>
+                    <tr><td class="rule-seq"><span>02</span></td><td><strong>Keep them reasonably short-lived</strong></td><td>Long divergence increases integration risk and the probability of merge conflicts.</td></tr>
+                    <tr><td class="rule-seq"><span>03</span></td><td><strong>Name them meaningfully</strong></td><td>Names such as <code>feature/order-cancel</code> or <code>bugfix/refund-timeout</code> communicate intent immediately.</td></tr>
+                    <tr><td class="rule-seq"><span>04</span></td><td><strong>Integrate frequently</strong></td><td>Branches should not become permanent silos; conflicts are easier to resolve while context is fresh.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+            <section id="pull-request" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Pull requests</div>
+    <h2 class="h3 fw-bold mb-2">A pull request is a controlled conversation about a proposed change</h2>
+    <p class="text-secondary mb-4">
+        Git can merge branches directly. A professional pull request adds explanation, review,
+        automation, approvals, policy and evidence around that merge.
+    </p>
+
+    <div class="pr-table-wrap mb-4">
+        <div class="table-responsive">
+            <table class="table pr-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Step</th>
+                        <th style="width:23%;">PR stage</th>
+                        <th>What happens</th>
+                        <th style="width:24%;">Evidence / outcome</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="pr-seq"><span>01</span></td><td><strong>Push Branch</strong></td><td>Publish your local commits to the remote repository.</td><td>Remote branch available to teammates and automation.</td></tr>
+                    <tr><td class="pr-seq"><span>02</span></td><td><strong>Open Pull Request</strong></td><td>Explain what changed, why it changed, implementation approach and risk.</td><td>Reviewable change proposal.</td></tr>
+                    <tr><td class="pr-seq"><span>03</span></td><td><strong>CI Checks</strong></td><td>Build, test, scan and validate the proposed branch automatically.</td><td>Machine-generated quality and security evidence.</td></tr>
+                    <tr><td class="pr-seq"><span>04</span></td><td><strong>Peer Review</strong></td><td>Other engineers inspect correctness, design, maintainability, tests and failure paths.</td><td>Human feedback and shared knowledge.</td></tr>
+                    <tr><td class="pr-seq"><span>05</span></td><td><strong>Approval</strong></td><td>Required reviewers confirm that merge policy and team expectations are satisfied.</td><td>Explicit approval record.</td></tr>
+                    <tr><td class="pr-seq"><span>06</span></td><td><strong>Merge</strong></td><td>The approved change becomes part of the protected shared branch.</td><td>Updated team source of truth.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-lg-6">
+            <div class="pr-card h-100">
+                <div class="pr-label">GOOD PR DESCRIPTION</div>
+                <strong>What</strong><p>Add customer order cancellation before fulfillment.</p>
+                <strong>Why</strong><p>Reduce support calls and allow self-service.</p>
+                <strong>How</strong><p>Add REST endpoint, service policy and tests; no schema change.</p>
+                <strong>Evidence</strong><p class="mb-0">Automated tests, screenshots/API examples, Jira link and risk notes.</p>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="pr-card h-100">
+                <div class="pr-label">REVIEWER MINDSET</div>
+                <ul class="mb-0">
+                    <li>Does this implement the intended behavior?</li>
+                    <li>Are authorization and validation correct?</li>
+                    <li>Are failure paths handled?</li>
+                    <li>Is the code understandable and maintainable?</li>
+                    <li>Are tests meaningful?</li>
+                    <li>Could this break another component?</li>
+                    <li>Is operational evidence sufficient?</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+            <section id="protected" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Protected branches and controls</div>
+    <h2 class="h3 fw-bold mb-2">Commercial teams protect important branches from accidental or unauthorized change</h2>
+    <p class="text-secondary mb-4">
+        The main branch is usually treated as a governed integration point rather than a personal workspace.
+    </p>
+
+    <div class="controls-table-wrap">
+        <div class="table-responsive">
+            <table class="table controls-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Control</th>
+                        <th style="width:30%;">Branch protection practice</th>
+                        <th>Why teams use it</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="control-seq"><span>01</span></td><td><strong>Pull Request Required</strong></td><td>Prevents routine direct pushes to the protected main branch.</td></tr>
+                    <tr><td class="control-seq"><span>02</span></td><td><strong>Approvals Required</strong></td><td>Creates independent review and visible accountability where appropriate.</td></tr>
+                    <tr><td class="control-seq"><span>03</span></td><td><strong>CI Must Pass</strong></td><td>Makes builds, tests and scanning enforceable merge gates.</td></tr>
+                    <tr><td class="control-seq"><span>04</span></td><td><strong>Code Owners</strong></td><td>Sensitive code areas can require review from designated experts.</td></tr>
+                    <tr><td class="control-seq"><span>05</span></td><td><strong>Authenticated / Auditable Identity</strong></td><td>Preserves who created and approved the change.</td></tr>
+                    <tr><td class="control-seq"><span>06</span></td><td><strong>History Policy</strong></td><td>Merge, squash or rebase conventions keep repository history understandable and usable.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+            <section id="conflicts" class="soft-card p-4 p-lg-5 mb-4 lesson-section"><div class="section-kicker">Merge conflicts</div><h2 class="h3 fw-bold">Git can combine independent changes — but it cannot decide business intent</h2>
+                <div class="conflict-box mt-3"><pre><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+if (order.canCancel()) {
+    order.cancel();
+}
+=======
+if (policyService.isCancellationAllowed(order)) {
+    auditService.recordCancellation(order);
+    order.cancel();
+}
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/audit-cancellation</code></pre></div>
+                <p class="text-secondary mt-3">A conflict means Git cannot safely choose between overlapping edits. The engineer must understand both changes, resolve the intended final code, run tests, and then complete the merge/rebase. Never “pick ours” or “pick theirs” blindly in business-critical code.</p>
+            </section>
+
+            <section id="security" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Source-control security</div>
+    <h2 class="h3 fw-bold mb-2">A repository is part of your security boundary</h2>
+    <p class="text-secondary mb-4">
+        Source control contains executable code, pipeline definitions, configuration and long-lived history.
+        Treat repository governance as part of application security.
+    </p>
+
+    <div class="security-table-wrap">
+        <div class="table-responsive">
+            <table class="table security-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Area</th>
+                        <th style="width:28%;">Security practice</th>
+                        <th>Why it matters</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="security-seq"><span>01</span></td><td><strong>Never Commit Secrets</strong></td><td>Passwords, API keys, tokens, private keys and cloud credentials can persist indefinitely in repository history.</td></tr>
+                    <tr><td class="security-seq"><span>02</span></td><td><strong>Use Least Privilege</strong></td><td>Repository, branch and administrative permissions should match actual job responsibilities.</td></tr>
+                    <tr><td class="security-seq"><span>03</span></td><td><strong>Protect Dependencies &amp; Pipelines</strong></td><td>Build definitions and dependency changes can alter what code is executed or deployed.</td></tr>
+                    <tr><td class="security-seq"><span>04</span></td><td><strong>Audit Important Changes</strong></td><td>History, approvals and branch controls provide evidence for sensitive systems and investigations.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="lesson-insight mt-4">
+        <strong>Important:</strong> Deleting a secret from the latest version of a file does not necessarily remove it from Git history.
+        Treat an exposed secret as compromised and rotate it.
+    </div>
+</section>
+
+            <section id="reference" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Reference application workflow</div>
+    <h2 class="h3 fw-bold mb-2">How you would change this Commercial IT Bootcamp project on a real team</h2>
+    <p class="text-secondary mb-4">
+        A professional change has a traceable path from business work item to branch, implementation,
+        review, protected merge and delivery artifact.
+    </p>
+
+    <div class="reference-git-wrap">
+        <div class="table-responsive">
+            <table class="table reference-git-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Step</th>
+                        <th style="width:19%;">System / artifact</th>
+                        <th style="width:30%;">Example</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="reference-seq"><span>01</span></td><td><strong>Jira</strong></td><td><code>COMIT-142</code> — Add cancellation reason</td><td>Trace the code change to an agreed business/delivery work item.</td></tr>
+                    <tr><td class="reference-seq"><span>02</span></td><td><strong>Git Branch</strong></td><td><code>feature/order-cancel-reason</code></td><td>Isolate the coherent change while preserving shared repository history.</td></tr>
+                    <tr><td class="reference-seq"><span>03</span></td><td><strong>Code</strong></td><td>Controller + Service + Tests</td><td>Implement business behavior and quality evidence.</td></tr>
+                    <tr><td class="reference-seq"><span>04</span></td><td><strong>Pull Request</strong></td><td>Review + CI</td><td>Run automated checks and human review before the change enters main.</td></tr>
+                    <tr><td class="reference-seq"><span>05</span></td><td><strong>Main Branch</strong></td><td>Protected merge</td><td>Update the team's shared source of truth after policy is satisfied.</td></tr>
+                    <tr><td class="reference-seq"><span>06</span></td><td><strong>Pipeline</strong></td><td>Build artifact</td><td>Create the tested artifact that can move into deployment environments.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+            <section id="day" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Day in the life</div>
+    <h2 class="h3 fw-bold mb-2">Git is woven into normal engineering work</h2>
+    <p class="text-secondary mb-4">
+        Source control is not a separate administrative step at the end of coding.
+        It is part of the engineer's normal working rhythm throughout the day.
+    </p>
+
+    <div class="day-table-wrap">
+        <div class="table-responsive">
+            <table class="table day-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:120px;">Time</th>
+                        <th style="width:28%;">Activity</th>
+                        <th>What the engineer is doing</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="time-chip">9:10 AM</span></td><td><strong>Synchronize</strong></td><td>Pull current team changes and inspect branch state before beginning work.</td></tr>
+                    <tr><td><span class="time-chip">10:00 AM</span></td><td><strong>Create Focused Branch</strong></td><td>Branch from the agreed base for the Jira story or defect.</td></tr>
+                    <tr><td><span class="time-chip">11:30 AM</span></td><td><strong>Commit Coherent Progress</strong></td><td>Review the diff, stage intentionally and write a useful commit message.</td></tr>
+                    <tr><td><span class="time-chip">2:00 PM</span></td><td><strong>Open Pull Request</strong></td><td>Describe intent, risk, tests and relevant work-item references.</td></tr>
+                    <tr><td><span class="time-chip">3:00 PM</span></td><td><strong>Respond to Review</strong></td><td>Discuss design, update code, rerun checks and resolve reviewer feedback.</td></tr>
+                    <tr><td><span class="time-chip">4:15 PM</span></td><td><strong>Merge &amp; Observe Pipeline</strong></td><td>Confirm the protected shared branch and CI/CD pipeline remain healthy.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+            <section id="anti-patterns" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Anti-patterns</div>
+    <h2 class="h3 fw-bold mb-2">Habits that create team pain</h2>
+    <p class="text-secondary mb-4">
+        Most source-control problems are not caused by Git itself. They come from poor change boundaries,
+        weak review habits, bypassed controls or history that becomes difficult to understand.
+    </p>
+
+    <div class="anti-table-wrap">
+        <div class="table-responsive">
+            <table class="table anti-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Risk</th>
+                        <th style="width:30%;">Anti-pattern</th>
+                        <th>Why it hurts the team</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="anti-seq"><span>!</span></td><td><strong>Huge “Everything” Commit</strong></td><td>Unrelated changes become difficult to understand, review, diagnose or revert cleanly.</td></tr>
+                    <tr><td class="anti-seq"><span>!</span></td><td><strong>Meaningless Commit Messages</strong></td><td>Messages such as <code>fix</code>, <code>stuff</code> and <code>changes</code> destroy the diagnostic value of history.</td></tr>
+                    <tr><td class="anti-seq"><span>!</span></td><td><strong>Direct Push to Main</strong></td><td>Bypasses review and automated control points around the shared codebase.</td></tr>
+                    <tr><td class="anti-seq"><span>!</span></td><td><strong>Long-Lived Branch</strong></td><td>Weeks of divergence create hidden assumptions, painful merges and integration risk.</td></tr>
+                    <tr><td class="anti-seq"><span>!</span></td><td><strong>Comment Wars in Pull Requests</strong></td><td>Review should improve the product and share knowledge, not become a contest for status.</td></tr>
+                    <tr><td class="anti-seq"><span>!</span></td><td><strong>Secrets in the Repository</strong></td><td>Credentials may remain recoverable from repository history long after they disappear from the latest file.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+            <section id="lab" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Hands-on lab</div>
+    <h2 class="h3 fw-bold mb-2">Practice the complete local branch workflow</h2>
+
+    <div class="lab-brief mt-3 mb-4">
+        <div class="lab-title"><span>LAB</span><strong>Create a documentation-only practice branch</strong></div>
+        <p class="mb-0">Use your local Bootcamp repository. The purpose is to learn Git state transitions safely without changing production behavior.</p>
+    </div>
+
+    <div class="lab-list">
+        <div class="lab-step d-flex align-items-start gap-3">
+            <span class="lesson-number flex-shrink-0">1</span>
+            <div class="flex-grow-1"><strong>Inspect repository state</strong><p>Run <code>git status</code> and identify the current branch.</p></div>
+        </div>
+        <div class="lab-step d-flex align-items-start gap-3">
+            <span class="lesson-number flex-shrink-0">2</span>
+            <div class="flex-grow-1"><strong>Create a branch</strong><p>Use a meaningful name such as <code>training/git-practice</code>.</p></div>
+        </div>
+        <div class="lab-step d-flex align-items-start gap-3">
+            <span class="lesson-number flex-shrink-0">3</span>
+            <div class="flex-grow-1"><strong>Make one harmless change</strong><p>Add a short note to a scratch Markdown file, then inspect <code>git diff</code>.</p></div>
+        </div>
+        <div class="lab-step d-flex align-items-start gap-3">
+            <span class="lesson-number flex-shrink-0">4</span>
+            <div class="flex-grow-1"><strong>Stage and commit</strong><p>Use <code>git add</code>, verify status, and commit with a meaningful message.</p></div>
+        </div>
+        <div class="lab-step d-flex align-items-start gap-3">
+            <span class="lesson-number flex-shrink-0">5</span>
+            <div class="flex-grow-1"><strong>Inspect history</strong><p>Use <code>git log --oneline --decorate --graph</code> and explain where your branch points.</p></div>
+        </div>
+    </div>
+</section>
+
+            <section id="knowledge" class="soft-card p-4 p-lg-5 mb-4 lesson-section"><div class="section-kicker">Knowledge check</div><h2 class="h3 fw-bold">Can you reason about team source control?</h2><div class="knowledge-check mt-3">
+                <details><summary>1. What is the difference between <code>git commit</code> and <code>git push</code>?</summary><p>Commit records staged work in your local repository. Push sends local commits to a remote repository.</p></details>
+                <details><summary>2. Why does a pull request exist if Git can merge branches without one?</summary><p>The PR adds collaboration and governance around the Git operation: explanation, review, automated checks, approvals, policy and auditability.</p></details>
+                <details><summary>3. What does a merge conflict mean?</summary><p>Git cannot automatically reconcile overlapping changes. A human must understand intent and create the correct final version.</p></details>
+                <details><summary>4. Why should secrets never be committed even to a private repository?</summary><p>Repositories are replicated, backed up, cloned and retained in history. Access can expand over time. Secret-management systems are designed for credentials; source control is not.</p></details>
+            </div></section>
+
+            <section id="recap" class="recap-panel p-4 p-lg-5 mb-4"><div class="section-kicker text-info">Lesson recap</div><h2 class="h3 fw-bold text-white">Seven things to remember</h2><div class="recap-grid mt-3"><div><span>1</span><strong>Git records history</strong><small>Not just files.</small></div><div><span>2</span><strong>Branches isolate change</strong><small>Not people.</small></div><div><span>3</span><strong>Commits should be coherent</strong><small>Make history useful.</small></div><div><span>4</span><strong>PRs create a review boundary</strong><small>Human + automated checks.</small></div><div><span>5</span><strong>Main is protected</strong><small>Shared code deserves controls.</small></div><div><span>6</span><strong>Conflicts require understanding</strong><small>Git cannot infer business intent.</small></div><div><span>7</span><strong>Never store secrets</strong><small>History persists.</small></div></div></section>
+
+            <section id="career" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+    <div class="section-kicker">Career perspective</div>
+    <h2 class="h3 fw-bold mb-2">Professional Git skill is collaboration skill</h2>
+    <p class="lead mb-4">
+        The goal is not memorizing dozens of commands. It is making your changes easy for another engineer
+        to understand, review, integrate, diagnose and trust.
+    </p>
+
+    <div class="career-table-wrap">
+        <div class="table-responsive">
+            <table class="table career-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:100px;">Stage</th>
+                        <th style="width:34%;">Engineering mindset</th>
+                        <th>What is developing</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="career-seq"><span>01</span></td><td><strong>Commit My Code</strong></td><td>Learn basic repository state, commits, branches and synchronization.</td></tr>
+                    <tr><td class="career-seq"><span>02</span></td><td><strong>Create Reviewable Changes</strong></td><td>Structure coherent commits and pull requests that another engineer can understand quickly.</td></tr>
+                    <tr><td class="career-seq"><span>03</span></td><td><strong>Protect Team Flow &amp; History</strong></td><td>Think about integration risk, branch health, automation, merge policy and diagnostic history.</td></tr>
+                    <tr><td class="career-seq"><span>04</span></td><td><strong>Design Engineering Governance</strong></td><td>Shape branch protection, code ownership, review standards, auditability and delivery controls.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+            <section class="lesson-next p-4 p-lg-5 mb-4"><div><div class="section-kicker">Lesson 7 complete · Part I complete</div><h2 class="h5 fw-bold mb-1">Next: Part II — Internet, DNS, HTTP and TLS</h2><p class="text-secondary mb-0">You now understand how commercial IT teams organize and deliver work. Next, follow what actually happens technically when a user enters a URL and reaches a modern application.</p></div><div class="lesson-next-actions"><a class="btn btn-outline-primary" th:href="@{/training/part-1-commercial-it/sdlc}">← Previous</a><a class="btn btn-primary" th:href="@{/training/part-2-modern-apps/internet-dns-http-tls}">Continue →</a></div></section>
+        </div>
+
+        <aside class="col-xl-3"><div class="soft-card p-4 sticky-xl-top lesson-nav" style="top:90px;"><div class="section-kicker">In this lesson</div><h2 class="h5 fw-bold">Lesson navigation</h2><nav><a href="#objectives">Learning objectives</a><a href="#problem">Collaboration problem</a><a href="#mental-model">Git mental model</a><a href="#commands">Essential commands</a><a href="#branching">Branching</a><a href="#pull-request">Pull requests</a><a href="#protected">Protected branches</a><a href="#conflicts">Merge conflicts</a><a href="#security">Repository security</a><a href="#reference">Reference workflow</a><a href="#day">Day in the life</a><a href="#anti-patterns">Anti-patterns</a><a href="#lab">Hands-on lab</a><a href="#knowledge">Knowledge check</a><a href="#recap">Lesson recap</a><a href="#career">Career perspective</a></nav><hr><p class="small text-secondary mb-0"><strong>Instructor note:</strong> Teach Git as a collaboration and change-control system. Commands make more sense once students understand the repository state they are changing.</p></div></aside>
+    </div>
+</main>
+</html>

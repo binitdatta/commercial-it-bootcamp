@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('Home', 'Commercial IT Bootcamp for graduates and interns', ~{::main})}">
+<main>
+    <section class="hero-panel p-4 p-lg-5 mb-4">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <div class="text-uppercase fw-bold small opacity-75 mb-2">Industry-readiness before the first job</div>
+                <h1 class="display-5 fw-bold">From college programming to commercial IT productivity.</h1>
+                <p class="lead mb-4">A practical training skeleton for understanding how software is conceived, built, secured, deployed, operated and improved inside real organizations.</p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a class="btn btn-light btn-lg text-primary fw-semibold" th:href="@{/training}">Explore Training</a>
+                    <a class="btn btn-outline-light btn-lg" th:href="@{/ecommerce}">Open E-Commerce Reference</a>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="bg-white bg-opacity-10 rounded-4 p-4 border border-white border-opacity-25">
+                    <div class="fs-2 fw-bold" th:text="${lessonCount}">60</div>
+                    <div class="opacity-75">individual video-ready lessons</div>
+                    <hr class="border-white opacity-25">
+                    <div class="fs-2 fw-bold" th:text="${sectionCount}">10</div>
+                    <div class="opacity-75">commercial IT learning sections</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="soft-card h-100 p-4">
+                <div class="section-kicker mb-2">Understand</div>
+                <h2 class="h4">How the industry fits together</h2>
+                <p class="text-secondary mb-0">Business domains, organizational roles, architecture, agile delivery, security, data, cloud and operations.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="soft-card h-100 p-4">
+                <div class="section-kicker mb-2">Build</div>
+                <h2 class="h4">A realistic reference application</h2>
+                <p class="text-secondary mb-0">Spring Boot 4, Spring Security, Keycloak, Thymeleaf, Bootstrap, JPA and MySQL working together.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="soft-card h-100 p-4">
+                <div class="section-kicker mb-2">Operate</div>
+                <h2 class="h4">Think beyond writing code</h2>
+                <p class="text-secondary mb-0">Testing, CI/CD, environments, troubleshooting, observability, incidents and professional communication.</p>
+            </div>
+        </div>
+    </div>
+</main>
+</html>

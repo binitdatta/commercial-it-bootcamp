@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('AI Security and Governance', 'Treat AI risk controls as architecture: identity, data minimization, prompt-injection defenses, tool authorization, model governance, audit, evaluation and human accountability.', ~{::main})}">
+<main>
+<nav aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb small">
+    <li class="breadcrumb-item"><a th:href="@{/training}">Training</a></li>
+    <li class="breadcrumb-item" th:text="${section.title}">Part VIII — AI-Era Engineering</li>
+    <li class="breadcrumb-item active" th:text="${lesson.title}">AI Security and Governance</li>
+  </ol>
+</nav>
+
+<div class="row g-4">
+<div class="col-xl-9">
+
+<section id="s1" class="lesson-hero p-4 p-lg-5 mb-4">
+  <div class="video-play">▶</div>
+  <div class="small text-uppercase fw-bold opacity-75">Future LMS Video · Lesson 51</div>
+  <h1 class="display-6 fw-bold mt-2">AI Security and Governance</h1>
+  <p class="lead mb-0">Treat AI risk controls as architecture: identity, data minimization, prompt-injection defenses, tool authorization, model governance, audit, evaluation and human accountability.</p>
+</section>
+
+<section id="s2" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Learning objectives</div>
+  <h2 class="h4 fw-bold">By the end of this lesson, you should be able to</h2>
+  <div class="row g-3 mt-1">
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Explain the architecture</strong><p class="small text-secondary mb-0">Use accurate AI terminology and place probabilistic model behavior inside normal enterprise application boundaries.</p></div></div>
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Separate AI from authority</strong><p class="small text-secondary mb-0">Identify what the model may interpret or generate versus what deterministic systems must authorize and execute.</p></div></div>
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Recognize failure modes</strong><p class="small text-secondary mb-0">Reason about hallucination, data exposure, tool misuse, unreliable automation, cost and operational failure.</p></div></div>
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Design a controlled implementation</strong><p class="small text-secondary mb-0">Connect AI components to IAM, APIs, data, observability, testing and human governance.</p></div></div>
+  </div>
+</section>
+
+<section id="s3" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Start with the engineering problem</div>
+  <h2 class="h3 fw-bold">AI introduces new probabilistic behavior, but it still runs inside existing enterprise security, privacy, compliance and operational obligations.</h2>
+  <p class="lead">The durable skill is not memorizing model brands. It is knowing where probabilistic AI belongs, where it does not belong, and how to surround it with mature software-engineering controls.</p>
+  <div class="p-3 rounded-3 bg-light border-start border-primary border-4"><strong>Commercial principle:</strong> AI should increase the capability of an enterprise system without weakening identity, authorization, data integrity, auditability or operational control.</div>
+</section>
+
+<section id="s4" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Core concepts</div>
+  <h2 class="h3 fw-bold">Vocabulary that matters in production</h2>
+  <div class="row g-3 mt-1"><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Prompt Injection</strong><div class="small text-secondary mt-1">Untrusted content attempts to influence model behavior or override application intent.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Data Exfiltration</strong><div class="small text-secondary mt-1">Sensitive data is disclosed through prompts, retrieved context, model output or tool results.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Model Risk</strong><div class="small text-secondary mt-1">Risk arising from inaccurate, unstable, biased, unsafe or poorly understood model behavior.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>AI Policy Enforcement</strong><div class="small text-secondary mt-1">Deterministic controls applied before, during and after model execution.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Evaluation / Red Teaming</strong><div class="small text-secondary mt-1">Systematic testing of quality, abuse cases, jailbreaks, tool misuse and failure behavior.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Human Accountability</strong><div class="small text-secondary mt-1">A named person or organizational role remains responsible for consequential decisions and approvals.</div></div></div></div>
+</section>
+
+<section id="s5" class="soft-card p-4 mb-4">
+  <div class="section-kicker">End-to-end flow</div>
+  <h2 class="h3 fw-bold">Follow one request through the architecture</h2>
+  <div class="row g-3 mt-1"><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">1</span><strong>Classify use case</strong><p class="small text-secondary mt-2 mb-0">Determine business value, data sensitivity, user population, autonomy and consequence level.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">2</span><strong>Authenticate and authorize</strong><p class="small text-secondary mt-2 mb-0">Bind every request and tool call to trusted identity and least-privilege policy.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">3</span><strong>Minimize data</strong><p class="small text-secondary mt-2 mb-0">Send only the information required for the task; redact or tokenize sensitive fields where practical.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">4</span><strong>Constrain capabilities</strong><p class="small text-secondary mt-2 mb-0">Use allow-listed models, retrieval sources, tools, parameters and network destinations.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">5</span><strong>Validate behavior</strong><p class="small text-secondary mt-2 mb-0">Apply content, schema, groundedness, policy and business-rule checks around model output.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">6</span><strong>Audit and monitor</strong><p class="small text-secondary mt-2 mb-0">Record user, purpose, model, prompts where appropriate, sources, tools, policy decisions and outcome.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">7</span><strong>Govern lifecycle</strong><p class="small text-secondary mt-2 mb-0">Approve models/use cases, manage versions, evaluate changes, handle incidents and retire unsafe workflows.</p></div></div></div>
+</section>
+
+<section id="s6" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Commercial scenario</div>
+  <h2 class="h3 fw-bold">Move from demo thinking to enterprise thinking</h2>
+  <p class="lead">An internal HR assistant can answer policy questions but must not expose another employee&#x27;s compensation data. RAG filtering, API authorization and data minimization enforce the boundary; a system prompt alone is insufficient.</p>
+  <div class="row g-3">
+    <div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Identity</strong><div class="small text-secondary">Who is asking, what organization/tenant are they in, and what are they permitted to do?</div></div></div>
+    <div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Authority</strong><div class="small text-secondary">Which deterministic service owns the business fact or action?</div></div></div>
+    <div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Evidence</strong><div class="small text-secondary">What logs, traces, retrieved sources, tool results and policy decisions prove what happened?</div></div></div>
+  </div>
+</section>
+
+<section id="s7" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Reference application</div>
+  <h2 class="h3 fw-bold">Connect AI to the Bootcamp Spring Boot platform</h2>
+  <p>For the Bootcamp order assistant, require Keycloak identity, user-scoped order APIs, allow-listed tools, prompt/response handling rules, auditable tool calls, evaluation tests and human approval before any high-impact operation.</p>
+  <div class="row g-3">
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Keycloak</strong><div class="small text-secondary">Identity, authentication and trusted claims.</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Spring Security</strong><div class="small text-secondary">Deterministic access enforcement at application/API boundaries.</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Services / APIs</strong><div class="small text-secondary">Authoritative business operations exposed as governed capabilities.</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>MySQL</strong><div class="small text-secondary">Transactional state remains in the system of record.</div></div></div>
+  </div>
+</section>
+
+<section id="s8" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Production controls</div>
+  <h2 class="h3 fw-bold">What surrounds the model</h2>
+  <div class="row g-3">
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>IAM &amp; policy</strong><div class="small text-secondary">SSO, roles/attributes, tenant boundaries and purpose-aware authorization.</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Evaluation</strong><div class="small text-secondary">Representative test sets for quality, safety, groundedness and tool correctness.</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Observability</strong><div class="small text-secondary">Trace model calls, retrieval, tools, latency, cost, errors and decisions.</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Human governance</strong><div class="small text-secondary">Approval and accountability for consequential actions and exceptions.</div></div></div>
+  </div>
+</section>
+
+<section id="s9" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Common failure modes</div>
+  <h2 class="h3 fw-bold">Where AI systems fail when engineering discipline is missing</h2>
+  <div class="row g-3"><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Prompt as policy engine</strong><p class="small text-secondary mt-2 mb-0">Natural-language instructions replace deterministic access controls.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Logging everything</strong><p class="small text-secondary mt-2 mb-0">Sensitive prompts and retrieved data are copied into ordinary telemetry without classification.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>One-time model approval</strong><p class="small text-secondary mt-2 mb-0">Teams fail to reevaluate when models, prompts, tools or provider behavior change.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>No incident playbook</strong><p class="small text-secondary mt-2 mb-0">The organization cannot rapidly disable a tool, model, data source or workflow after unsafe behavior.</p></div></div></div>
+</section>
+
+<section id="s10" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Hands-on lab</div>
+  <h2 class="h3 fw-bold">Apply the concept to the reference system</h2>
+  <p>Create an AI threat model for the Bootcamp assistant. Cover identity, prompt injection, unauthorized retrieval, tool abuse, sensitive logging, model/provider dependency, cost abuse, output risk, human approval and incident shutdown controls.</p>
+  <div class="alert alert-primary mb-0"><strong>Deliverable:</strong> Produce a one-page implementation design with architecture, trust boundaries, allowed capabilities, validation, failure handling, observability and acceptance criteria.</div>
+</section>
+
+<section id="s11" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Knowledge check</div>
+  <h2 class="h3 fw-bold">Can you defend the design?</h2>
+  <ol>
+    <li class="mb-2">Which component owns the authoritative business fact?</li>
+    <li class="mb-2">What can the model decide, and what must deterministic policy decide?</li>
+    <li class="mb-2">How is user identity carried into retrieval and tool execution?</li>
+    <li class="mb-2">What failure could produce a fluent but unsafe result?</li>
+    <li class="mb-2">How would you test this before production?</li>
+    <li>What evidence would an operator or auditor need after an incident?</li>
+  </ol>
+</section>
+
+<section id="s12" class="lesson-hero p-4 mb-4">
+  <div class="section-kicker text-info">Lesson recap</div>
+  <h2 class="h3 fw-bold">Five things to remember</h2>
+  <div class="row g-3">
+    <div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">1. AI security extends enterprise security.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">2. Authorization stays deterministic.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">3. Minimize sensitive data.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">4. Tools need least privilege and audit.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">5. Governance must cover the full lifecycle.</div></div>
+  </div>
+</section>
+
+<section id="s13" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Career perspective</div>
+  <h2 class="h3 fw-bold">AI-era engineers still need strong software-engineering foundations</h2>
+  <p class="lead mb-0">The engineer who understands IAM, APIs, data, distributed systems, observability, testing and business workflows can use AI far more effectively than someone who knows prompting alone. The AI layer magnifies both good architecture and bad architecture.</p>
+</section>
+
+<section class="soft-card p-4 border-top border-primary border-4">
+  <div class="section-kicker">Lesson 51 complete · Part VIII complete</div>
+  <h2 class="h4 fw-bold">Next: Part IX — Professional Engineering</h2>
+  <p class="text-secondary mb-0">Part VIII is complete. Continue into professional engineering practices that distinguish durable commercial systems from demonstrations.</p>
+</section>
+
+</div>
+
+<aside class="col-xl-3">
+  <div class="soft-card p-4 sticky-xl-top" style="top:90px">
+    <div class="section-kicker">In this lesson</div>
+    <h2 class="h5 fw-bold">Lesson navigation</h2>
+    <div class="small lh-lg">
+      <a href="#s1">Course video</a> ·
+      <a href="#s2">Learning objectives</a> ·
+      <a href="#s3">Engineering problem</a> ·
+      <a href="#s4">Core concepts</a> ·
+      <a href="#s5">End-to-end flow</a> ·
+      <a href="#s6">Commercial scenario</a> ·
+      <a href="#s7">Reference application</a> ·
+      <a href="#s8">Production controls</a> ·
+      <a href="#s9">Failure modes</a> ·
+      <a href="#s10">Hands-on lab</a> ·
+      <a href="#s11">Knowledge check</a> ·
+      <a href="#s12">Lesson recap</a> ·
+      <a href="#s13">Career perspective</a>
+    </div>
+    <hr>
+    <p class="small text-secondary mb-0"><strong>Instructor note:</strong> Teach AI as another enterprise subsystem with probabilistic behavior—not as a replacement for security, APIs, data ownership or operational engineering.</p>
+  </div>
+</aside>
+
+</div>
+</main>
+</html>

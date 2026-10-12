@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('About', 'Purpose and design of the Commercial IT Bootcamp', ~{::main})}">
+<main>
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="soft-card p-4 p-lg-5">
+                <div class="section-kicker">Course philosophy</div>
+                <h1 class="fw-bold">Teach the connective tissue of commercial IT.</h1>
+                <p class="lead text-secondary">The platform is intentionally built as a real application so course lessons can point to working code, database objects, security flows and operational artifacts.</p>
+                <p>Each training URL corresponds to an individual Thymeleaf file. That makes it easy to replace one placeholder at a time with a full video lesson while preserving the same navbar, security model and visual language.</p>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="soft-card p-4 h-100">
+                <h2 class="h5">Reference stack</h2>
+                <ul class="mb-0">
+                    <li>Java 21</li>
+                    <li>Spring Boot 4.1.1</li>
+                    <li>Spring Security / OAuth2 / OIDC</li>
+                    <li>Keycloak</li>
+                    <li>Thymeleaf + Bootstrap 5.3.8</li>
+                    <li>Spring Data JPA / Hibernate</li>
+                    <li>MySQL 8.x</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</main>
+</html>

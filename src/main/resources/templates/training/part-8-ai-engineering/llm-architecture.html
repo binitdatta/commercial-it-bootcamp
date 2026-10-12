@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('LLM Application Architecture', 'Understand the complete enterprise stack around an LLM: channels, backend-for-frontend, IAM, orchestration, model gateway, tools, data, observability and governance.', ~{::main})}">
+<main>
+<nav aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb small">
+    <li class="breadcrumb-item"><a th:href="@{/training}">Training</a></li>
+    <li class="breadcrumb-item" th:text="${section.title}">Part VIII — AI-Era Engineering</li>
+    <li class="breadcrumb-item active" th:text="${lesson.title}">LLM Application Architecture</li>
+  </ol>
+</nav>
+
+<div class="row g-4">
+<div class="col-xl-9">
+
+<section id="s1" class="lesson-hero p-4 p-lg-5 mb-4">
+  <div class="video-play">▶</div>
+  <div class="small text-uppercase fw-bold opacity-75">Future LMS Video · Lesson 45</div>
+  <h1 class="display-6 fw-bold mt-2">LLM Application Architecture</h1>
+  <p class="lead mb-0">Understand the complete enterprise stack around an LLM: channels, backend-for-frontend, IAM, orchestration, model gateway, tools, data, observability and governance.</p>
+</section>
+
+<section id="s2" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Learning objectives</div>
+  <h2 class="h4 fw-bold">By the end of this lesson, you should be able to</h2>
+  <div class="row g-3 mt-1">
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Explain the architecture</strong><p class="small text-secondary mb-0">Use accurate AI terminology and place probabilistic model behavior inside normal enterprise application boundaries.</p></div></div>
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Separate AI from authority</strong><p class="small text-secondary mb-0">Identify what the model may interpret or generate versus what deterministic systems must authorize and execute.</p></div></div>
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Recognize failure modes</strong><p class="small text-secondary mb-0">Reason about hallucination, data exposure, tool misuse, unreliable automation, cost and operational failure.</p></div></div>
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Design a controlled implementation</strong><p class="small text-secondary mb-0">Connect AI components to IAM, APIs, data, observability, testing and human governance.</p></div></div>
+  </div>
+</section>
+
+<section id="s3" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Start with the engineering problem</div>
+  <h2 class="h3 fw-bold">A production AI application is not &#x27;frontend → model API&#x27;. The model is one component inside a much larger secured software architecture.</h2>
+  <p class="lead">The durable skill is not memorizing model brands. It is knowing where probabilistic AI belongs, where it does not belong, and how to surround it with mature software-engineering controls.</p>
+  <div class="p-3 rounded-3 bg-light border-start border-primary border-4"><strong>Commercial principle:</strong> AI should increase the capability of an enterprise system without weakening identity, authorization, data integrity, auditability or operational control.</div>
+</section>
+
+<section id="s4" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Core concepts</div>
+  <h2 class="h3 fw-bold">Vocabulary that matters in production</h2>
+  <div class="row g-3 mt-1"><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>AI Application Layer</strong><div class="small text-secondary mt-1">The user-facing UI or API that owns sessions, user experience and application behavior.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>BFF / API Gateway</strong><div class="small text-secondary mt-1">A policy-aware backend boundary for authentication, rate limits, routing, telemetry and client-specific orchestration.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>LLM Gateway</strong><div class="small text-secondary mt-1">A controlled abstraction over one or more model providers for routing, policy, quotas, cost and observability.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Orchestrator</strong><div class="small text-secondary mt-1">Coordinates prompts, retrieval, tools, state, branching, retries and approvals.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Tool / Skill Registry</strong><div class="small text-secondary mt-1">An allow-listed catalog of deterministic capabilities the model may request.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>AI Observability</strong><div class="small text-secondary mt-1">Tracing of prompts, model calls, retrieval, tools, latency, cost, policy decisions and outcomes.</div></div></div></div>
+</section>
+
+<section id="s5" class="soft-card p-4 mb-4">
+  <div class="section-kicker">End-to-end flow</div>
+  <h2 class="h3 fw-bold">Follow one request through the architecture</h2>
+  <div class="row g-3 mt-1"><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">1</span><strong>Authenticate</strong><p class="small text-secondary mt-2 mb-0">The application verifies user identity and obtains trusted claims from the enterprise IdP.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">2</span><strong>Authorize request</strong><p class="small text-secondary mt-2 mb-0">Application policy determines whether the user may access the requested business capability.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">3</span><strong>Classify and route</strong><p class="small text-secondary mt-2 mb-0">The AI layer identifies intent, risk, model requirements and whether retrieval or tools are needed.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">4</span><strong>Ground / execute</strong><p class="small text-secondary mt-2 mb-0">Approved retrieval sources and tools obtain authoritative context or perform deterministic actions.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">5</span><strong>Model reasoning</strong><p class="small text-secondary mt-2 mb-0">The LLM interprets context, chooses from allowed options and composes language or structured output.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">6</span><strong>Policy enforcement</strong><p class="small text-secondary mt-2 mb-0">Outputs and requested actions are validated before they affect enterprise systems.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">7</span><strong>Observe and audit</strong><p class="small text-secondary mt-2 mb-0">The platform records trace IDs, model usage, tools, source lineage and user-visible outcome.</p></div></div></div>
+</section>
+
+<section id="s6" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Commercial scenario</div>
+  <h2 class="h3 fw-bold">Move from demo thinking to enterprise thinking</h2>
+  <p class="lead">A company has ten departmental assistants. Rather than duplicating IAM, rate limiting, logging, model credentials and governance ten times, each frontend routes through shared platform services while departmental teams retain domain-specific UX and skills.</p>
+  <div class="row g-3">
+    <div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Identity</strong><div class="small text-secondary">Who is asking, what organization/tenant are they in, and what are they permitted to do?</div></div></div>
+    <div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Authority</strong><div class="small text-secondary">Which deterministic service owns the business fact or action?</div></div></div>
+    <div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Evidence</strong><div class="small text-secondary">What logs, traces, retrieved sources, tool results and policy decisions prove what happened?</div></div></div>
+  </div>
+</section>
+
+<section id="s7" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Reference application</div>
+  <h2 class="h3 fw-bold">Connect AI to the Bootcamp Spring Boot platform</h2>
+  <p>Extend the Bootcamp architecture horizontally: Browser → Spring UI/API → Security → AI Orchestrator → LLM Gateway → Approved Tools → OrderService/MySQL. The AI layer does not bypass Spring Security or domain services.</p>
+  <div class="row g-3">
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Keycloak</strong><div class="small text-secondary">Identity, authentication and trusted claims.</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Spring Security</strong><div class="small text-secondary">Deterministic access enforcement at application/API boundaries.</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Services / APIs</strong><div class="small text-secondary">Authoritative business operations exposed as governed capabilities.</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>MySQL</strong><div class="small text-secondary">Transactional state remains in the system of record.</div></div></div>
+  </div>
+</section>
+
+<section id="s8" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Production controls</div>
+  <h2 class="h3 fw-bold">What surrounds the model</h2>
+  <div class="row g-3">
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>IAM &amp; policy</strong><div class="small text-secondary">SSO, roles/attributes, tenant boundaries and purpose-aware authorization.</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Evaluation</strong><div class="small text-secondary">Representative test sets for quality, safety, groundedness and tool correctness.</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Observability</strong><div class="small text-secondary">Trace model calls, retrieval, tools, latency, cost, errors and decisions.</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Human governance</strong><div class="small text-secondary">Approval and accountability for consequential actions and exceptions.</div></div></div>
+  </div>
+</section>
+
+<section id="s9" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Common failure modes</div>
+  <h2 class="h3 fw-bold">Where AI systems fail when engineering discipline is missing</h2>
+  <div class="row g-3"><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Direct browser-to-model calls</strong><p class="small text-secondary mt-2 mb-0">Secrets, governance and enterprise data access are pushed into an uncontrolled client.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Every team builds its own gateway</strong><p class="small text-secondary mt-2 mb-0">Cost controls, logging and security become inconsistent.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Model directly queries databases</strong><p class="small text-secondary mt-2 mb-0">The model is given excessive authority and becomes tightly coupled to internal schemas.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>No separation of reasoning and execution</strong><p class="small text-secondary mt-2 mb-0">A probabilistic model is allowed to make consequential changes without deterministic controls.</p></div></div></div>
+</section>
+
+<section id="s10" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Hands-on lab</div>
+  <h2 class="h3 fw-bold">Apply the concept to the reference system</h2>
+  <p>Draw a horizontal architecture for an enterprise order assistant. Include browser, IdP, BFF, policy, LLM gateway, orchestrator, RAG, tools, Spring APIs, MySQL, logs, metrics, audit and a human-approval point.</p>
+  <div class="alert alert-primary mb-0"><strong>Deliverable:</strong> Produce a one-page implementation design with architecture, trust boundaries, allowed capabilities, validation, failure handling, observability and acceptance criteria.</div>
+</section>
+
+<section id="s11" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Knowledge check</div>
+  <h2 class="h3 fw-bold">Can you defend the design?</h2>
+  <ol>
+    <li class="mb-2">Which component owns the authoritative business fact?</li>
+    <li class="mb-2">What can the model decide, and what must deterministic policy decide?</li>
+    <li class="mb-2">How is user identity carried into retrieval and tool execution?</li>
+    <li class="mb-2">What failure could produce a fluent but unsafe result?</li>
+    <li class="mb-2">How would you test this before production?</li>
+    <li>What evidence would an operator or auditor need after an incident?</li>
+  </ol>
+</section>
+
+<section id="s12" class="lesson-hero p-4 mb-4">
+  <div class="section-kicker text-info">Lesson recap</div>
+  <h2 class="h3 fw-bold">Five things to remember</h2>
+  <div class="row g-3">
+    <div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">1. The model is only one layer.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">2. Identity and policy remain deterministic.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">3. Tools expose bounded capabilities.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">4. Gateways centralize model controls.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">5. Auditability spans the entire request.</div></div>
+  </div>
+</section>
+
+<section id="s13" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Career perspective</div>
+  <h2 class="h3 fw-bold">AI-era engineers still need strong software-engineering foundations</h2>
+  <p class="lead mb-0">The engineer who understands IAM, APIs, data, distributed systems, observability, testing and business workflows can use AI far more effectively than someone who knows prompting alone. The AI layer magnifies both good architecture and bad architecture.</p>
+</section>
+
+<section class="soft-card p-4 border-top border-primary border-4">
+  <div class="section-kicker">Lesson 45 complete</div>
+  <h2 class="h4 fw-bold">Next: Retrieval-Augmented Generation</h2>
+  <p class="text-secondary mb-0">Continue building the complete enterprise AI mental model.</p>
+</section>
+
+</div>
+
+<aside class="col-xl-3">
+  <div class="soft-card p-4 sticky-xl-top" style="top:90px">
+    <div class="section-kicker">In this lesson</div>
+    <h2 class="h5 fw-bold">Lesson navigation</h2>
+    <div class="small lh-lg">
+      <a href="#s1">Course video</a> ·
+      <a href="#s2">Learning objectives</a> ·
+      <a href="#s3">Engineering problem</a> ·
+      <a href="#s4">Core concepts</a> ·
+      <a href="#s5">End-to-end flow</a> ·
+      <a href="#s6">Commercial scenario</a> ·
+      <a href="#s7">Reference application</a> ·
+      <a href="#s8">Production controls</a> ·
+      <a href="#s9">Failure modes</a> ·
+      <a href="#s10">Hands-on lab</a> ·
+      <a href="#s11">Knowledge check</a> ·
+      <a href="#s12">Lesson recap</a> ·
+      <a href="#s13">Career perspective</a>
+    </div>
+    <hr>
+    <p class="small text-secondary mb-0"><strong>Instructor note:</strong> Teach AI as another enterprise subsystem with probabilistic behavior—not as a replacement for security, APIs, data ownership or operational engineering.</p>
+  </div>
+</aside>
+
+</div>
+</main>
+</html>

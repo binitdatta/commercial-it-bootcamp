@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('Product Detail', 'Ecommerce product detail reference page', ~{::main})}">
+<main>
+    <a class="small text-decoration-none" th:href="@{/ecommerce/products}">← Back to products</a>
+    <div class="soft-card p-4 p-lg-5 mt-3">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-4"><div class="ratio ratio-1x1 rounded-4 d-flex align-items-center justify-content-center" style="background:#e7f1ff;"><div class="m-auto text-primary fw-bold fs-1">SKU</div></div></div>
+            <div class="col-lg-8">
+                <div class="section-kicker" th:text="${product.category.name}">Category</div>
+                <h1 class="fw-bold" th:text="${product.name}">Product</h1>
+                <p class="text-secondary" th:text="${product.description}">Description</p>
+                <div class="display-6 fw-bold text-primary" th:text="${'$' + product.price}">$0.00</div>
+                <div class="mt-3"><span class="badge text-bg-light border me-2" th:text="${product.sku}">SKU</span><span class="badge text-bg-success" th:text="${product.stockQuantity + ' in stock'}">Stock</span></div>
+            </div>
+        </div>
+    </div>
+</main>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:fragment="layout(pageTitle, pageDescription, content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" th:content="${pageDescription}">
+    <title th:text="${pageTitle + ' | Commercial IT Bootcamp'}">Commercial IT Bootcamp</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.8/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/bootcamp.css}">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark boot-navbar sticky-top">
+    <div class="container-fluid px-lg-4">
+        <a class="navbar-brand" th:href="@{/}">Commercial IT Bootcamp</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Training</a>
+                    <ul class="dropdown-menu shadow-lg border-0 p-2">
+                        <li><a class="dropdown-item fw-bold text-primary" th:href="@{/training}">Course Overview</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li class="dropdown-submenu" th:each="section : ${trainingSections}">
+                            <a class="dropdown-item" href="#" th:text="${section.title}">Section</a>
+                            <ul class="dropdown-menu shadow-lg border-0 p-2">
+                                <li th:each="lesson : ${section.lessons}">
+                                    <a class="dropdown-item small" th:href="${lesson.path}">
+                                        <span class="text-primary fw-bold me-1" th:text="${lesson.number + '.'}">1.</span>
+                                        <span th:text="${lesson.title}">Lesson</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">E-Commerce Reference</a>
+                    <ul class="dropdown-menu shadow-lg border-0 p-2">
+                        <li><a class="dropdown-item" th:href="@{/ecommerce}">Reference App Home</a></li>
+                        <li><a class="dropdown-item" th:href="@{/ecommerce/products}">Products</a></li>
+                        <li><a class="dropdown-item" th:href="@{/ecommerce/customers}">Customers</a></li>
+                        <li><a class="dropdown-item" th:href="@{/ecommerce/orders}">Orders</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" th:href="@{/ecommerce/architecture}">Architecture Guide</a></li>
+                        <li><a class="dropdown-item" th:href="@{/ecommerce/api-guide}">REST API Guide</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item"><a class="nav-link" th:href="@{/about}">About</a></li>
+            </ul>
+
+            <div class="d-flex align-items-center gap-2" th:if="${authenticated}">
+                <div class="text-white small d-none d-xl-block">
+                    <div class="fw-semibold" th:text="${displayName}">User</div>
+                    <div>
+                        <span class="badge rounded-pill bg-light text-primary me-1" th:each="role : ${userRoles}" th:text="${role}">STUDENT</span>
+                    </div>
+                </div>
+                <form th:action="@{/logout}" method="post" class="m-0">
+                    <button class="btn btn-outline-light btn-sm" type="submit">Sign out</button>
+                </form>
+            </div>
+            <a th:unless="${authenticated}" class="btn btn-light btn-sm fw-semibold text-primary" th:href="@{/login}">Sign in</a>
+        </div>
+    </div>
+</nav>
+
+<main class="container-fluid px-3 px-lg-4 py-4 py-lg-5">
+    <div th:replace="${content}"></div>
+</main>
+
+<footer class="boot-footer mt-auto py-4">
+    <div class="container-fluid px-lg-4 d-flex flex-column flex-md-row justify-content-between gap-2 small">
+        <span>Commercial IT Bootcamp — Spring Boot 4 reference platform</span>
+        <span>Training and E-Commerce navigation intentionally kept separate.</span>
+    </div>
+</footer>
+
+<script th:src="@{/webjars/bootstrap/5.3.8/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/bootcamp.js}"></script>
+</body>
+</html>

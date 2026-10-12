@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('AI Coding Agents', 'Learn how coding agents inspect repositories, plan changes, edit files, run tests and collaborate with developers inside software-engineering controls.', ~{::main})}">
+<main>
+<nav aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb small">
+    <li class="breadcrumb-item"><a th:href="@{/training}">Training</a></li>
+    <li class="breadcrumb-item" th:text="${section.title}">Part VIII — AI-Era Engineering</li>
+    <li class="breadcrumb-item active" th:text="${lesson.title}">AI Coding Agents</li>
+  </ol>
+</nav>
+
+<div class="row g-4">
+<div class="col-xl-9">
+
+<section id="s1" class="lesson-hero p-4 p-lg-5 mb-4">
+  <div class="video-play">▶</div>
+  <div class="small text-uppercase fw-bold opacity-75">Future LMS Video · Lesson 49</div>
+  <h1 class="display-6 fw-bold mt-2">AI Coding Agents</h1>
+  <p class="lead mb-0">Learn how coding agents inspect repositories, plan changes, edit files, run tests and collaborate with developers inside software-engineering controls.</p>
+</section>
+
+<section id="s2" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Learning objectives</div>
+  <h2 class="h4 fw-bold">By the end of this lesson, you should be able to</h2>
+  <div class="row g-3 mt-1">
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Explain the architecture</strong><p class="small text-secondary mb-0">Use accurate AI terminology and place probabilistic model behavior inside normal enterprise application boundaries.</p></div></div>
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Separate AI from authority</strong><p class="small text-secondary mb-0">Identify what the model may interpret or generate versus what deterministic systems must authorize and execute.</p></div></div>
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Recognize failure modes</strong><p class="small text-secondary mb-0">Reason about hallucination, data exposure, tool misuse, unreliable automation, cost and operational failure.</p></div></div>
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Design a controlled implementation</strong><p class="small text-secondary mb-0">Connect AI components to IAM, APIs, data, observability, testing and human governance.</p></div></div>
+  </div>
+</section>
+
+<section id="s3" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Start with the engineering problem</div>
+  <h2 class="h3 fw-bold">AI coding assistants can generate large amounts of code quickly, but speed without repository context, testing and review can multiply defects just as quickly.</h2>
+  <p class="lead">The durable skill is not memorizing model brands. It is knowing where probabilistic AI belongs, where it does not belong, and how to surround it with mature software-engineering controls.</p>
+  <div class="p-3 rounded-3 bg-light border-start border-primary border-4"><strong>Commercial principle:</strong> AI should increase the capability of an enterprise system without weakening identity, authorization, data integrity, auditability or operational control.</div>
+</section>
+
+<section id="s4" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Core concepts</div>
+  <h2 class="h3 fw-bold">Vocabulary that matters in production</h2>
+  <div class="row g-3 mt-1"><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Repository Context</strong><div class="small text-secondary mt-1">Source files, build configuration, tests, conventions and architecture that constrain a correct change.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Agent Plan</strong><div class="small text-secondary mt-1">A proposed sequence of code-reading, modification and validation steps.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Tool Access</strong><div class="small text-secondary mt-1">File reads/writes, shell commands, tests, static analysis, Git and documentation lookup.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Diff</strong><div class="small text-secondary mt-1">The concrete code change that humans and automated systems can review.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Verification Loop</strong><div class="small text-secondary mt-1">Edit → compile/test → inspect failure → revise until acceptance criteria are met.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Developer Accountability</strong><div class="small text-secondary mt-1">Humans remain responsible for architecture, security, correctness and what is ultimately merged.</div></div></div></div>
+</section>
+
+<section id="s5" class="soft-card p-4 mb-4">
+  <div class="section-kicker">End-to-end flow</div>
+  <h2 class="h3 fw-bold">Follow one request through the architecture</h2>
+  <div class="row g-3 mt-1"><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">1</span><strong>Understand task</strong><p class="small text-secondary mt-2 mb-0">Read issue, acceptance criteria and relevant repository documentation.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">2</span><strong>Inspect code</strong><p class="small text-secondary mt-2 mb-0">Locate affected modules, contracts, tests, security boundaries and dependencies.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">3</span><strong>Plan change</strong><p class="small text-secondary mt-2 mb-0">Describe intended modifications before editing broad areas of the repository.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">4</span><strong>Implement incrementally</strong><p class="small text-secondary mt-2 mb-0">Make focused changes aligned to existing architecture and conventions.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">5</span><strong>Run verification</strong><p class="small text-secondary mt-2 mb-0">Compile, execute tests, lint, scan and inspect runtime behavior.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">6</span><strong>Review diff</strong><p class="small text-secondary mt-2 mb-0">Check security, data handling, edge cases, maintainability and unintended changes.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">7</span><strong>Commit through normal flow</strong><p class="small text-secondary mt-2 mb-0">Use branch protection, pull request review and CI/CD rather than bypassing governance.</p></div></div></div>
+</section>
+
+<section id="s6" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Commercial scenario</div>
+  <h2 class="h3 fw-bold">Move from demo thinking to enterprise thinking</h2>
+  <p class="lead">A coding agent is asked to add an order-search endpoint. A weak approach invents new patterns. A strong approach first finds existing controllers, service methods, security conventions, DTOs and tests, then implements the smallest consistent change.</p>
+  <div class="row g-3">
+    <div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Identity</strong><div class="small text-secondary">Who is asking, what organization/tenant are they in, and what are they permitted to do?</div></div></div>
+    <div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Authority</strong><div class="small text-secondary">Which deterministic service owns the business fact or action?</div></div></div>
+    <div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Evidence</strong><div class="small text-secondary">What logs, traces, retrieved sources, tool results and policy decisions prove what happened?</div></div></div>
+  </div>
+</section>
+
+<section id="s7" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Reference application</div>
+  <h2 class="h3 fw-bold">Connect AI to the Bootcamp Spring Boot platform</h2>
+  <p>Use the Bootcamp repository itself: ask an agent to trace Browser → Controller → Service → Repository for an existing feature before allowing it to add a new one.</p>
+  <div class="row g-3">
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Keycloak</strong><div class="small text-secondary">Identity, authentication and trusted claims.</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Spring Security</strong><div class="small text-secondary">Deterministic access enforcement at application/API boundaries.</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Services / APIs</strong><div class="small text-secondary">Authoritative business operations exposed as governed capabilities.</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>MySQL</strong><div class="small text-secondary">Transactional state remains in the system of record.</div></div></div>
+  </div>
+</section>
+
+<section id="s8" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Production controls</div>
+  <h2 class="h3 fw-bold">What surrounds the model</h2>
+  <div class="row g-3">
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>IAM &amp; policy</strong><div class="small text-secondary">SSO, roles/attributes, tenant boundaries and purpose-aware authorization.</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Evaluation</strong><div class="small text-secondary">Representative test sets for quality, safety, groundedness and tool correctness.</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Observability</strong><div class="small text-secondary">Trace model calls, retrieval, tools, latency, cost, errors and decisions.</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Human governance</strong><div class="small text-secondary">Approval and accountability for consequential actions and exceptions.</div></div></div>
+  </div>
+</section>
+
+<section id="s9" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Common failure modes</div>
+  <h2 class="h3 fw-bold">Where AI systems fail when engineering discipline is missing</h2>
+  <div class="row g-3"><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Accepting code because it compiles</strong><p class="small text-secondary mt-2 mb-0">Compilation proves syntax and typing, not policy, security or business correctness.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Broad unattended edits</strong><p class="small text-secondary mt-2 mb-0">The agent changes unrelated files and creates hidden maintenance cost.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Secrets in prompts or context</strong><p class="small text-secondary mt-2 mb-0">Credentials or sensitive source data are copied into external services without approval.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Skipping code review</strong><p class="small text-secondary mt-2 mb-0">AI-generated changes bypass the same governance required for human-authored code.</p></div></div></div>
+</section>
+
+<section id="s10" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Hands-on lab</div>
+  <h2 class="h3 fw-bold">Apply the concept to the reference system</h2>
+  <p>Create a coding-agent task for one small Bootcamp enhancement. Write repository context, constraints, files to inspect, acceptance criteria, tests to run, forbidden actions and the expected PR review checklist.</p>
+  <div class="alert alert-primary mb-0"><strong>Deliverable:</strong> Produce a one-page implementation design with architecture, trust boundaries, allowed capabilities, validation, failure handling, observability and acceptance criteria.</div>
+</section>
+
+<section id="s11" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Knowledge check</div>
+  <h2 class="h3 fw-bold">Can you defend the design?</h2>
+  <ol>
+    <li class="mb-2">Which component owns the authoritative business fact?</li>
+    <li class="mb-2">What can the model decide, and what must deterministic policy decide?</li>
+    <li class="mb-2">How is user identity carried into retrieval and tool execution?</li>
+    <li class="mb-2">What failure could produce a fluent but unsafe result?</li>
+    <li class="mb-2">How would you test this before production?</li>
+    <li>What evidence would an operator or auditor need after an incident?</li>
+  </ol>
+</section>
+
+<section id="s12" class="lesson-hero p-4 mb-4">
+  <div class="section-kicker text-info">Lesson recap</div>
+  <h2 class="h3 fw-bold">Five things to remember</h2>
+  <div class="row g-3">
+    <div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">1. Agents need repository context.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">2. Planning precedes broad edits.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">3. Verification is mandatory.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">4. AI code still goes through PR governance.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">5. Humans own the merged outcome.</div></div>
+  </div>
+</section>
+
+<section id="s13" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Career perspective</div>
+  <h2 class="h3 fw-bold">AI-era engineers still need strong software-engineering foundations</h2>
+  <p class="lead mb-0">The engineer who understands IAM, APIs, data, distributed systems, observability, testing and business workflows can use AI far more effectively than someone who knows prompting alone. The AI layer magnifies both good architecture and bad architecture.</p>
+</section>
+
+<section class="soft-card p-4 border-top border-primary border-4">
+  <div class="section-kicker">Lesson 49 complete</div>
+  <h2 class="h4 fw-bold">Next: Vibe Coding: Benefits, Limits and Guardrails</h2>
+  <p class="text-secondary mb-0">Continue building the complete enterprise AI mental model.</p>
+</section>
+
+</div>
+
+<aside class="col-xl-3">
+  <div class="soft-card p-4 sticky-xl-top" style="top:90px">
+    <div class="section-kicker">In this lesson</div>
+    <h2 class="h5 fw-bold">Lesson navigation</h2>
+    <div class="small lh-lg">
+      <a href="#s1">Course video</a> ·
+      <a href="#s2">Learning objectives</a> ·
+      <a href="#s3">Engineering problem</a> ·
+      <a href="#s4">Core concepts</a> ·
+      <a href="#s5">End-to-end flow</a> ·
+      <a href="#s6">Commercial scenario</a> ·
+      <a href="#s7">Reference application</a> ·
+      <a href="#s8">Production controls</a> ·
+      <a href="#s9">Failure modes</a> ·
+      <a href="#s10">Hands-on lab</a> ·
+      <a href="#s11">Knowledge check</a> ·
+      <a href="#s12">Lesson recap</a> ·
+      <a href="#s13">Career perspective</a>
+    </div>
+    <hr>
+    <p class="small text-secondary mb-0"><strong>Instructor note:</strong> Teach AI as another enterprise subsystem with probabilistic behavior—not as a replacement for security, APIs, data ownership or operational engineering.</p>
+  </div>
+</aside>
+
+</div>
+</main>
+</html>

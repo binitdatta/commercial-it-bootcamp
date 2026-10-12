@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('Sign in', 'Sign in to the Commercial IT Bootcamp', ~{::main})}">
+<main>
+    <div class="row justify-content-center py-lg-5">
+        <div class="col-lg-7 col-xl-5">
+            <div class="soft-card p-4 p-lg-5 text-center">
+                <div class="section-kicker mb-2">Secure training environment</div>
+                <h1 class="h2 fw-bold">Sign in with Keycloak</h1>
+                <p class="text-secondary">The UI uses OpenID Connect Authorization Code Flow with PKCE. Realm roles are mapped into Spring Security authorities.</p>
+                <a class="btn btn-primary btn-lg w-100 mt-3" th:href="@{/oauth2/authorization/keycloak}">Continue to Keycloak</a>
+                <div class="alert alert-primary mt-4 mb-0 text-start small">
+                    <strong>Demo users:</strong><br>
+                    student / Student123!<br>
+                    instructor / Instructor123!<br>
+                    bootcamp-admin / Admin123!
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</html>

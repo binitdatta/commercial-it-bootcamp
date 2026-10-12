@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('Business Domains: Retail, Banking, Healthcare & Supply Chain', 'Learn how business domains shape software requirements, data, workflows, risk, regulation and architecture.', ~{::main})}">
+<main>
+
+    <style>
+        /* =============================================================
+           Business Domains lesson — presentation layer
+           ============================================================= */
+
+        #objectives,
+        .lesson-section {
+            scroll-margin-top: 95px;
+        }
+
+        /* ---------- Number badges ---------- */
+        .lesson-number {
+            width: 2rem;
+            height: 2rem;
+            min-width: 2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #0d6efd;
+            color: #fff;
+            font-size: .82rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-top: .05rem;
+            box-shadow: 0 0 0 4px rgba(13,110,253,.08);
+        }
+
+        .lesson-number-light {
+            background: rgba(255,255,255,.96);
+            color: #0d6efd;
+            box-shadow: 0 0 0 4px rgba(255,255,255,.14);
+        }
+
+        .objective-item,
+        .domain-step,
+        .question-card,
+        .lab-step,
+        .recap-item {
+            min-width: 0;
+        }
+
+        .objective-item > div,
+        .domain-step > div,
+        .question-card > div,
+        .lab-step > div,
+        .recap-item > div {
+            min-width: 0;
+        }
+
+        .objective-item strong,
+        .domain-step strong,
+        .question-card strong,
+        .lab-step strong,
+        .recap-item strong {
+            display: block;
+            margin-bottom: .22rem;
+        }
+
+        .objective-item small,
+        .domain-step p,
+        .question-card small,
+        .lab-step p,
+        .recap-item small {
+            display: block;
+            margin-bottom: 0;
+            line-height: 1.5;
+        }
+
+        /* ---------- General table shell ---------- */
+        .domain-definition-panel,
+        .translation-table-wrap,
+        .reference-panel,
+        .career-table-wrap {
+            border: 1px solid #d8e7fb;
+            border-radius: 1rem;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 .35rem 1.1rem rgba(27,64,112,.06);
+        }
+
+        .domain-definition-header,
+        .reference-panel-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.15rem 1.3rem;
+            background: linear-gradient(135deg, #eef6ff 0%, #f8fbff 100%);
+            border-bottom: 1px solid #d8e7fb;
+        }
+
+        .domain-definition-icon,
+        .reference-panel-icon {
+            width: 2.7rem;
+            height: 2.7rem;
+            flex: 0 0 2.7rem;
+            display: grid;
+            place-items: center;
+            border-radius: .8rem;
+            background: #0d6efd;
+            color: white;
+            font-size: 1.15rem;
+            box-shadow: 0 .3rem .8rem rgba(13,110,253,.18);
+        }
+
+        .reference-panel-kicker {
+            color: #0d6efd;
+            font-size: .72rem;
+            font-weight: 800;
+            letter-spacing: .08em;
+            margin-bottom: .15rem;
+        }
+
+        .domain-definition-table thead th,
+        .translation-table thead th,
+        .reference-table thead th,
+        .career-table thead th {
+            padding: .88rem 1rem;
+            background: linear-gradient(135deg, #143c73 0%, #0d6efd 100%);
+            color: #fff;
+            border: 0;
+            font-size: .76rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .045em;
+            white-space: nowrap;
+        }
+
+        .domain-definition-table tbody td,
+        .translation-table tbody td,
+        .reference-table tbody td,
+        .career-table tbody td {
+            padding: 1rem;
+            border-color: rgba(28,54,87,.08);
+            line-height: 1.48;
+        }
+
+        .domain-definition-table tbody tr:nth-child(odd) td,
+        .translation-table tbody tr:nth-child(odd) td,
+        .reference-table tbody tr:nth-child(odd) td,
+        .career-table tbody tr:nth-child(odd) td {
+            background: #fbfdff;
+        }
+
+        .domain-definition-table tbody tr:nth-child(even) td,
+        .translation-table tbody tr:nth-child(even) td,
+        .reference-table tbody tr:nth-child(even) td,
+        .career-table tbody tr:nth-child(even) td {
+            background: #f2f7fe;
+        }
+
+        .domain-definition-table tbody tr:hover td,
+        .translation-table tbody tr:hover td,
+        .reference-table tbody tr:hover td,
+        .career-table tbody tr:hover td {
+            background: #e8f2ff !important;
+        }
+
+        .domain-seq,
+        .translation-seq,
+        .reference-step,
+        .career-seq {
+            text-align: center;
+        }
+
+        .domain-seq span,
+        .translation-seq span,
+        .reference-step span,
+        .career-seq span {
+            width: 2.35rem;
+            height: 2.35rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #0d6efd;
+            color: #fff;
+            font-size: .76rem;
+            font-weight: 800;
+            box-shadow: 0 0 0 4px rgba(13,110,253,.08);
+        }
+
+        /* ---------- "Status" comparison cards ---------- */
+        .domain-mini {
+            padding: 1.05rem;
+            border-radius: .9rem;
+            border: 1px solid #dce9f7;
+            background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+            box-shadow: 0 .25rem .7rem rgba(27,64,112,.04);
+        }
+
+        .domain-mini strong {
+            display: block;
+            margin: .45rem 0 .35rem;
+            color: #172033;
+        }
+
+        .domain-mini p {
+            color: #647184;
+            line-height: 1.5;
+            margin-bottom: 0;
+        }
+
+        .domain-tag {
+            display: inline-block;
+            padding: .28rem .55rem;
+            border-radius: 999px;
+            background: #e9f3ff;
+            color: #0b57b7;
+            font-size: .7rem;
+            font-weight: 800;
+            letter-spacing: .055em;
+        }
+
+        /* ---------- Industry cards ---------- */
+        .industry-card {
+            padding: 1.35rem;
+            border-radius: 1rem;
+            border: 1px solid #d8e7fb;
+            background: #fff;
+            box-shadow: 0 .35rem 1rem rgba(27,64,112,.05);
+        }
+
+        .industry-card-head {
+            display: flex;
+            align-items: flex-start;
+            gap: .9rem;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(15,23,42,.08);
+        }
+
+        .industry-card-head > span {
+            width: 2.55rem;
+            height: 2.55rem;
+            min-width: 2.55rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #0d6efd;
+            color: #fff;
+            font-size: .78rem;
+            font-weight: 800;
+            box-shadow: 0 0 0 4px rgba(13,110,253,.08);
+        }
+
+        .industry-card > p {
+            color: #5f6d7e;
+            line-height: 1.6;
+        }
+
+        .industry-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: .75rem;
+        }
+
+        .industry-grid > div {
+            padding: .85rem;
+            border-radius: .75rem;
+            background: #f6f9fd;
+            border: 1px solid #e3edf8;
+        }
+
+        .industry-grid b {
+            display: block;
+            color: #172033;
+            margin-bottom: .2rem;
+        }
+
+        .industry-grid small {
+            display: block;
+            color: #687587;
+            line-height: 1.45;
+        }
+
+        .industry-process {
+            padding: .9rem;
+            border-radius: .8rem;
+            background: #f0f6ff;
+            border: 1px solid #d8e7fb;
+        }
+
+        .industry-process-label {
+            margin-bottom: .55rem;
+            font-size: .7rem;
+            font-weight: 800;
+            letter-spacing: .055em;
+            text-transform: uppercase;
+            color: #0d6efd;
+        }
+
+        .industry-process-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0,1fr));
+            gap: .45rem;
+        }
+
+        .industry-process-grid span {
+            display: block;
+            padding: .48rem .55rem;
+            border-radius: .6rem;
+            background: #fff;
+            border: 1px solid #dbe8f7;
+            color: #26364a;
+            font-size: .78rem;
+            white-space: nowrap;
+        }
+
+        .industry-process-grid b {
+            color: #0d6efd;
+            margin-right: .3rem;
+        }
+
+        /* ---------- Existing cross-domain table ---------- */
+        #compare .lesson-table {
+            border: 1px solid #d8e7fb;
+            border-radius: .9rem;
+            overflow: hidden;
+        }
+
+        #compare .lesson-table thead th {
+            background: linear-gradient(135deg, #143c73 0%, #0d6efd 100%);
+            color: #fff;
+            border: 0;
+            padding: .9rem 1rem;
+        }
+
+        #compare .lesson-table tbody td,
+        #compare .lesson-table tbody th {
+            padding: .95rem 1rem;
+            border-color: rgba(28,54,87,.08);
+        }
+
+        #compare .lesson-table tbody tr:nth-child(even) td,
+        #compare .lesson-table tbody tr:nth-child(even) th {
+            background: #f3f8ff;
+        }
+
+        /* ---------- Vocabulary ---------- */
+        .term-card {
+            height: 100%;
+            padding: 1.05rem;
+            border: 1px solid #dce9f7;
+            border-radius: .9rem;
+            background: #fbfdff;
+        }
+
+        .term-card > strong {
+            display: block;
+            margin-bottom: .65rem;
+            color: #172033;
+        }
+
+        .term-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .4rem;
+        }
+
+        .term-cloud span {
+            display: inline-block;
+            padding: .32rem .58rem;
+            border-radius: 999px;
+            background: #eaf3ff;
+            color: #174d91;
+            border: 1px solid #d5e6fb;
+            font-size: .78rem;
+            font-weight: 600;
+        }
+
+        /* ---------- Learning path / questions / lab ---------- */
+        .domain-learning-path,
+        #questions .row,
+        #lab {
+            min-width: 0;
+        }
+
+        .domain-step,
+        .lab-step {
+            padding: 1rem 0;
+        }
+
+        .domain-step + .domain-step,
+        .lab-step + .lab-step {
+            border-top: 1px solid rgba(15,23,42,.08);
+        }
+
+        .question-card {
+            height: 100%;
+            padding: 1rem;
+            border: 1px solid #dce9f7;
+            border-radius: .9rem;
+            background: linear-gradient(180deg, #fff 0%, #f8fbff 100%);
+        }
+
+        /* ---------- Scenario and sources ---------- */
+        .scenario-domain,
+        .source-card,
+        .mini-card {
+            padding: 1rem;
+            border-radius: .85rem;
+            border: 1px solid #dce9f7;
+            background: #fbfdff;
+        }
+
+        .scenario-domain strong,
+        .source-card strong,
+        .mini-card strong {
+            display: block;
+            margin-bottom: .4rem;
+            color: #172033;
+        }
+
+        .scenario-domain p,
+        .source-card p,
+        .mini-card p {
+            color: #647184;
+            line-height: 1.55;
+            margin-bottom: 0;
+        }
+
+        /* ---------- Spacing ---------- */
+        .lesson-section > p.text-secondary {
+            line-height: 1.65;
+        }
+
+        .scenario-box {
+            padding: 1.25rem;
+            border-radius: .9rem;
+            border: 1px solid #dce9f7;
+            background: linear-gradient(135deg, #f8fbff 0%, #eef6ff 100%);
+        }
+
+        .lesson-insight {
+            padding: 1rem 1.15rem;
+            border-left: 4px solid #0d6efd;
+            border-radius: 0 .9rem .9rem 0;
+            background: #eef6ff;
+            line-height: 1.55;
+        }
+
+        @media (max-width: 991.98px) {
+            .domain-definition-table,
+            .translation-table,
+            .reference-table,
+            .career-table,
+            #compare .lesson-table {
+                min-width: 900px;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .industry-grid,
+            .industry-process-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .lesson-number {
+                width: 1.85rem;
+                height: 1.85rem;
+                min-width: 1.85rem;
+                font-size: .76rem;
+            }
+        }
+    </style>
+
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a th:href="@{/training}">Training</a></li>
+            <li class="breadcrumb-item" th:text="${section.title}">Part I — How Commercial IT Works</li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${lesson.title}">Business Domains: Retail, Banking, Healthcare & Supply Chain</li>
+        </ol>
+    </nav>
+
+    <!-- Hero -->
+    <section class="lesson-hero p-4 p-lg-5 mb-4">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <span class="lesson-chip">PART I</span>
+                    <span class="lesson-chip">LESSON <span th:text="${lesson.number}">2</span></span>
+                    <span class="lesson-chip">BEGINNER</span>
+                    <span class="lesson-chip">50–60 MIN</span>
+                </div>
+                <div class="small text-uppercase fw-bold opacity-75 mb-2">How Commercial IT Works</div>
+                <h1 class="display-5 fw-bold mb-3">Business Domains: Retail, Banking, Healthcare & Supply Chain</h1>
+                <p class="lead mb-0 opacity-90">Technology skills tell you how to build software. Domain knowledge tells you what the software must mean, which rules matter, which failures are unacceptable, and why the business is paying to build it.</p>
+            </div>
+            <div class="col-lg-4">
+                <div class="lesson-hero-callout">
+                    <div class="fw-bold mb-2">Core mental model</div>
+                    <div class="small opacity-90">Same technology stack ≠ same business system. The domain changes vocabulary, workflows, data, risk, compliance, integrations and success criteria.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="row g-4">
+        <div class="col-xl-9">
+<!-- Objectives -->
+            <section id="objectives" class="soft-card lesson-section p-4 p-lg-5 mb-4 shadow-sm">
+                <div class="section-kicker">Learning objectives</div>
+                <h2 class="h3 fw-bold mb-3">What you should understand after this lesson</h2>
+                <p class="text-secondary mb-4">The goal is not to become a banking, healthcare, retail or supply-chain expert in one hour. The goal is to learn how to enter an unfamiliar business domain systematically and become useful quickly.</p>
+                <div class="row g-3">
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">1</span><div class="flex-grow-1"><strong>Define a business domain</strong><br><small>Understand domain vocabulary, actors, processes, rules, data and outcomes.</small></div></div></div>
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">2</span><div class="flex-grow-1"><strong>Compare four major industries</strong><br><small>Retail, Banking, Healthcare and Supply Chain solve very different business problems.</small></div></div></div>
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">3</span><div class="flex-grow-1"><strong>Identify domain-driven requirements</strong><br><small>Recognize how rules, risk, compliance and operating models influence architecture.</small></div></div></div>
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">4</span><div class="flex-grow-1"><strong>Learn the language of the business</strong><br><small>Discover entities, events, workflows, KPIs and exceptions before designing software.</small></div></div></div>
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">5</span><div class="flex-grow-1"><strong>Avoid dangerous assumptions</strong><br><small>Understand why similar-looking concepts often have different meanings across industries.</small></div></div></div>
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">6</span><div class="flex-grow-1"><strong>Apply domain thinking</strong><br><small>Analyze the E-Commerce reference application as a retail/order-management domain.</small></div></div></div>
+                </div>
+            </section>
+
+            <!-- Why domain knowledge -->
+            <section id="why-domain" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Start with the problem</div>
+                <h2 class="h3 fw-bold">A technically correct system can still be commercially wrong</h2>
+                <p class="lead">Imagine an engineer is asked to add a field called <strong>Status</strong>. That sounds trivial—until you ask what “status” actually means.</p>
+
+                <div class="row g-3 my-3">
+                    <div class="col-md-6 col-xl-3"><div class="domain-mini h-100"><div class="domain-tag">RETAIL</div><strong>Order Status</strong><p>Created, paid, fulfilling, shipped, delivered, cancelled, returned.</p></div></div>
+                    <div class="col-md-6 col-xl-3"><div class="domain-mini h-100"><div class="domain-tag">BANKING</div><strong>Payment Status</strong><p>Initiated, authorized, pending, settled, reversed, declined.</p></div></div>
+                    <div class="col-md-6 col-xl-3"><div class="domain-mini h-100"><div class="domain-tag">HEALTHCARE</div><strong>Encounter Status</strong><p>Scheduled, checked-in, in-progress, discharged, cancelled.</p></div></div>
+                    <div class="col-md-6 col-xl-3"><div class="domain-mini h-100"><div class="domain-tag">SUPPLY CHAIN</div><strong>Shipment Status</strong><p>Planned, tendered, picked up, in transit, delayed, delivered.</p></div></div>
+                </div>
+
+                <div class="scenario-box mt-4">
+                    <div class="scenario-label">KEY LESSON</div>
+                    <div class="h5 fw-bold mb-2">The database column may be VARCHAR(30). The business meaning is not.</div>
+                    <div class="text-secondary">Every status transition may trigger policies, money movement, inventory changes, notifications, regulatory obligations, downstream integrations or customer-impacting actions.</div>
+                </div>
+            </section>
+<!-- What is a domain -->
+            <section id="domain-model" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Core terminology</div>
+                <h2 class="h3 fw-bold mb-3">What do we mean by “business domain”?</h2>
+                <p class="text-secondary mb-4">
+                    A business domain is an area of business activity with its own language, actors,
+                    rules, processes, data and measures of success. Software becomes valuable when it
+                    models and automates those realities correctly.
+                </p>
+
+                <div class="domain-definition-panel mb-4">
+                    <div class="domain-definition-header">
+                        <div class="domain-definition-icon"><i class="bi bi-grid-3x3-gap-fill"></i></div>
+                        <div>
+                            <div class="reference-panel-kicker">BUSINESS DOMAIN BUILDING BLOCKS</div>
+                            <h3 class="h5 fw-bold mb-0">Eight things an engineer should discover first</h3>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table domain-definition-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:90px;">Area</th>
+                                    <th style="width:24%;">Domain concept</th>
+                                    <th>What to discover</th>
+                                    <th>Examples in this lesson</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="domain-seq"><span>01</span></td><td><strong>Actors</strong></td><td>Who performs work, makes decisions, receives services or owns outcomes?</td><td>Customer, supplier, clinician, banker, planner.</td></tr>
+                                <tr><td class="domain-seq"><span>02</span></td><td><strong>Entities</strong></td><td>What business objects must the system understand and persist?</td><td>Order, account, patient, shipment, invoice.</td></tr>
+                                <tr><td class="domain-seq"><span>03</span></td><td><strong>Events</strong></td><td>What meaningful business occurrences change state or trigger action?</td><td>Order placed, payment settled, patient admitted.</td></tr>
+                                <tr><td class="domain-seq"><span>04</span></td><td><strong>Rules</strong></td><td>What decisions, constraints, approvals and state transitions are allowed?</td><td>Eligibility, limits, approvals, prohibited transitions.</td></tr>
+                                <tr><td class="domain-seq"><span>05</span></td><td><strong>Processes</strong></td><td>What end-to-end work does the business perform?</td><td>Checkout, lending, discharge, replenishment.</td></tr>
+                                <tr><td class="domain-seq"><span>06</span></td><td><strong>Data</strong></td><td>Which master, transactional, reference and analytical data matters?</td><td>Customer, product, account, patient, inventory.</td></tr>
+                                <tr><td class="domain-seq"><span>07</span></td><td><strong>Risk &amp; Compliance</strong></td><td>What must be protected, controlled, retained, audited or reviewed?</td><td>Privacy, fraud, audit, safety, retention.</td></tr>
+                                <tr><td class="domain-seq"><span>08</span></td><td><strong>KPIs</strong></td><td>How does the organization know the process is succeeding?</td><td>Revenue, loss, wait time, fill rate, lead time.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="lesson-insight">
+                    <strong>Useful habit:</strong> When entering a new domain, start by collecting nouns,
+                    verbs, events, state transitions, exceptions and KPIs. Those often become your APIs,
+                    data models, workflows and tests.
+                </div>
+            </section>
+
+            <!-- Four domains overview -->
+            <section id="four-domains" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Four industry lenses</div>
+                <h2 class="h3 fw-bold mb-3">Same engineering disciplines, very different business realities</h2>
+                <p class="text-secondary mb-4">These examples are intentionally simplified. Real enterprises contain many subdomains and specialized systems.</p>
+
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <article class="industry-card industry-retail h-100">
+                            <div class="industry-card-head"><span>01</span><div><div class="small fw-bold text-uppercase">Retail / E-Commerce</div><h3 class="h4 fw-bold mb-0">Sell the right product, at the right price, through the right channel</h3></div></div>
+                            <p>Retail connects merchandising, product catalog, pricing, promotions, customer experience, inventory, orders, payments, fulfillment and returns.</p>
+                            <div class="industry-grid">
+                                <div><b>Core actors</b><small>Customer, merchant, store associate, supplier, fulfillment center</small></div>
+                                <div><b>Core entities</b><small>Product, SKU, cart, order, payment, inventory, promotion</small></div>
+                                <div><b>Critical events</b><small>Item viewed, cart changed, order placed, payment captured, order shipped</small></div>
+                                <div><b>Typical KPIs</b><small>Conversion, revenue, margin, basket size, stock-out rate, return rate</small></div>
+                            </div>
+                            <div class="industry-process mt-3">
+        <div class="industry-process-label">Typical lifecycle</div>
+        <div class="industry-process-grid">
+            <span><b>01</b> Browse</span><span><b>02</b> Cart</span><span><b>03</b> Checkout</span>
+            <span><b>04</b> Payment</span><span><b>05</b> Fulfillment</span><span><b>06</b> Return</span>
+        </div>
+    </div>
+                        </article>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <article class="industry-card industry-bank h-100">
+                            <div class="industry-card-head"><span>02</span><div><div class="small fw-bold text-uppercase">Banking / Financial Services</div><h3 class="h4 fw-bold mb-0">Move, protect and account for money with strong controls</h3></div></div>
+                            <p>Banking systems manage customers, accounts, balances, payments, deposits, lending, fraud, risk, settlement and financial records.</p>
+                            <div class="industry-grid">
+                                <div><b>Core actors</b><small>Customer, teller, banker, underwriter, fraud analyst, regulator</small></div>
+                                <div><b>Core entities</b><small>Account, transaction, payment, loan, card, beneficiary</small></div>
+                                <div><b>Critical events</b><small>Authorization, transfer, settlement, reversal, repayment, suspicious activity</small></div>
+                                <div><b>Typical KPIs</b><small>Transaction success, fraud loss, delinquency, liquidity, service availability</small></div>
+                            </div>
+                            <div class="industry-process mt-3">
+        <div class="industry-process-label">Typical lifecycle</div>
+        <div class="industry-process-grid">
+            <span><b>01</b> Initiate</span><span><b>02</b> Authenticate</span><span><b>03</b> Authorize</span>
+            <span><b>04</b> Post</span><span><b>05</b> Settle</span><span><b>06</b> Reconcile</span>
+        </div>
+    </div>
+                        </article>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <article class="industry-card industry-health h-100">
+                            <div class="industry-card-head"><span>03</span><div><div class="small fw-bold text-uppercase">Healthcare</div><h3 class="h4 fw-bold mb-0">Coordinate care while protecting sensitive clinical information</h3></div></div>
+                            <p>Healthcare systems connect patients, providers, appointments, encounters, diagnoses, medications, orders, results, billing and insurance workflows.</p>
+                            <div class="industry-grid">
+                                <div><b>Core actors</b><small>Patient, physician, nurse, pharmacist, lab, insurer, administrator</small></div>
+                                <div><b>Core entities</b><small>Patient, encounter, medication, diagnosis, lab result, claim</small></div>
+                                <div><b>Critical events</b><small>Admission, order placed, result posted, medication administered, discharge</small></div>
+                                <div><b>Typical KPIs</b><small>Clinical quality, wait time, readmission, throughput, claim acceptance</small></div>
+                            </div>
+                            <div class="industry-process mt-3">
+        <div class="industry-process-label">Typical lifecycle</div>
+        <div class="industry-process-grid">
+            <span><b>01</b> Register</span><span><b>02</b> Assess</span><span><b>03</b> Treat</span>
+            <span><b>04</b> Document</span><span><b>05</b> Discharge</span><span><b>06</b> Bill</span>
+        </div>
+    </div>
+                        </article>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <article class="industry-card industry-supply h-100">
+                            <div class="industry-card-head"><span>04</span><div><div class="small fw-bold text-uppercase">Supply Chain</div><h3 class="h4 fw-bold mb-0">Plan, source, move and deliver physical goods reliably</h3></div></div>
+                            <p>Supply-chain systems coordinate demand, sourcing, suppliers, purchase orders, inventory, manufacturing, warehouses, transportation and delivery.</p>
+                            <div class="industry-grid">
+                                <div><b>Core actors</b><small>Buyer, supplier, planner, warehouse operator, carrier, customs broker</small></div>
+                                <div><b>Core entities</b><small>Item, supplier, PO, inventory, shipment, location, container</small></div>
+                                <div><b>Critical events</b><small>PO issued, goods received, shipment departed, delay detected, delivery confirmed</small></div>
+                                <div><b>Typical KPIs</b><small>Fill rate, OTIF, lead time, inventory turns, logistics cost, forecast accuracy</small></div>
+                            </div>
+                            <div class="industry-process mt-3">
+        <div class="industry-process-label">Typical lifecycle</div>
+        <div class="industry-process-grid">
+            <span><b>01</b> Plan</span><span><b>02</b> Source</span><span><b>03</b> Buy</span>
+            <span><b>04</b> Store</span><span><b>05</b> Move</span><span><b>06</b> Deliver</span>
+        </div>
+    </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Compare -->
+            <section id="compare" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Cross-domain comparison</div>
+                <h2 class="h3 fw-bold mb-3">How the domain changes engineering decisions</h2>
+                <div class="table-responsive">
+                    <table class="table lesson-table align-middle mb-0">
+                        <thead><tr><th>Concern</th><th>Retail</th><th>Banking</th><th>Healthcare</th><th>Supply Chain</th></tr></thead>
+                        <tbody>
+                        <tr><th>Primary business object</th><td>Order / Product</td><td>Account / Transaction</td><td>Patient / Encounter</td><td>Item / Shipment</td></tr>
+                        <tr><th>Typical correctness concern</th><td>Right price and inventory</td><td>Exact money movement and ledger integrity</td><td>Correct patient, order and clinical context</td><td>Right quantity, location and timing</td></tr>
+                        <tr><th>Time sensitivity</th><td>Seconds during checkout</td><td>Real-time to batch depending on rail/process</td><td>Real-time for many care workflows</td><td>Real-time events plus long-running physical processes</td></tr>
+                        <tr><th>High-impact failure</th><td>Overselling or failed checkout</td><td>Incorrect transfer or duplicate posting</td><td>Wrong-patient or medication-related error</td><td>Missed delivery, stock-out or production disruption</td></tr>
+                        <tr><th>Security emphasis</th><td>Account takeover, payments, privacy</td><td>Fraud, strong auth, audit, segregation of duties</td><td>Privacy, appropriate access, auditability</td><td>Partner access, B2B integration, operational integrity</td></tr>
+                        <tr><th>Common integration style</th><td>APIs + events + payment/fulfillment services</td><td>APIs + messaging + batch + payment networks</td><td>APIs + healthcare interoperability + messaging</td><td>APIs + EDI/B2B + events + ERP/WMS/TMS</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="small text-secondary mt-3 mb-0"><strong>Important:</strong> Regulatory requirements depend on jurisdiction, organization, data and use case. Examples such as PCI DSS or HIPAA may be relevant in specific contexts, but engineering teams must work from the rules that actually apply to their system.</p>
+            </section>
+
+            <!-- Domain vocabulary -->
+            <section id="language" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Speak the language</div>
+                <h2 class="h3 fw-bold mb-3">Domain vocabulary is part of your engineering toolkit</h2>
+                <p class="text-secondary">When business and engineering use the same words differently, defects begin before anybody writes code. Build a shared glossary and make ambiguous terms explicit.</p>
+
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6"><div class="term-card"><strong>Retail</strong><div class="term-cloud"><span>SKU</span><span>Cart</span><span>Promotion</span><span>Allocation</span><span>Fulfillment</span><span>Return</span></div></div></div>
+                    <div class="col-md-6"><div class="term-card"><strong>Banking</strong><div class="term-cloud"><span>Ledger</span><span>Authorization</span><span>Settlement</span><span>Reversal</span><span>Beneficiary</span><span>Limit</span></div></div></div>
+                    <div class="col-md-6"><div class="term-card"><strong>Healthcare</strong><div class="term-cloud"><span>Encounter</span><span>Order</span><span>Result</span><span>Medication</span><span>Claim</span><span>Discharge</span></div></div></div>
+                    <div class="col-md-6"><div class="term-card"><strong>Supply Chain</strong><div class="term-cloud"><span>PO</span><span>ASN</span><span>Lead Time</span><span>Inventory</span><span>Shipment</span><span>OTIF</span></div></div></div>
+                </div>
+
+                <div class="lesson-insight mt-4"><strong>Engineering signal:</strong> If a team cannot agree on the meaning of a business term, do not hide that disagreement behind a generic field name. Resolve the concept first.</div>
+            </section>
+
+            <!-- How to learn a domain -->
+            <section id="learn-domain" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Practical method</div>
+                <h2 class="h3 fw-bold mb-3">How an engineer learns a new domain</h2>
+                <p class="text-secondary mb-4">You do not learn a domain by reading a single requirements document. You build a model progressively from people, process, data, systems and exceptions.</p>
+
+                <div class="domain-learning-path">
+                    <div class="domain-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">1</span><div class="flex-grow-1"><strong>Understand the business outcome</strong><p>What is the organization trying to improve—revenue, safety, throughput, cost, customer experience, risk?</p></div></div>
+                    <div class="domain-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">2</span><div class="flex-grow-1"><strong>Identify actors and responsibilities</strong><p>Who performs the work? Who approves it? Who owns the data? Who receives the outcome?</p></div></div>
+                    <div class="domain-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">3</span><div class="flex-grow-1"><strong>Map the happy-path process</strong><p>Draw the normal end-to-end flow in plain business language before discussing classes, APIs or cloud services.</p></div></div>
+                    <div class="domain-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">4</span><div class="flex-grow-1"><strong>Discover exceptions and policies</strong><p>What can fail? What requires approval? Which transitions are prohibited? What happens after cancellation?</p></div></div>
+                    <div class="domain-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">5</span><div class="flex-grow-1"><strong>Identify data and system-of-record ownership</strong><p>Which system owns customer, product, account, patient, inventory, shipment or other authoritative records?</p></div></div>
+                    <div class="domain-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">6</span><div class="flex-grow-1"><strong>Learn integrations and timing</strong><p>What must happen synchronously? What can happen asynchronously? Which partners and external systems participate?</p></div></div>
+                    <div class="domain-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">7</span><div class="flex-grow-1"><strong>Capture non-functional constraints</strong><p>Security, privacy, audit, resilience, latency, availability, retention, recovery and scale.</p></div></div>
+                    <div class="domain-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">8</span><div class="flex-grow-1"><strong>Validate your model with domain experts</strong><p>Play the workflow back to product owners, operators and SMEs. Ask them where your model breaks.</p></div></div>
+                </div>
+            </section>
+<!-- Business-to-tech translation -->
+            <section id="translation" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">From business language to software</div>
+                <h2 class="h3 fw-bold mb-3">How domain concepts become technical artifacts</h2>
+                <p class="text-secondary mb-4">
+                    Good engineers do not jump from a sentence in a meeting directly into code.
+                    They translate business meaning into explicit technical structures and controls.
+                </p>
+
+                <div class="translation-table-wrap">
+                    <div class="table-responsive">
+                        <table class="table translation-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:90px;">Step</th>
+                                    <th style="width:22%;">Business concept</th>
+                                    <th style="width:29%;">Business example</th>
+                                    <th>Technical implementation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="translation-seq"><span>01</span></td><td><strong>Business concept</strong></td><td>Customer places an order</td><td><code>POST /orders</code> plus an <code>Order</code> entity.</td></tr>
+                                <tr><td class="translation-seq"><span>02</span></td><td><strong>Business rule</strong></td><td>Cannot cancel after shipment</td><td>Service policy, validation logic and automated tests.</td></tr>
+                                <tr><td class="translation-seq"><span>03</span></td><td><strong>Business event</strong></td><td>Order shipped</td><td>Domain/event message plus downstream notification.</td></tr>
+                                <tr><td class="translation-seq"><span>04</span></td><td><strong>Business responsibility</strong></td><td>Only the owner may cancel</td><td>Authorization rule plus an auditable actor identity.</td></tr>
+                                <tr><td class="translation-seq"><span>05</span></td><td><strong>Business KPI</strong></td><td>Reduce cancellation failures</td><td>Operational metric, dashboard and alerting.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+<!-- Reference app -->
+            <section id="reference-app" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Course reference application</div>
+                <h2 class="h3 fw-bold mb-3">Use the E-Commerce application as your first domain laboratory</h2>
+                <p class="text-secondary mb-4">
+                    This bootcamp includes a deliberately understandable retail/e-commerce reference application.
+                    The point is not that e-commerce is simple; it gives us a common business context for learning
+                    commercial software architecture.
+                </p>
+
+                <div class="reference-panel mb-4">
+                    <div class="reference-panel-header">
+                        <div class="reference-panel-icon"><i class="bi bi-cart-check"></i></div>
+                        <div>
+                            <div class="reference-panel-kicker">E-COMMERCE DOMAIN SEQUENCE</div>
+                            <h3 class="h5 fw-bold mb-0">Follow the core business concepts in order</h3>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table reference-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:90px;">Step</th>
+                                    <th style="width:27%;">Domain concept</th>
+                                    <th>What it represents</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="reference-step"><span>01</span></td><td><strong>Customer</strong></td><td>The person or organization initiating the commercial relationship and placing an order.</td></tr>
+                                <tr><td class="reference-step"><span>02</span></td><td><strong>Product Catalog</strong></td><td>The sellable products and descriptive information presented to the customer.</td></tr>
+                                <tr><td class="reference-step"><span>03</span></td><td><strong>Order</strong></td><td>The commercial transaction representing the customer's purchase request.</td></tr>
+                                <tr><td class="reference-step"><span>04</span></td><td><strong>Order Lines</strong></td><td>The individual products, quantities and line-level details contained inside the order.</td></tr>
+                                <tr><td class="reference-step"><span>05</span></td><td><strong>Payment / Status</strong></td><td>The financial and lifecycle state associated with processing the order.</td></tr>
+                                <tr><td class="reference-step"><span>06</span></td><td><strong>Fulfillment</strong></td><td>The physical or digital process that completes delivery of the purchased items.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6"><div class="mini-card h-100"><strong>Look for domain nouns</strong><p>Customer, Product, Order, OrderLine, Address. These often appear as entities, DTOs, tables and API resources.</p></div></div>
+                    <div class="col-md-6"><div class="mini-card h-100"><strong>Look for domain verbs</strong><p>Create order, view order, update status, cancel order. These become service methods, endpoints and workflows.</p></div></div>
+                    <div class="col-md-6"><div class="mini-card h-100"><strong>Look for domain rules</strong><p>What state transitions are allowed? What fields are mandatory? Who can see or change which records?</p></div></div>
+                    <div class="col-md-6"><div class="mini-card h-100"><strong>Look for missing real-world complexity</strong><p>Taxes, promotions, payment settlement, inventory reservation, returns and fraud may be simplified or absent in a training system.</p></div></div>
+                </div>
+            </section>
+
+            <!-- Scenario -->
+            <section id="scenario" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Industry scenario</div>
+                <h2 class="h3 fw-bold mb-3">One requirement, four domain interpretations</h2>
+                <div class="scenario-box mb-4">
+                    <div class="scenario-label">REQUIREMENT</div>
+                    <div class="h5 fw-bold mb-2">“Allow an authorized user to reverse a completed action.”</div>
+                    <div class="text-secondary">This sentence is dangerously incomplete until you know the domain.</div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-6"><div class="scenario-domain h-100"><strong>Retail</strong><p>Is this an order cancellation, return, refund, inventory adjustment or payment reversal? Each has different downstream effects.</p></div></div>
+                    <div class="col-md-6"><div class="scenario-domain h-100"><strong>Banking</strong><p>Can the transaction actually be reversed, or must a compensating entry be created? Has settlement already occurred?</p></div></div>
+                    <div class="col-md-6"><div class="scenario-domain h-100"><strong>Healthcare</strong><p>Can a clinical record be changed, corrected, amended or only superseded? What audit trail must remain?</p></div></div>
+                    <div class="col-md-6"><div class="scenario-domain h-100"><strong>Supply Chain</strong><p>Can a shipment be cancelled after pickup? Is rerouting required? What inventory and carrier events have already occurred?</p></div></div>
+                </div>
+                <div class="lesson-insight mt-4"><strong>Architectural implication:</strong> “Undo” is rarely just a DELETE statement. Commercial systems often require compensating actions, immutable history, approvals and downstream coordination.</div>
+            </section>
+
+            <!-- Sources of domain knowledge -->
+            <section id="sources" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Where domain knowledge comes from</div>
+                <h2 class="h3 fw-bold mb-3">Your best documentation may be a person or a production workflow</h2>
+                <div class="row g-3">
+                    <div class="col-md-4"><div class="source-card h-100"><strong>People</strong><p>Product managers, operations users, architects, SMEs, customer support, finance, security and compliance teams.</p></div></div>
+                    <div class="col-md-4"><div class="source-card h-100"><strong>Process</strong><p>Process maps, SOPs, runbooks, approval flows, incident histories, training guides and manual workarounds.</p></div></div>
+                    <div class="col-md-4"><div class="source-card h-100"><strong>Systems & Data</strong><p>Existing screens, APIs, database schemas, event messages, reports, dashboards and integration contracts.</p></div></div>
+                    <div class="col-md-4"><div class="source-card h-100"><strong>Contracts & Policies</strong><p>Service obligations, commercial terms, access policies, retention rules and partner agreements.</p></div></div>
+                    <div class="col-md-4"><div class="source-card h-100"><strong>Regulation & Standards</strong><p>Applicable laws, industry standards, security controls and internal governance requirements.</p></div></div>
+                    <div class="col-md-4"><div class="source-card h-100"><strong>Production Evidence</strong><p>Logs, incidents, support tickets, exception queues and metrics show where the theoretical process differs from reality.</p></div></div>
+                </div>
+            </section>
+
+            <!-- Questions to ask -->
+            <section id="questions" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Questions strong engineers ask</div>
+                <h2 class="h3 fw-bold mb-3">Do not start with “Which framework should we use?”</h2>
+                <div class="row g-3">
+                    <div class="col-md-6"><div class="question-card d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">01</span><div class="flex-grow-1"><strong>What business outcome are we trying to achieve?</strong><small>Revenue, cost, speed, risk reduction, compliance, customer experience?</small></div></div></div>
+                    <div class="col-md-6"><div class="question-card d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">02</span><div class="flex-grow-1"><strong>Who are the actors?</strong><small>Humans, organizations, systems, partners and automated processes.</small></div></div></div>
+                    <div class="col-md-6"><div class="question-card d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">03</span><div class="flex-grow-1"><strong>What are the authoritative records?</strong><small>Which system owns the truth for each important entity?</small></div></div></div>
+                    <div class="col-md-6"><div class="question-card d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">04</span><div class="flex-grow-1"><strong>What transitions are legal?</strong><small>Which state changes are allowed, prohibited, reversible or approval-controlled?</small></div></div></div>
+                    <div class="col-md-6"><div class="question-card d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">05</span><div class="flex-grow-1"><strong>What happens when something fails halfway?</strong><small>Retry, rollback, compensate, queue, escalate or require human intervention?</small></div></div></div>
+                    <div class="col-md-6"><div class="question-card d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">06</span><div class="flex-grow-1"><strong>What evidence must survive?</strong><small>Audit records, approvals, historical values, timestamps and actor identity.</small></div></div></div>
+                    <div class="col-md-6"><div class="question-card d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">07</span><div class="flex-grow-1"><strong>How fresh must the data be?</strong><small>Milliseconds, seconds, minutes, daily batch—or eventually consistent?</small></div></div></div>
+                    <div class="col-md-6"><div class="question-card d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">08</span><div class="flex-grow-1"><strong>How will we know the solution is working?</strong><small>Define business and technical KPIs before release.</small></div></div></div>
+                </div>
+            </section>
+
+            <!-- Hands-on lab -->
+            <section id="lab" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Hands-on lab</div>
+                <h2 class="h3 fw-bold mb-2">Create a mini domain model from the E-Commerce reference app</h2>
+                <p class="text-secondary mb-4">Do this before reading additional code. The goal is to practice seeing business concepts before implementation details.</p>
+
+                <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">1</span><div class="flex-grow-1"><strong>Open the E-Commerce Reference menu</strong><p>Browse Products, Customers and Orders. Write down the business nouns you see.</p></div></div>
+                <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">2</span><div class="flex-grow-1"><strong>Identify relationships</strong><p>For example: a customer can have orders; an order contains order lines; an order line references a product.</p></div></div>
+                <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">3</span><div class="flex-grow-1"><strong>Identify lifecycle states</strong><p>List the states an order can move through and mark transitions that should be prevented.</p></div></div>
+                <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">4</span><div class="flex-grow-1"><strong>Identify system actions</strong><p>Map business verbs to screens, controllers, REST endpoints or service methods.</p></div></div>
+                <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">5</span><div class="flex-grow-1"><strong>Find three missing real-world concerns</strong><p>Examples: payment settlement, tax, inventory reservation, shipping, returns, fraud, promotions or notifications.</p></div></div>
+                <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">6</span><div class="flex-grow-1"><strong>Write five questions for a Product Owner</strong><p>Ask questions you would need answered before extending this training application into a real commercial platform.</p></div></div>
+
+                <div class="lab-deliverable mt-3"><strong>Deliverable:</strong> One page containing (1) domain glossary, (2) simple entity relationship sketch, (3) order lifecycle, (4) five business questions and (5) three missing production capabilities.</div>
+            </section>
+
+            <!-- Knowledge check -->
+            <section id="knowledge-check" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Knowledge check</div>
+                <h2 class="h3 fw-bold mb-2">Can you think in business-domain terms?</h2>
+                <p class="text-secondary mb-4">Answer before opening each explanation.</p>
+                <div class="accordion lesson-accordion" id="domainKnowledgeAccordion">
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#d1">1. What is the most important first question when entering an unfamiliar domain?</button></h3><div id="d1" class="accordion-collapse collapse" data-bs-parent="#domainKnowledgeAccordion"><div class="accordion-body"><strong>Understand the business outcome and process.</strong> Technology choices come later. First learn what problem the organization is solving, for whom, and how success is measured.</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#d2">2. Why is a generic field such as “status” potentially dangerous?</button></h3><div id="d2" class="accordion-collapse collapse" data-bs-parent="#domainKnowledgeAccordion"><div class="accordion-body">Because status values usually represent domain states with rules and side effects. A transition may trigger money movement, inventory, communication, audit or downstream processing.</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#d3">3. Does knowing Spring Boot make someone a retail or banking engineer?</button></h3><div id="d3" class="accordion-collapse collapse" data-bs-parent="#domainKnowledgeAccordion"><div class="accordion-body"><strong>No.</strong> Spring Boot is an implementation technology. Commercial effectiveness also requires understanding the domain model, business rules, operational constraints, risk and surrounding systems.</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#d4">4. What is a system of record?</button></h3><div id="d4" class="accordion-collapse collapse" data-bs-parent="#domainKnowledgeAccordion"><div class="accordion-body">The authoritative system responsible for a particular class of business data. Other systems may copy or cache the data, but ownership and update authority must be clear.</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#d5">5. Why study exceptions, not only the happy path?</button></h3><div id="d5" class="accordion-collapse collapse" data-bs-parent="#domainKnowledgeAccordion"><div class="accordion-body">Because real commercial systems spend enormous effort handling failure, cancellation, partial completion, dispute, correction, retries and human intervention. Exceptions often determine architecture more than the happy path.</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#d6">6. What should an engineer do when two teams use the same business term differently?</button></h3><div id="d6" class="accordion-collapse collapse" data-bs-parent="#domainKnowledgeAccordion"><div class="accordion-body">Make the ambiguity visible, define the terms explicitly and agree on boundaries. Do not encode unresolved semantic confusion into APIs or schemas.</div></div></div>
+                </div>
+            </section>
+
+            <!-- Misconceptions -->
+            <section id="misconceptions" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Common misconceptions</div>
+                <h2 class="h3 fw-bold mb-4">Correct these assumptions early</h2>
+                <div class="row g-3">
+                    <div class="col-md-6"><div class="myth-card"><div class="myth">MYTH</div><strong>“The business analyst will tell me everything I need.”</strong><p>Good engineers ask questions, observe workflows and validate assumptions. Domain understanding is a team responsibility.</p></div></div>
+                    <div class="col-md-6"><div class="myth-card"><div class="myth">MYTH</div><strong>“A CRUD application is a business application.”</strong><p>CRUD is only mechanics. Commercial value lives in policies, workflows, state transitions, integrations and outcomes.</p></div></div>
+                    <div class="col-md-6"><div class="myth-card"><div class="myth">MYTH</div><strong>“If two industries use the same word, it means the same thing.”</strong><p>Words such as order, account, claim, settlement and fulfillment have domain-specific semantics.</p></div></div>
+                    <div class="col-md-6"><div class="myth-card"><div class="myth">MYTH</div><strong>“Domain knowledge is only for senior people.”</strong><p>Even junior engineers become more effective when they understand why their code exists and what business rule it enforces.</p></div></div>
+                </div>
+            </section>
+
+            <!-- Recap -->
+            <section id="recap" class="lesson-recap p-4 p-lg-5 mb-4">
+                <div class="section-kicker text-white opacity-75">Lesson recap</div>
+                <h2 class="h3 fw-bold mb-4">Six ideas to carry forward</h2>
+                <div class="row g-3">
+                    <div class="col-md-6"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">1</span><div class="flex-grow-1"><strong>Technology implements a domain.</strong><small>Framework knowledge alone does not define correct behavior.</small></div></div></div>
+                    <div class="col-md-6"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">2</span><div class="flex-grow-1"><strong>Language matters.</strong><small>Shared vocabulary prevents semantic defects.</small></div></div></div>
+                    <div class="col-md-6"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">3</span><div class="flex-grow-1"><strong>Workflows matter.</strong><small>State transitions and exceptions reveal real business rules.</small></div></div></div>
+                    <div class="col-md-6"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">4</span><div class="flex-grow-1"><strong>Risk differs by industry.</strong><small>Money, health, inventory and customer experience create different failure consequences.</small></div></div></div>
+                    <div class="col-md-6"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">5</span><div class="flex-grow-1"><strong>Systems have ownership boundaries.</strong><small>Know which platform is authoritative for each important record.</small></div></div></div>
+                    <div class="col-md-6"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">6</span><div class="flex-grow-1"><strong>Domain learning never stops.</strong><small>Production behavior and business change continuously refine your model.</small></div></div></div>
+                </div>
+            </section>
+<!-- Career perspective -->
+            <section id="career" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Career perspective</div>
+                <h2 class="h3 fw-bold">Technical depth + domain depth is a powerful combination</h2>
+                <p class="lead mb-4">The engineer who understands both the system and the business problem becomes increasingly valuable.</p>
+
+                <div class="career-table-wrap">
+                    <div class="table-responsive">
+                        <table class="table career-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:100px;">Stage</th>
+                                    <th style="width:32%;">Typical mindset</th>
+                                    <th>What is developing</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="career-seq"><span>01</span></td><td><strong>“Tell me what code to write.”</strong></td><td>Learning syntax, frameworks, team practices and how assigned implementation tasks work.</td></tr>
+                                <tr><td class="career-seq"><span>02</span></td><td><strong>“I understand the requirement.”</strong></td><td>Connecting implementation choices to acceptance criteria and expected business behavior.</td></tr>
+                                <tr><td class="career-seq"><span>03</span></td><td><strong>“I understand the process and trade-offs.”</strong></td><td>Reasoning about workflows, dependencies, risk, exceptions and system boundaries.</td></tr>
+                                <tr><td class="career-seq"><span>04</span></td><td><strong>“I can help shape the solution.”</strong></td><td>Contributing to solution design because technical and domain understanding now reinforce each other.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <p class="text-secondary mt-4 mb-0">
+                    This progression is not tied to job title. A curious graduate can begin building domain fluency
+                    from the first week of employment.
+                </p>
+            </section>
+
+            <!-- Next -->
+            <section class="soft-card p-4 p-lg-5 lesson-complete">
+                <div class="row align-items-center g-3">
+                    <div class="col-lg-8">
+                        <div class="section-kicker">Lesson 2 complete</div>
+                        <h2 class="h4 fw-bold mb-1">Next: Roles and Responsibilities in an IT Shop</h2>
+                        <p class="text-secondary mb-0">Now that you understand organizations and business domains, learn what Product Owners, Architects, Developers, QA, DevOps, SRE, Security and other roles actually do.</p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end">
+                        <a class="btn btn-outline-primary me-2" th:href="@{/training/part-1-commercial-it/it-organization-structure}">← Previous</a>
+                        <a class="btn btn-primary" th:href="@{/training/part-1-commercial-it/roles-responsibilities}">Continue →</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Sticky lesson navigation -->
+        <aside class="col-xl-3">
+            <div class="soft-card p-4 sticky-xl-top lesson-toc" style="top: 90px;">
+                <div class="section-kicker">In this lesson</div>
+                <h2 class="h5 fw-bold mb-3">Lesson navigation</h2>
+                <nav class="nav flex-column small">
+                    <a class="nav-link" href="#objectives">Learning objectives</a>
+                    <a class="nav-link" href="#why-domain">Why domain knowledge matters</a>
+                    <a class="nav-link" href="#domain-model">What is a business domain?</a>
+                    <a class="nav-link" href="#four-domains">Four industry domains</a>
+                    <a class="nav-link" href="#compare">Cross-domain comparison</a>
+                    <a class="nav-link" href="#language">Domain vocabulary</a>
+                    <a class="nav-link" href="#learn-domain">How to learn a domain</a>
+                    <a class="nav-link" href="#translation">Business → software</a>
+                    <a class="nav-link" href="#reference-app">Reference application</a>
+                    <a class="nav-link" href="#scenario">Industry scenario</a>
+                    <a class="nav-link" href="#sources">Sources of knowledge</a>
+                    <a class="nav-link" href="#questions">Questions to ask</a>
+                    <a class="nav-link" href="#lab">Hands-on lab</a>
+                    <a class="nav-link" href="#knowledge-check">Knowledge check</a>
+                    <a class="nav-link" href="#misconceptions">Misconceptions</a>
+                    <a class="nav-link" href="#recap">Lesson recap</a>
+                    <a class="nav-link" href="#career">Career perspective</a>
+                </nav>
+                <hr>
+                <div class="small text-secondary"><strong>Instructor note:</strong> The examples intentionally teach a reusable way to enter any unfamiliar industry domain.</div>
+            </div>
+        </aside>
+    </div>
+</main>
+</html>

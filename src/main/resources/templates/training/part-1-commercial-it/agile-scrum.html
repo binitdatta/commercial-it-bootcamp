@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('Agile, Scrum, Sprints and Retrospectives', 'Understand how commercial delivery teams use Agile principles and Scrum practices to plan, build, inspect and improve software iteratively.', ~{::main})}">
+<main>
+
+    <style>
+        /* =============================================================
+           Agile / Scrum lesson — polished presentation layer
+           ============================================================= */
+
+        #objectives,
+        .lesson-section {
+            scroll-margin-top: 95px;
+        }
+
+        .agile-hero {
+            box-shadow: 0 .45rem 1.3rem rgba(24,62,110,.08);
+        }
+
+        /* ---------- number badges ---------- */
+        .lesson-number {
+            width: 2rem;
+            height: 2rem;
+            min-width: 2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #0d6efd;
+            color: #fff;
+            font-size: .82rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-top: .05rem;
+            box-shadow: 0 0 0 4px rgba(13,110,253,.08);
+        }
+
+        .lesson-number-light {
+            background: rgba(255,255,255,.96);
+            color: #0d6efd;
+            box-shadow: 0 0 0 4px rgba(255,255,255,.14);
+        }
+
+        .objective-item,
+        .lab-step,
+        .recap-item {
+            min-width: 0;
+        }
+
+        .objective-item > div,
+        .lab-step > div,
+        .recap-item > div {
+            min-width: 0;
+        }
+
+        .objective-item strong,
+        .lab-step strong,
+        .recap-item strong {
+            display: block;
+            margin-bottom: .22rem;
+        }
+
+        .objective-item small,
+        .lab-step p,
+        .recap-item small {
+            display: block;
+            line-height: 1.5;
+            margin-bottom: 0;
+        }
+
+        .lab-step {
+            padding: 1rem 0;
+        }
+
+        .lab-step + .lab-step {
+            border-top: 1px solid rgba(15,23,42,.08);
+        }
+
+        /* ---------- common table shell ---------- */
+        .agile-table-wrap,
+        .scrum-table-wrap,
+        .sprint-table-wrap,
+        .events-table-wrap,
+        .artifact-table-wrap,
+        .estimation-table-wrap,
+        .collaboration-table-wrap,
+        .reference-sprint-wrap,
+        .career-table-wrap {
+            border: 1px solid #d8e7fb;
+            border-radius: 1rem;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 .35rem 1.1rem rgba(27,64,112,.06);
+        }
+
+        .agile-table thead th,
+        .scrum-table thead th,
+        .sprint-table thead th,
+        .events-table thead th,
+        .artifact-table thead th,
+        .estimation-table thead th,
+        .collaboration-table thead th,
+        .reference-sprint-table thead th,
+        .career-table thead th {
+            padding: .9rem 1rem;
+            border: 0;
+            background: linear-gradient(135deg, #143c73 0%, #0d6efd 100%);
+            color: #fff;
+            font-size: .76rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .045em;
+            white-space: nowrap;
+        }
+
+        .agile-table tbody td,
+        .scrum-table tbody td,
+        .sprint-table tbody td,
+        .events-table tbody td,
+        .artifact-table tbody td,
+        .estimation-table tbody td,
+        .collaboration-table tbody td,
+        .reference-sprint-table tbody td,
+        .career-table tbody td {
+            padding: 1rem 1.05rem;
+            border-color: rgba(28,54,87,.08);
+            line-height: 1.48;
+            vertical-align: top;
+        }
+
+        .agile-table tbody tr:nth-child(odd) td,
+        .scrum-table tbody tr:nth-child(odd) td,
+        .sprint-table tbody tr:nth-child(odd) td,
+        .events-table tbody tr:nth-child(odd) td,
+        .artifact-table tbody tr:nth-child(odd) td,
+        .estimation-table tbody tr:nth-child(odd) td,
+        .collaboration-table tbody tr:nth-child(odd) td,
+        .reference-sprint-table tbody tr:nth-child(odd) td,
+        .career-table tbody tr:nth-child(odd) td {
+            background: #fbfdff;
+        }
+
+        .agile-table tbody tr:nth-child(even) td,
+        .scrum-table tbody tr:nth-child(even) td,
+        .sprint-table tbody tr:nth-child(even) td,
+        .events-table tbody tr:nth-child(even) td,
+        .artifact-table tbody tr:nth-child(even) td,
+        .estimation-table tbody tr:nth-child(even) td,
+        .collaboration-table tbody tr:nth-child(even) td,
+        .reference-sprint-table tbody tr:nth-child(even) td,
+        .career-table tbody tr:nth-child(even) td {
+            background: #f2f7fe;
+        }
+
+        .agile-table tbody tr:hover td,
+        .scrum-table tbody tr:hover td,
+        .sprint-table tbody tr:hover td,
+        .events-table tbody tr:hover td,
+        .artifact-table tbody tr:hover td,
+        .estimation-table tbody tr:hover td,
+        .collaboration-table tbody tr:hover td,
+        .reference-sprint-table tbody tr:hover td,
+        .career-table tbody tr:hover td {
+            background: #e8f2ff !important;
+        }
+
+        .agile-table strong,
+        .scrum-table strong,
+        .sprint-table strong,
+        .events-table strong,
+        .artifact-table strong,
+        .estimation-table strong,
+        .collaboration-table strong,
+        .reference-sprint-table strong,
+        .career-table strong {
+            color: #172033;
+        }
+
+        /* ---------- sequence badges ---------- */
+        .agile-seq,
+        .sprint-seq,
+        .reference-seq,
+        .career-seq {
+            text-align: center;
+        }
+
+        .agile-seq span,
+        .sprint-seq span,
+        .reference-seq span,
+        .career-seq span {
+            width: 2.35rem;
+            height: 2.35rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #0d6efd;
+            color: #fff;
+            font-size: .76rem;
+            font-weight: 800;
+            box-shadow: 0 0 0 4px rgba(13,110,253,.08);
+        }
+
+        /* ---------- Scrum categories ---------- */
+        .scrum-category {
+            text-align: center;
+            vertical-align: middle !important;
+            background: #eef6ff !important;
+            border-right: 1px solid #d8e7fb;
+        }
+
+        .scrum-category span {
+            display: inline-block;
+            padding: .38rem .62rem;
+            border-radius: 999px;
+            background: #0d6efd;
+            color: #fff;
+            font-size: .72rem;
+            font-weight: 800;
+            letter-spacing: .045em;
+        }
+
+        .scrum-category-start td {
+            border-top: 2px solid #d3e3f7;
+        }
+
+        /* ---------- Event code ---------- */
+        .event-code {
+            text-align: center;
+        }
+
+        .event-code span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 4.3rem;
+            height: 2.35rem;
+            padding: 0 .55rem;
+            border-radius: .7rem;
+            background: #173b67;
+            color: #fff;
+            font-size: .72rem;
+            font-weight: 800;
+            letter-spacing: .035em;
+        }
+
+        .events-table small {
+            display: block;
+            margin-top: .2rem;
+            color: #6b7787;
+        }
+
+        /* ---------- Commitment chips ---------- */
+        .commitment-chip {
+            display: inline-block;
+            padding: .34rem .6rem;
+            border-radius: 999px;
+            background: #e9f3ff;
+            color: #0b57b7;
+            border: 1px solid #d4e6fb;
+            font-size: .78rem;
+            font-weight: 700;
+        }
+
+        /* ---------- Existing supporting cards ---------- */
+        .scenario-box {
+            padding: 1.25rem;
+            border-radius: .9rem;
+            border: 1px solid #dce9f7;
+            background: linear-gradient(135deg, #f8fbff 0%, #eef6ff 100%);
+        }
+
+        .lesson-insight {
+            padding: 1rem 1.15rem;
+            border-left: 4px solid #0d6efd;
+            border-radius: 0 .9rem .9rem 0;
+            background: #eef6ff;
+            line-height: 1.55;
+        }
+
+        .myth-card,
+        .mini-card,
+        .story-card {
+            border: 1px solid #dce9f7;
+            border-radius: .9rem;
+            background: linear-gradient(180deg, #fff 0%, #f8fbff 100%);
+            box-shadow: 0 .25rem .7rem rgba(27,64,112,.04);
+        }
+
+        .myth-card,
+        .mini-card {
+            padding: 1.05rem;
+        }
+
+        .myth-card strong,
+        .mini-card strong {
+            display: block;
+            color: #172033;
+            margin: .42rem 0;
+        }
+
+        .myth-card p,
+        .mini-card p {
+            color: #647184;
+            line-height: 1.55;
+            margin-bottom: 0;
+        }
+
+        .story-card {
+            padding: 1.25rem;
+        }
+
+        .story-label {
+            color: #0d6efd;
+            font-size: .72rem;
+            font-weight: 800;
+            letter-spacing: .06em;
+            margin-bottom: .55rem;
+        }
+
+        .story-sentence {
+            font-size: 1.03rem;
+            line-height: 1.65;
+        }
+
+        /* ---------- Problem grid ---------- */
+        .agile-problem-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: .8rem;
+        }
+
+        .agile-problem-grid > div {
+            padding: 1rem;
+            border: 1px solid #dce9f7;
+            border-radius: .85rem;
+            background: #fbfdff;
+        }
+
+        .agile-problem-grid strong {
+            display: block;
+            color: #172033;
+            margin-bottom: .3rem;
+        }
+
+        .agile-problem-grid span {
+            display: block;
+            color: #647184;
+            line-height: 1.5;
+        }
+
+        /* ---------- General spacing ---------- */
+        .lesson-section > p.text-secondary,
+        .lesson-section > p.lead {
+            line-height: 1.65;
+        }
+
+        @media (max-width: 991.98px) {
+            .agile-table,
+            .scrum-table,
+            .sprint-table,
+            .events-table,
+            .artifact-table,
+            .estimation-table,
+            .collaboration-table,
+            .reference-sprint-table,
+            .career-table {
+                min-width: 900px;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .agile-problem-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .lesson-number {
+                width: 1.85rem;
+                height: 1.85rem;
+                min-width: 1.85rem;
+                font-size: .76rem;
+            }
+        }
+    </style>
+
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a th:href="@{/training}">Training</a></li>
+            <li class="breadcrumb-item" th:text="${section.title}">Part I — How Commercial IT Works</li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${lesson.title}">Agile, Scrum, Sprints and Retrospectives</li>
+        </ol>
+    </nav>
+
+
+    <!-- Lesson hero -->
+    <section class="lesson-hero p-4 p-lg-5 mb-4 agile-hero">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <span class="lesson-chip">PART I</span>
+                    <span class="lesson-chip">LESSON <span th:text="${lesson.number}">4</span></span>
+                    <span class="lesson-chip">BEGINNER</span>
+                    <span class="lesson-chip">50–60 MIN</span>
+                </div>
+                <div class="small text-uppercase fw-bold opacity-75 mb-2">How Commercial IT Works</div>
+                <h1 class="display-5 fw-bold mb-3">Agile, Scrum, Sprints and Retrospectives</h1>
+                <p class="lead mb-0 opacity-90">
+                    Understand why iterative delivery exists, how Scrum structures work,
+                    what happens during a Sprint, and how teams use feedback to improve
+                    both the product and the way they work.
+                </p>
+            </div>
+            <div class="col-lg-4">
+                <div class="lesson-hero-callout">
+                    <div class="fw-bold mb-2">Core mental model</div>
+                    <div class="small opacity-90">
+                        Understand → Plan → Build → Verify → Review → Learn → Adapt.
+                        Agile reduces the cost of being wrong by shortening the feedback cycle.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <div class="row g-4">
+        <div class="col-xl-9">
+<section id="objectives" class="soft-card p-4 p-lg-5 mb-4 lesson-section shadow-sm">
+                <div class="section-kicker">Learning objectives</div>
+                <h2 class="h4 fw-bold mb-3">By the end of this lesson, you should be able to</h2>
+                <div class="row g-3">
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">1</span><div class="flex-grow-1"><strong>Explain Agile as a way of working</strong><small>Separate Agile principles from a specific framework, ceremony or job title.</small></div></div></div>
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">2</span><div class="flex-grow-1"><strong>Describe the Scrum framework</strong><small>Understand accountabilities, artifacts, events and the purpose of a Sprint.</small></div></div></div>
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">3</span><div class="flex-grow-1"><strong>Follow work through a Sprint</strong><small>See how backlog items move from refinement and planning through development, testing, review and release.</small></div></div></div>
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">4</span><div class="flex-grow-1"><strong>Use feedback correctly</strong><small>Understand Daily Scrum, Sprint Review and Retrospective as inspection-and-adaptation mechanisms.</small></div></div></div>
+                </div>
+            </section>
+
+            <section id="problem" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Start with the delivery problem</div>
+                <h2 class="h3 fw-bold">Why do modern teams avoid planning an entire year of detailed software work upfront?</h2>
+                <div class="scenario-box mt-3">
+                    <div class="scenario-label">COMMERCIAL REALITY</div>
+                    <h3 class="h5 fw-bold">A retailer wants a “Buy Online, Pick Up In Store” capability.</h3>
+                    <p class="mb-0 text-secondary">At the start, the organization does not know every edge case. Store inventory may be inaccurate, customers may not arrive, payment rules may change, operations may discover new constraints, and users may behave differently from what the team expected.</p>
+                </div>
+                <div class="agile-problem-grid mt-3">
+                    <div><strong>Requirements change</strong><span>Business priorities, regulations, user needs and competitors move.</span></div>
+                    <div><strong>Complexity hides risk</strong><span>Integration and production behavior expose problems documents cannot predict.</span></div>
+                    <div><strong>Feedback arrives late</strong><span>A big-bang release can reveal months of wrong assumptions at once.</span></div>
+                    <div><strong>Value is delayed</strong><span>Customers receive nothing while a huge release is still “in progress.”</span></div>
+                </div>
+                <div class="lesson-insight mt-3"><strong>Core idea:</strong> Agile delivery reduces the cost of being wrong by delivering, inspecting and adapting in smaller increments.</div>
+            </section>
+<section id="agile" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Agile mental model</div>
+                <h2 class="h3 fw-bold mb-2">Agile is not Scrum, Jira, stand-up meetings or “working faster”</h2>
+                <p class="text-secondary mb-4">
+                    Agile is a way of organizing knowledge work around collaboration, frequent delivery,
+                    feedback and adaptation. Scrum is one framework that puts those ideas into practice.
+                </p>
+
+                <div class="agile-table-wrap mb-4">
+                    <div class="table-responsive">
+                        <table class="table agile-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:90px;">Step</th>
+                                    <th style="width:23%;">Activity</th>
+                                    <th>What the team is trying to learn or accomplish</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="agile-seq"><span>01</span></td><td><strong>Understand</strong></td><td>Clarify the customer problem, business outcome, constraints and important unknowns.</td></tr>
+                                <tr><td class="agile-seq"><span>02</span></td><td><strong>Build</strong></td><td>Create a small, integrated increment that can generate useful feedback.</td></tr>
+                                <tr><td class="agile-seq"><span>03</span></td><td><strong>Validate</strong></td><td>Test behavior with users, stakeholders, automated tests and production evidence.</td></tr>
+                                <tr><td class="agile-seq"><span>04</span></td><td><strong>Learn</strong></td><td>Compare actual outcomes with the team's assumptions and expectations.</td></tr>
+                                <tr><td class="agile-seq"><span>05</span></td><td><strong>Adapt</strong></td><td>Change product priorities, design choices or working practices based on new evidence.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="myth-card h-100">
+                            <span class="myth">NOT AGILE</span>
+                            <strong>“We do not need requirements or architecture.”</strong>
+                            <p>Agile changes when and how detail is developed. It does not eliminate analysis, architecture, security, testing or documentation.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="myth-card h-100">
+                            <span class="myth">NOT AGILE</span>
+                            <strong>“We release unfinished code every two weeks.”</strong>
+                            <p>An increment should meet the team's quality expectations. Iteration is not an excuse for knowingly poor engineering.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+<section id="scrum" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Scrum framework</div>
+                <h2 class="h3 fw-bold mb-2">Scrum gives a team a lightweight operating rhythm</h2>
+                <p class="text-secondary mb-4">
+                    Scrum organizes product development around a small team, a Product Goal,
+                    a prioritized Product Backlog and time-boxed Sprints that produce a usable Increment.
+                </p>
+
+                <div class="scrum-table-wrap">
+                    <div class="table-responsive">
+                        <table class="table scrum-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:19%;">Category</th>
+                                    <th style="width:24%;">Scrum element</th>
+                                    <th>Purpose</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="scrum-category-start">
+                                    <td rowspan="3" class="scrum-category"><span>ACCOUNTABILITIES</span></td>
+                                    <td><strong>Product Owner</strong></td>
+                                    <td>Maximizes product value and is accountable for effective Product Backlog management.</td>
+                                </tr>
+                                <tr><td><strong>Scrum Master</strong></td><td>Helps the team and organization understand and use Scrum effectively through coaching, facilitation and impediment removal.</td></tr>
+                                <tr><td><strong>Developers</strong></td><td>Create the Increment. “Developers” includes the skills necessary to deliver the product, not only programmers.</td></tr>
+
+                                <tr class="scrum-category-start">
+                                    <td rowspan="3" class="scrum-category"><span>ARTIFACTS</span></td>
+                                    <td><strong>Product Backlog</strong></td>
+                                    <td>Ordered work needed to improve the product and support the Product Goal.</td>
+                                </tr>
+                                <tr><td><strong>Sprint Backlog</strong></td><td>Sprint Goal, selected Product Backlog Items and the Developers' evolving plan.</td></tr>
+                                <tr><td><strong>Increment</strong></td><td>Integrated, usable product value that satisfies the Definition of Done.</td></tr>
+
+                                <tr class="scrum-category-start">
+                                    <td rowspan="4" class="scrum-category"><span>EVENTS</span></td>
+                                    <td><strong>Sprint Planning</strong></td>
+                                    <td>Establish why the Sprint is valuable, what can be done and how the work will begin.</td>
+                                </tr>
+                                <tr><td><strong>Daily Scrum</strong></td><td>Developers inspect progress toward the Sprint Goal and adapt their plan.</td></tr>
+                                <tr><td><strong>Sprint Review</strong></td><td>Scrum Team and stakeholders inspect the outcome and adapt future direction.</td></tr>
+                                <tr><td><strong>Sprint Retrospective</strong></td><td>The Scrum Team improves quality, effectiveness and the way it works.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+<section id="sprint" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Inside a Sprint</div>
+                <h2 class="h3 fw-bold mb-2">Follow one feature from idea to usable increment</h2>
+
+                <div class="scenario-box mt-3 mb-4">
+                    <div class="scenario-label">SPRINT EXAMPLE</div>
+                    <h3 class="h5 fw-bold">“As a customer, I want to cancel an eligible order before shipment.”</h3>
+                    <p class="mb-0 text-secondary">The same requirement used in earlier lessons now becomes a piece of planned delivery work.</p>
+                </div>
+
+                <div class="sprint-table-wrap">
+                    <div class="table-responsive">
+                        <table class="table sprint-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:90px;">Step</th>
+                                    <th style="width:22%;">Sprint activity</th>
+                                    <th>What happens</th>
+                                    <th style="width:24%;">Typical output</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="sprint-seq"><span>01</span></td><td><strong>Refine</strong></td><td>Clarify rules, dependencies, acceptance criteria and technical unknowns.</td><td>Better-understood backlog items.</td></tr>
+                                <tr><td class="sprint-seq"><span>02</span></td><td><strong>Plan</strong></td><td>Select work supporting the Sprint Goal and establish an initial delivery plan.</td><td>Sprint Goal + Sprint Backlog.</td></tr>
+                                <tr><td class="sprint-seq"><span>03</span></td><td><strong>Build</strong></td><td>Implement UI, API, service, database, security and integration changes.</td><td>Integrated working software.</td></tr>
+                                <tr><td class="sprint-seq"><span>04</span></td><td><strong>Verify</strong></td><td>Use unit, integration, functional, security and regression tests to produce evidence.</td><td>Quality evidence and defect findings.</td></tr>
+                                <tr><td class="sprint-seq"><span>05</span></td><td><strong>Review</strong></td><td>Stakeholders inspect the Increment and discuss changes in the business environment.</td><td>Product feedback and backlog adaptation.</td></tr>
+                                <tr><td class="sprint-seq"><span>06</span></td><td><strong>Improve</strong></td><td>The team identifies a concrete process or engineering improvement.</td><td>Retrospective action for the next Sprint.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="lesson-insight mt-4">
+                    <strong>Important:</strong> A Sprint is not merely a two-week project plan.
+                    It is a short learning and delivery cycle centered on a Sprint Goal and a usable Increment.
+                </div>
+            </section>
+<section id="events" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Scrum events</div>
+                <h2 class="h3 fw-bold mb-2">What actually happens in the meetings?</h2>
+                <p class="text-secondary mb-4">
+                    Each Scrum event exists to create transparency, inspection and adaptation—not simply to fill a calendar.
+                </p>
+
+                <div class="events-table-wrap">
+                    <div class="table-responsive">
+                        <table class="table events-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:110px;">Event</th>
+                                    <th style="width:24%;">Purpose</th>
+                                    <th>What happens</th>
+                                    <th style="width:25%;">Key question / output</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="event-code"><span>PLAN</span></td><td><strong>Sprint Planning</strong><small>Begins the Sprint</small></td><td>The Scrum Team creates the Sprint Goal, selects backlog items and develops enough of a plan to begin delivering.</td><td>Why is this Sprint valuable? What can we achieve? How will we start?</td></tr>
+                                <tr><td class="event-code"><span>DAILY</span></td><td><strong>Daily Scrum</strong><small>15-minute event for Developers</small></td><td>Inspect progress toward the Sprint Goal, expose coordination needs and adapt today's plan.</td><td>A better plan for the next day of work.</td></tr>
+                                <tr><td class="event-code"><span>REVIEW</span></td><td><strong>Sprint Review</strong><small>Inspect product outcome</small></td><td>Scrum Team and stakeholders inspect what was accomplished and adapt future product direction.</td><td>What changed? What did we learn? What should happen next?</td></tr>
+                                <tr><td class="event-code"><span>RETRO</span></td><td><strong>Sprint Retrospective</strong><small>Improve the working system</small></td><td>The Scrum Team examines quality, collaboration, tools, process and impediments.</td><td>One or more practical improvements for future Sprints.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+<section id="artifacts" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Artifacts and commitments</div>
+                <h2 class="h3 fw-bold mb-2">The three things teams continuously make transparent</h2>
+                <p class="text-secondary mb-4">
+                    Scrum artifacts represent work or value. Each artifact has a commitment that helps create focus and transparency.
+                </p>
+
+                <div class="artifact-table-wrap">
+                    <div class="table-responsive">
+                        <table class="table artifact-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:23%;">Artifact</th>
+                                    <th style="width:23%;">Commitment</th>
+                                    <th>What it represents</th>
+                                    <th style="width:27%;">Question it should answer</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>Product Backlog</strong></td><td><span class="commitment-chip">Product Goal</span></td><td>Everything currently known to be needed for the product, ordered to support learning and value.</td><td>Where are we trying to take the product?</td></tr>
+                                <tr><td><strong>Sprint Backlog</strong></td><td><span class="commitment-chip">Sprint Goal</span></td><td>The current Sprint objective, selected backlog items and an evolving delivery plan.</td><td>What meaningful objective are we pursuing now?</td></tr>
+                                <tr><td><strong>Increment</strong></td><td><span class="commitment-chip">Definition of Done</span></td><td>Integrated work that satisfies the team's agreed quality bar and is usable.</td><td>What evidence tells us this work is genuinely complete?</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="backlog" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Backlog and user stories</div>
+                <h2 class="h3 fw-bold">A backlog is a decision system, not a dumping ground</h2>
+                <p class="text-secondary">Teams often describe product needs using user stories, but the story format is optional. What matters is shared understanding of value, constraints and acceptance.</p>
+                <div class="story-card mt-3">
+                    <div class="story-label">EXAMPLE USER STORY</div>
+                    <div class="story-sentence">As a <strong>customer</strong>, I want to <strong>cancel an eligible order before fulfillment starts</strong>, so that <strong>I can correct a purchase without contacting support</strong>.</div>
+                </div>
+                <div class="row g-3 mt-2">
+                    <div class="col-md-4"><div class="mini-card h-100"><strong>Business rules</strong><p>Which statuses are cancellable? Is there a cutoff time? What happens to inventory and payment?</p></div></div>
+                    <div class="col-md-4"><div class="mini-card h-100"><strong>Acceptance criteria</strong><p>Observable conditions proving expected behavior, including denial and failure scenarios.</p></div></div>
+                    <div class="col-md-4"><div class="mini-card h-100"><strong>Engineering work</strong><p>API, service, persistence, UI, tests, security, telemetry and deployment changes required to satisfy the outcome.</p></div></div>
+                </div>
+            </section>
+<section id="estimation" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Estimation and forecasting</div>
+                <h2 class="h3 fw-bold mb-2">Story points are not hours and velocity is not employee productivity</h2>
+                <p class="text-secondary mb-4">
+                    Estimation is useful when it supports planning and learning. It becomes harmful when uncertain forecasts are treated as precise promises or performance scores.
+                </p>
+
+                <div class="estimation-table-wrap">
+                    <div class="table-responsive">
+                        <table class="table estimation-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:24%;">Concept</th>
+                                    <th>How to understand it</th>
+                                    <th style="width:30%;">Common misuse to avoid</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>Relative estimation</strong></td><td>Compare complexity, effort, uncertainty and risk rather than pretending every task can be predicted exactly.</td><td>Treating points as a disguised hour conversion.</td></tr>
+                                <tr><td><strong>Velocity</strong></td><td>A team-specific historical planning signal that may help with local forecasting.</td><td>Comparing teams or using velocity as an employee performance target.</td></tr>
+                                <tr><td><strong>Capacity</strong></td><td>Actual team availability after leave, incidents, support work, training and other obligations.</td><td>Assuming every Sprint has identical available effort.</td></tr>
+                                <tr><td><strong>Forecast</strong></td><td>An informed expectation that should change when new evidence arrives.</td><td>Treating a forecast as an unconditional guarantee.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+<section id="collaboration" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Cross-functional collaboration</div>
+                <h2 class="h3 fw-bold mb-2">Scrum does not erase the roles from Lesson 3</h2>
+                <p class="text-secondary mb-4">
+                    Commercial organizations still need product, architecture, security, QA, data, DevOps and operational expertise.
+                    The goal is to bring those capabilities into delivery early instead of turning each specialty into a late-stage queue.
+                </p>
+
+                <div class="collaboration-table-wrap">
+                    <div class="table-responsive">
+                        <table class="table collaboration-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:25%;">Capability</th>
+                                    <th>Contribution during iterative delivery</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>Product</strong></td><td>Clarifies value, priority, user outcomes and acceptance intent.</td></tr>
+                                <tr><td><strong>Architecture</strong></td><td>Guides boundaries, non-functional requirements, integrations and consequential trade-offs.</td></tr>
+                                <tr><td><strong>Engineering + QA</strong></td><td>Build and verify the Increment continuously rather than separating coding and testing into isolated phases.</td></tr>
+                                <tr><td><strong>Security</strong></td><td>Brings threat analysis, authorization and control requirements into design and implementation early.</td></tr>
+                                <tr><td><strong>DevOps / SRE</strong></td><td>Provide delivery automation, observability, reliability practices and production feedback.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="lesson-insight mt-4">
+                    <strong>Mature behavior:</strong> Bring specialized knowledge into the Sprint early.
+                    Do not wait until the end for an “architecture approval,” “security approval,” or “QA phase”
+                    if those risks can be addressed continuously.
+                </div>
+            </section>
+<section id="reference" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Reference application</div>
+                <h2 class="h3 fw-bold mb-2">How this Bootcamp's Spring Boot application fits into a Sprint</h2>
+                <p class="text-secondary mb-4">
+                    A Product Backlog Item becomes real value only when the necessary application, data,
+                    security and quality work is integrated into one usable result.
+                </p>
+
+                <div class="reference-sprint-wrap mb-4">
+                    <div class="table-responsive">
+                        <table class="table reference-sprint-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:90px;">Step</th>
+                                    <th style="width:28%;">Project artifact / concern</th>
+                                    <th>Role in delivering the Increment</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="reference-seq"><span>01</span></td><td><strong>Product Backlog Item</strong></td><td>Defines the user/business outcome, rules and acceptance intent.</td></tr>
+                                <tr><td class="reference-seq"><span>02</span></td><td><strong>Thymeleaf UI</strong></td><td>Presents the feature and captures user interaction.</td></tr>
+                                <tr><td class="reference-seq"><span>03</span></td><td><strong>Controller / REST Controller</strong></td><td>Receives HTTP requests and exposes the application contract.</td></tr>
+                                <tr><td class="reference-seq"><span>04</span></td><td><strong>Service Layer</strong></td><td>Applies business rules and coordinates the feature's behavior.</td></tr>
+                                <tr><td class="reference-seq"><span>05</span></td><td><strong>Repository / MySQL</strong></td><td>Persists the domain state and protects required data integrity.</td></tr>
+                                <tr><td class="reference-seq"><span>06</span></td><td><strong>Spring Security / Keycloak</strong></td><td>Authenticates users and enforces authorization requirements.</td></tr>
+                                <tr><td class="reference-seq"><span>07</span></td><td><strong>Tests + Review</strong></td><td>Provide evidence that the integrated behavior meets the team's quality expectations.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="mini-card h-100">
+                            <strong>Example Sprint Goal</strong>
+                            <p>Customers can safely cancel eligible orders without contacting support.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mini-card h-100">
+                            <strong>Definition of Done example</strong>
+                            <p>Business rules implemented, authorization enforced, automated tests passing, UI integrated, logging present, code reviewed and application deployable.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="anti-patterns" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Common anti-patterns</div>
+                <h2 class="h3 fw-bold">Teams can perform every Scrum ceremony and still not be Agile</h2>
+                <div class="row g-3 mt-1">
+                    <div class="col-md-6"><div class="myth-card"><span class="myth">ANTI-PATTERN</span><strong>Daily Scrum becomes manager status reporting</strong><p>Developers speak to the manager one-by-one rather than coordinating with each other around the Sprint Goal.</p></div></div>
+                    <div class="col-md-6"><div class="myth-card"><span class="myth">ANTI-PATTERN</span><strong>Everything is “90% done” at Sprint end</strong><p>Work is started in parallel but not integrated, tested and completed. Flow matters more than utilization.</p></div></div>
+                    <div class="col-md-6"><div class="myth-card"><span class="myth">ANTI-PATTERN</span><strong>Retrospective produces no change</strong><p>The same complaints repeat every Sprint because nobody chooses an owner, experiment or measurable improvement.</p></div></div>
+                    <div class="col-md-6"><div class="myth-card"><span class="myth">ANTI-PATTERN</span><strong>Velocity becomes a target</strong><p>Once story points are treated as performance, estimates inflate and the metric loses forecasting value.</p></div></div>
+                </div>
+            </section>
+
+            <section id="hands-on" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Hands-on lab</div>
+                <h2 class="h3 fw-bold">Create a mini Sprint for the E-Commerce reference application</h2>
+                <p class="text-secondary">Use the existing project. Do not invent ten features. Plan one small, coherent outcome that could realistically be demonstrated.</p>
+                <div class="mt-3">
+                    <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">1</span><div class="flex-grow-1"><strong>Choose one product outcome</strong><p>Example: enable a customer to cancel an order only when business rules permit it.</p></div></div>
+                    <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">2</span><div class="flex-grow-1"><strong>Write one Sprint Goal</strong><p>Describe the outcome, not a list of technical tasks.</p></div></div>
+                    <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">3</span><div class="flex-grow-1"><strong>Create 3–5 backlog items</strong><p>Include business behavior, security/testing work and any UI/API changes needed.</p></div></div>
+                    <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">4</span><div class="flex-grow-1"><strong>Write acceptance criteria</strong><p>Include at least one successful path and two failure/denial paths.</p></div></div>
+                    <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">5</span><div class="flex-grow-1"><strong>Define Done</strong><p>State the quality evidence required before you would call the increment usable.</p></div></div>
+                    <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">6</span><div class="flex-grow-1"><strong>Write one retrospective improvement</strong><p>Assume the Sprint exposed a problem. Define one concrete change for the next Sprint.</p></div></div>
+                </div>
+                <div class="lab-deliverable"><strong>Deliverable:</strong> Sprint Goal → Backlog Items → Acceptance Criteria → Definition of Done → Review Questions → One Retrospective Improvement.</div>
+            </section>
+
+            <section id="knowledge" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Knowledge check</div>
+                <h2 class="h3 fw-bold">Test your understanding</h2>
+                <div class="accordion lesson-accordion mt-3" id="agileQuiz">
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aq1">1. Is Scrum the same thing as Agile?</button></h3><div id="aq1" class="accordion-collapse collapse" data-bs-parent="#agileQuiz"><div class="accordion-body"><strong>No.</strong> Agile is a broader set of values and principles for adaptive delivery. Scrum is one framework for putting iterative, empirical product development into practice.</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aq2">2. What is the primary purpose of the Daily Scrum?</button></h3><div id="aq2" class="accordion-collapse collapse" data-bs-parent="#agileQuiz"><div class="accordion-body">For Developers to <strong>inspect progress toward the Sprint Goal and adapt their plan</strong>. It is not fundamentally a manager status meeting.</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aq3">3. What is the difference between Sprint Review and Retrospective?</button></h3><div id="aq3" class="accordion-collapse collapse" data-bs-parent="#agileQuiz"><div class="accordion-body"><strong>Sprint Review:</strong> inspect the product outcome with stakeholders and adapt future direction. <strong>Retrospective:</strong> inspect how the team worked and improve quality/effectiveness.</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aq4">4. Why should velocity not be used to compare teams?</button></h3><div id="aq4" class="accordion-collapse collapse" data-bs-parent="#agileQuiz"><div class="accordion-body">Story points are relative and team-specific. Using velocity as a performance target creates gaming and destroys its value as a local forecasting signal.</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aq5">5. What makes an Increment “Done”?</button></h3><div id="aq5" class="accordion-collapse collapse" data-bs-parent="#agileQuiz"><div class="accordion-body">It meets the team's <strong>Definition of Done</strong>: the agreed quality conditions that make the integrated work usable and transparent rather than merely “coded.”</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aq6">6. Does Agile mean architecture and documentation disappear?</button></h3><div id="aq6" class="accordion-collapse collapse" data-bs-parent="#agileQuiz"><div class="accordion-body"><strong>No.</strong> Teams still need enough architecture, documentation, security and analysis to control risk. Agile encourages producing them at the right depth and time, while learning from working software.</div></div></div>
+                </div>
+            </section>
+
+            <section id="recap" class="lesson-recap p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker text-info">Lesson recap</div>
+                <h2 class="h3 fw-bold">Six things to remember</h2>
+                <div class="row g-3 mt-1">
+                    <div class="col-md-6 col-lg"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">1</span><div class="flex-grow-1"><strong>Agile ≠ Scrum</strong><small>Agile is broader; Scrum is a framework.</small></div></div></div>
+                    <div class="col-md-6 col-lg"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">2</span><div class="flex-grow-1"><strong>Small increments reduce risk</strong><small>Feedback arrives before assumptions become expensive.</small></div></div></div>
+                    <div class="col-md-6 col-lg"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">3</span><div class="flex-grow-1"><strong>Sprint Goal matters</strong><small>A Sprint needs an outcome, not only a task list.</small></div></div></div>
+                    <div class="col-md-6 col-lg"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">4</span><div class="flex-grow-1"><strong>Done means quality</strong><small>Integrated, tested and usable—not merely coded.</small></div></div></div>
+                    <div class="col-md-6 col-lg"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">5</span><div class="flex-grow-1"><strong>Review product</strong><small>Inspect value and adapt direction.</small></div></div></div>
+                    <div class="col-md-6 col-lg"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">6</span><div class="flex-grow-1"><strong>Retro improves the system</strong><small>Change how the team works, without blame.</small></div></div></div>
+                </div>
+            </section>
+<section id="career" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Career perspective</div>
+                <h2 class="h3 fw-bold mb-2">Commercial engineers are expected to participate in delivery, not only coding</h2>
+                <p class="lead mb-4">
+                    A strong engineer can discuss a story with Product, identify architectural risk,
+                    collaborate with QA and Security, review peers' work, demonstrate an Increment
+                    and learn from production feedback.
+                </p>
+
+                <div class="career-table-wrap">
+                    <div class="table-responsive">
+                        <table class="table career-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:100px;">Stage</th>
+                                    <th style="width:34%;">Typical question</th>
+                                    <th>What is developing</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="career-seq"><span>01</span></td><td><strong>“What ticket should I code?”</strong></td><td>Learning implementation mechanics and team delivery practices.</td></tr>
+                                <tr><td class="career-seq"><span>02</span></td><td><strong>“What outcome is this story trying to achieve?”</strong></td><td>Connecting code to product intent and acceptance criteria.</td></tr>
+                                <tr><td class="career-seq"><span>03</span></td><td><strong>“What risks could prevent this Sprint Goal?”</strong></td><td>Reasoning about architecture, security, dependencies, uncertainty and quality.</td></tr>
+                                <tr><td class="career-seq"><span>04</span></td><td><strong>“How can the team improve flow and product outcomes?”</strong></td><td>Thinking systemically about delivery, feedback, collaboration and continuous improvement.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="soft-card lesson-complete p-4 mb-4">
+                <div class="row align-items-center g-3">
+                    <div class="col-md"><div class="section-kicker">Lesson 4 complete</div><h2 class="h5 fw-bold mb-1">Next: Jira and Confluence in Daily Work</h2><p class="text-secondary mb-0">Now that you understand Agile delivery, learn how commercial teams make work visible, manage backlog items, record decisions and maintain shared project knowledge.</p></div>
+                    <div class="col-md-auto d-flex gap-2"><a class="btn btn-outline-primary" th:href="@{/training/part-1-commercial-it/roles-responsibilities}">← Previous</a><a class="btn btn-primary" th:href="@{/training/part-1-commercial-it/jira-confluence}">Continue →</a></div>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-xl-3">
+            <aside class="soft-card p-4 sticky-xl-top lesson-nav-card" style="top: 90px;">
+                <div class="section-kicker">In this lesson</div>
+                <h2 class="h5 fw-bold">Lesson navigation</h2>
+                <nav class="lesson-side-nav mt-3" aria-label="Lesson sections">
+                    <a href="#objectives">Learning objectives</a>
+                    <a href="#problem">Why Agile exists</a>
+                    <a href="#agile">Agile mental model</a>
+                    <a href="#scrum">Scrum framework</a>
+                    <a href="#sprint">Inside a Sprint</a>
+                    <a href="#events">Scrum events</a>
+                    <a href="#artifacts">Artifacts & commitments</a>
+                    <a href="#backlog">Backlog & user stories</a>
+                    <a href="#estimation">Estimation & forecasting</a>
+                    <a href="#collaboration">Cross-functional work</a>
+                    <a href="#reference">Reference application</a>
+                    <a href="#anti-patterns">Anti-patterns</a>
+                    <a href="#hands-on">Hands-on lab</a>
+                    <a href="#knowledge">Knowledge check</a>
+                    <a href="#recap">Lesson recap</a>
+                    <a href="#career">Career perspective</a>
+                </nav>
+                <hr>
+                <p class="small text-secondary mb-0"><strong>Instructor note:</strong> Teach Agile as an empirical delivery model, not as a vocabulary exercise. Students should leave understanding why the practices exist.</p>
+            </aside>
+        </div>
+    </div>
+</main>
+</html>

@@ -1,0 +1,157 @@
+{
+  "realm": "commercial-it-bootcamp",
+  "displayName": "Commercial IT Bootcamp",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "roles": {
+    "realm": [
+      {
+        "name": "student",
+        "description": "Bootcamp learner"
+      },
+      {
+        "name": "instructor",
+        "description": "Bootcamp instructor"
+      },
+      {
+        "name": "admin",
+        "description": "Bootcamp administrator"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "commercial-it-bootcamp",
+      "name": "Commercial IT Bootcamp UI",
+      "enabled": true,
+      "publicClient": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "rootUrl": "http://localhost:8081",
+      "baseUrl": "http://localhost:8081/",
+      "redirectUris": [
+        "http://localhost:8081/login/oauth2/code/keycloak"
+      ],
+      "webOrigins": [
+        "http://localhost:8081"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:8081/*"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "basic",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "microprofile-jwt"
+      ],
+      "protocolMappers": [
+        {
+          "name": "realm roles for training UI",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "multivalued": "true",
+            "userinfo.token.claim": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "realm_access.roles",
+            "jsonType.label": "String"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "commercial-it-bootcamp-api",
+      "name": "Commercial IT Bootcamp API Demo Client",
+      "enabled": true,
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "secret": "demo-api-secret-change-me",
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "bearerOnly": false,
+      "defaultClientScopes": [
+        "roles",
+        "profile"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "student",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Demo",
+      "lastName": "Student",
+      "email": "student@example.test",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Student123!",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "student"
+      ]
+    },
+    {
+      "username": "instructor",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Demo",
+      "lastName": "Instructor",
+      "email": "instructor@example.test",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Instructor123!",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "student",
+        "instructor"
+      ]
+    },
+    {
+      "username": "bootcamp-admin",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Demo",
+      "lastName": "Administrator",
+      "email": "admin@example.test",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Admin123!",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "student",
+        "instructor",
+        "admin"
+      ]
+    }
+  ]
+}

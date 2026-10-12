@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('Analytics and Machine Learning', 'Understand how governed business data becomes metrics, features, models, predictions and decision support.', ~{::main})}">
+<main>
+<nav aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb small">
+    <li class="breadcrumb-item"><a th:href="@{/training}">Training</a></li>
+    <li class="breadcrumb-item" th:text="${section.title}">Part VII — Data Engineering &amp; Analytics</li>
+    <li class="breadcrumb-item active" th:text="${lesson.title}">Analytics and Machine Learning</li>
+  </ol>
+</nav>
+
+<div class="row g-4">
+<div class="col-xl-9">
+
+<section id="s1" class="lesson-hero p-4 p-lg-5 mb-4">
+  <div class="video-play">▶</div>
+  <div class="small text-uppercase fw-bold opacity-75">Future LMS Video · Lesson 43</div>
+  <h1 class="display-6 fw-bold mt-2">Analytics and Machine Learning</h1>
+  <p class="lead mb-0">Understand how governed business data becomes metrics, features, models, predictions and decision support.</p>
+</section>
+
+<section id="s2" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Learning objectives</div>
+  <h2 class="h4 fw-bold">By the end of this lesson, you should be able to</h2>
+  <div class="row g-3 mt-1">
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Explain the architecture</strong><p class="small text-secondary mb-0">Describe the major components, data boundaries, responsibilities and trade-offs using correct commercial terminology.</p></div></div>
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Reason about production data</strong><p class="small text-secondary mb-0">Identify data quality, lineage, security, freshness, failure and operational concerns instead of treating analytics as isolated code.</p></div></div>
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Connect business to data</strong><p class="small text-secondary mb-0">Translate a business question into sources, transformations, analytical structures and measurable outputs.</p></div></div>
+    <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Apply it hands-on</strong><p class="small text-secondary mb-0">Use the Bootcamp e-commerce system as a realistic source and design the next analytical layer around it.</p></div></div>
+  </div>
+</section>
+
+<section id="s3" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Start with the business problem</div>
+  <h2 class="h3 fw-bold">Collecting large amounts of data creates no value unless it becomes trustworthy information, predictions or better decisions.</h2>
+  <p class="lead">Data engineering exists to move from operational records to governed, trustworthy information without losing meaning, lineage or control.</p>
+  <div class="p-3 rounded-3 bg-light border-start border-primary border-4"><strong>Commercial principle:</strong> A data platform is successful when consumers can trust what the data means, where it came from, how fresh it is and who owns it.</div>
+</section>
+
+<section id="s4" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Core concepts</div>
+  <h2 class="h3 fw-bold">Vocabulary you should be able to use correctly</h2>
+  <div class="row g-3 mt-1"><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Descriptive Analytics</strong><div class="small text-secondary mt-1">What happened? Reports, KPIs, trends and segmentation.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Diagnostic Analytics</strong><div class="small text-secondary mt-1">Why did it happen? Drill-down, cohort analysis, correlations and root-cause exploration.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Predictive Analytics</strong><div class="small text-secondary mt-1">What is likely to happen? Statistical and machine-learning models estimate future outcomes.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Feature</strong><div class="small text-secondary mt-1">A model input derived from governed data, such as customer tenure, order frequency or rolling demand.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Training / Validation / Test</strong><div class="small text-secondary mt-1">Separate datasets used to fit, tune and objectively evaluate a model.</div></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Inference</strong><div class="small text-secondary mt-1">Applying a trained model to new data to generate a score, prediction or recommendation.</div></div></div></div>
+</section>
+
+<section id="s5" class="soft-card p-4 mb-4">
+  <div class="section-kicker">End-to-end operating model</div>
+  <h2 class="h3 fw-bold">Follow the data from source to consumer</h2>
+  <div class="row g-3 mt-1"><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">1</span><strong>Define the decision</strong><p class="small text-secondary mb-0 mt-2">Start with the business action, not the algorithm: what decision will change because of the result?</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">2</span><strong>Establish trusted data</strong><p class="small text-secondary mb-0 mt-2">Identify authoritative sources, labels, history, leakage risk and quality constraints.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">3</span><strong>Engineer features</strong><p class="small text-secondary mb-0 mt-2">Create reproducible variables using only information legitimately available at prediction time.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">4</span><strong>Train and evaluate</strong><p class="small text-secondary mb-0 mt-2">Compare baselines and models using metrics aligned to business cost and risk.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">5</span><strong>Deploy inference</strong><p class="small text-secondary mb-0 mt-2">Serve predictions in batch, near-real-time or online application workflows.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">6</span><strong>Monitor</strong><p class="small text-secondary mb-0 mt-2">Track data drift, model drift, latency, fairness where relevant, errors and business outcomes.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><span class="badge text-bg-primary me-2">7</span><strong>Govern and improve</strong><p class="small text-secondary mb-0 mt-2">Document ownership, approval, retraining, rollback, explainability and human decision boundaries.</p></div></div></div>
+</section>
+
+<section id="s6" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Commercial scenario</div>
+  <h2 class="h3 fw-bold">Think in business outcomes, not technology names</h2>
+  <p class="lead">An e-commerce company wants to predict which orders are likely to be cancelled and which products may stock out. Analysts first establish trusted metrics, then data scientists build models. Predictions are useful only when integrated into inventory or customer-service decisions with measurable outcomes.</p>
+  <div class="row g-3 mt-3">
+    <div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Business question</strong><p class="small text-secondary mb-0">What decision, KPI, risk or operational action needs better information?</p></div></div>
+    <div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Data contract</strong><p class="small text-secondary mb-0">What does each field mean, how fresh must it be, and which system is authoritative?</p></div></div>
+    <div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Operational ownership</strong><p class="small text-secondary mb-0">Who responds when data is late, incomplete, duplicated, inaccessible or wrong?</p></div></div>
+  </div>
+</section>
+
+<section id="s7" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Reference application</div>
+  <h2 class="h3 fw-bold">Connect the lesson to the Bootcamp e-commerce platform</h2>
+  <p>From the Bootcamp data, propose a cancellation-risk model. Candidate features might include customer history, basket value, item count and order age. Explicitly identify fields that would leak future information and therefore must not be used.</p>
+  <div class="row g-3">
+    <div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Operational source</strong><div class="small text-secondary">Spring Boot services, JPA entities and MySQL transaction tables represent the system running the business.</div></div></div>
+    <div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Data platform</strong><div class="small text-secondary">Pipelines, storage, transformations, cataloging and analytical compute turn operational records into reusable data products.</div></div></div>
+    <div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Consumers</strong><div class="small text-secondary">BI dashboards, analysts, ML models, operational alerts and other applications consume governed outputs.</div></div></div>
+  </div>
+</section>
+
+<section id="s8" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Governance and security</div>
+  <h2 class="h3 fw-bold">The data layer inherits enterprise responsibilities</h2>
+  <div class="row g-3">
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Classification</strong><div class="small text-secondary">Know PII, financial, confidential and regulated fields.</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Least privilege</strong><div class="small text-secondary">Separate ingestion, transformation, administration and consumer access.</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Lineage</strong><div class="small text-secondary">Trace important outputs back to source systems and transformation logic.</div></div></div>
+    <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>Retention</strong><div class="small text-secondary">Keep data only as long as business, legal and recovery needs require.</div></div></div>
+  </div>
+</section>
+
+<section id="s9" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Common failure modes</div>
+  <h2 class="h3 fw-bold">What inexperienced teams often get wrong</h2>
+  <div class="row g-3"><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Model-first thinking</strong><p class="small text-secondary mb-0 mt-2">A sophisticated algorithm is built before anyone defines the decision, baseline or business value.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Data leakage</strong><p class="small text-secondary mb-0 mt-2">Training features contain information unavailable at real prediction time, producing unrealistic accuracy.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>Accuracy-only evaluation</strong><p class="small text-secondary mb-0 mt-2">The chosen metric ignores class imbalance, false-positive cost, operational capacity or business risk.</p></div></div><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>No production monitoring</strong><p class="small text-secondary mb-0 mt-2">Model quality degrades as customers, products and processes change.</p></div></div></div>
+</section>
+
+<section id="s10" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Hands-on lab</div>
+  <h2 class="h3 fw-bold">Practice on a commercial-style problem</h2>
+  <p>Write a one-page ML use-case design for order cancellation or demand prediction. Include business decision, label, features, leakage risks, baseline, evaluation metric, inference mode, monitoring and human override.</p>
+  <div class="alert alert-primary mb-0"><strong>Deliverable:</strong> Produce a one-page design showing sources, processing stages, ownership, quality controls, security boundaries, operational evidence and final consumer value.</div>
+</section>
+
+<section id="s11" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Knowledge check</div>
+  <h2 class="h3 fw-bold">Can you reason about the data system?</h2>
+  <ol>
+    <li class="mb-2">Which system is authoritative for the business fact and why?</li>
+    <li class="mb-2">What could make the data technically valid but business-wrong?</li>
+    <li class="mb-2">How will you detect late, missing, duplicate or malformed data?</li>
+    <li class="mb-2">Which information is sensitive and who should be able to access it?</li>
+    <li class="mb-2">How can a consumer trace an output back to its origin?</li>
+    <li>What happens operationally when this pipeline or data product fails?</li>
+  </ol>
+</section>
+
+<section id="s12" class="lesson-hero p-4 mb-4">
+  <div class="section-kicker text-info">Lesson recap</div>
+  <h2 class="h3 fw-bold">Five things to remember</h2>
+  <div class="row g-3">
+    <div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">1. Start with the decision.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">2. Trusted data precedes modeling.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">3. Prevent leakage.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">4. Evaluate business consequences, not only accuracy.</div></div><div class="col-md"><div class="border rounded-3 p-3 h-100 bg-white bg-opacity-10">5. Models require production ownership.</div></div>
+  </div>
+</section>
+
+<section id="s13" class="soft-card p-4 mb-4">
+  <div class="section-kicker">Career perspective</div>
+  <h2 class="h3 fw-bold">Strong engineers understand the data lifecycle, not only SQL or tools</h2>
+  <p class="lead mb-0">As responsibility grows, you are expected to understand data ownership, business meaning, architecture, quality, security, cost and production behavior across the complete path from source to decision.</p>
+</section>
+
+<section class="soft-card p-4 border-top border-primary border-4">
+  <div class="section-kicker">Lesson 43 complete · Part VII complete</div>
+  <h2 class="h4 fw-bold">Next: Part VIII — Generative AI Fundamentals</h2>
+  <p class="text-secondary mb-0">Part VII is complete. Next, move from analytics and machine learning into the foundations of Generative AI and LLM-based applications.</p>
+</section>
+
+</div>
+
+<aside class="col-xl-3">
+  <div class="soft-card p-4 sticky-xl-top" style="top:90px">
+    <div class="section-kicker">In this lesson</div>
+    <h2 class="h5 fw-bold">Lesson navigation</h2>
+    <div class="small lh-lg">
+      <a href="#s1">Course video</a> ·
+      <a href="#s2">Learning objectives</a> ·
+      <a href="#s3">Business problem</a> ·
+      <a href="#s4">Core concepts</a> ·
+      <a href="#s5">Operating model</a> ·
+      <a href="#s6">Commercial scenario</a> ·
+      <a href="#s7">Reference application</a> ·
+      <a href="#s8">Governance</a> ·
+      <a href="#s9">Failure modes</a> ·
+      <a href="#s10">Hands-on lab</a> ·
+      <a href="#s11">Knowledge check</a> ·
+      <a href="#s12">Lesson recap</a> ·
+      <a href="#s13">Career perspective</a>
+    </div>
+    <hr>
+    <p class="small text-secondary mb-0"><strong>Instructor note:</strong> Keep the business meaning and system-of-record question visible. Data engineering is not just movement of bytes; it is controlled movement of business meaning.</p>
+  </div>
+</aside>
+
+</div>
+</main>
+</html>

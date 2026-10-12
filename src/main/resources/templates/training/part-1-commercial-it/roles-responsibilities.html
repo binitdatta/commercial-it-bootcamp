@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('Roles and Responsibilities in an IT Shop', 'Understand what Product, Architecture, Engineering, QA, Security, DevOps, SRE, Data, Support and leadership roles actually own and how they collaborate.', ~{::main})}">
+<main>
+
+    <style>
+        /* =============================================================
+           Roles & Responsibilities lesson — presentation layer
+           ============================================================= */
+
+        #objectives,
+        .lesson-section {
+            scroll-margin-top: 95px;
+        }
+
+        .roles-hero {
+            box-shadow: 0 .45rem 1.3rem rgba(24, 62, 110, .08);
+        }
+
+        /* ---------- Number badges ---------- */
+        .lesson-number {
+            width: 2rem;
+            height: 2rem;
+            min-width: 2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #0d6efd;
+            color: #fff;
+            font-size: .82rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-top: .05rem;
+            box-shadow: 0 0 0 4px rgba(13,110,253,.08);
+        }
+
+        .lesson-number-light {
+            background: rgba(255,255,255,.96);
+            color: #0d6efd;
+            box-shadow: 0 0 0 4px rgba(255,255,255,.14);
+        }
+
+        .objective-item,
+        .lab-step,
+        .recap-item {
+            min-width: 0;
+        }
+
+        .objective-item > div,
+        .lab-step > div,
+        .recap-item > div {
+            min-width: 0;
+        }
+
+        .objective-item strong,
+        .lab-step strong,
+        .recap-item strong {
+            display: block;
+            margin-bottom: .22rem;
+        }
+
+        .objective-item small,
+        .lab-step p,
+        .recap-item small {
+            display: block;
+            line-height: 1.5;
+            margin-bottom: 0;
+        }
+
+        .lab-step {
+            padding: 1rem 0;
+        }
+
+        .lab-step + .lab-step {
+            border-top: 1px solid rgba(15,23,42,.08);
+        }
+
+        /* ---------- Common polished table shell ---------- */
+        .role-sequence-wrap,
+        .role-detail-table-wrap,
+        .architecture-table-wrap,
+        .operations-table-wrap,
+        .raci-table-wrap,
+        .workflow-table-wrap,
+        .day-table-wrap,
+        .career-table-wrap,
+        #leadership .table-responsive,
+        #reference-app .table-responsive {
+            border: 1px solid #d8e7fb;
+            border-radius: 1rem;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 .35rem 1.1rem rgba(27,64,112,.06);
+        }
+
+        .role-sequence-table thead th,
+        .role-detail-table thead th,
+        .architecture-table thead th,
+        .operations-table thead th,
+        .raci-table thead th,
+        .workflow-table thead th,
+        .day-table thead th,
+        .career-table thead th,
+        #leadership .lesson-table thead th,
+        #reference-app .lesson-table thead th {
+            padding: .9rem 1rem;
+            border: 0;
+            background: linear-gradient(135deg, #143c73 0%, #0d6efd 100%);
+            color: #fff;
+            font-size: .76rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .045em;
+            white-space: nowrap;
+        }
+
+        .role-sequence-table tbody td,
+        .role-detail-table tbody td,
+        .architecture-table tbody td,
+        .operations-table tbody td,
+        .raci-table tbody td,
+        .workflow-table tbody td,
+        .day-table tbody td,
+        .career-table tbody td,
+        #leadership .lesson-table tbody td,
+        #reference-app .lesson-table tbody td {
+            padding: 1rem 1.05rem;
+            border-color: rgba(28,54,87,.08);
+            line-height: 1.48;
+            vertical-align: top;
+        }
+
+        .role-sequence-table tbody tr:nth-child(odd) td,
+        .role-detail-table tbody tr:nth-child(odd) td,
+        .architecture-table tbody tr:nth-child(odd) td,
+        .operations-table tbody tr:nth-child(odd) td,
+        .raci-table tbody tr:nth-child(odd) td,
+        .workflow-table tbody tr:nth-child(odd) td,
+        .day-table tbody tr:nth-child(odd) td,
+        .career-table tbody tr:nth-child(odd) td,
+        #leadership .lesson-table tbody tr:nth-child(odd) td,
+        #reference-app .lesson-table tbody tr:nth-child(odd) td {
+            background: #fbfdff;
+        }
+
+        .role-sequence-table tbody tr:nth-child(even) td,
+        .role-detail-table tbody tr:nth-child(even) td,
+        .architecture-table tbody tr:nth-child(even) td,
+        .operations-table tbody tr:nth-child(even) td,
+        .raci-table tbody tr:nth-child(even) td,
+        .workflow-table tbody tr:nth-child(even) td,
+        .day-table tbody tr:nth-child(even) td,
+        .career-table tbody tr:nth-child(even) td,
+        #leadership .lesson-table tbody tr:nth-child(even) td,
+        #reference-app .lesson-table tbody tr:nth-child(even) td {
+            background: #f2f7fe;
+        }
+
+        .role-sequence-table tbody tr:hover td,
+        .role-detail-table tbody tr:hover td,
+        .architecture-table tbody tr:hover td,
+        .operations-table tbody tr:hover td,
+        .raci-table tbody tr:hover td,
+        .workflow-table tbody tr:hover td,
+        .day-table tbody tr:hover td,
+        .career-table tbody tr:hover td,
+        #leadership .lesson-table tbody tr:hover td,
+        #reference-app .lesson-table tbody tr:hover td {
+            background: #e8f2ff !important;
+        }
+
+        .role-sequence-table td strong,
+        .role-detail-table td strong,
+        .architecture-table td strong,
+        .operations-table td strong,
+        .raci-table td strong,
+        .workflow-table td strong,
+        .day-table td strong,
+        .career-table td strong {
+            color: #172033;
+        }
+
+        .role-sequence-table td small,
+        .role-detail-table td small {
+            display: block;
+            margin-top: .2rem;
+            color: #6b7787;
+        }
+
+        /* ---------- Circular table sequence markers ---------- */
+        .role-seq,
+        .arch-seq,
+        .ops-seq,
+        .workflow-seq,
+        .career-seq {
+            text-align: center;
+        }
+
+        .role-seq span,
+        .arch-seq span,
+        .ops-seq span,
+        .workflow-seq span,
+        .career-seq span {
+            width: 2.35rem;
+            height: 2.35rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #0d6efd;
+            color: #fff;
+            font-size: .76rem;
+            font-weight: 800;
+            box-shadow: 0 0 0 4px rgba(13,110,253,.08);
+        }
+
+        .role-code {
+            text-align: center;
+        }
+
+        .role-code span {
+            min-width: 2.7rem;
+            height: 2.35rem;
+            padding: 0 .55rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: .7rem;
+            background: #0d6efd;
+            color: #fff;
+            font-size: .76rem;
+            font-weight: 800;
+            letter-spacing: .03em;
+        }
+
+        /* ---------- RACI ---------- */
+        .raci-code {
+            text-align: center;
+        }
+
+        .raci-code span {
+            width: 2.55rem;
+            height: 2.55rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #173b67;
+            color: #fff;
+            font-weight: 900;
+            box-shadow: 0 0 0 4px rgba(23,59,103,.08);
+        }
+
+        /* ---------- Engineering / QA / cards ---------- */
+        .role-tile,
+        .role-detail,
+        .mini-card,
+        .myth-card {
+            height: 100%;
+            padding: 1.05rem;
+            border-radius: .9rem;
+            border: 1px solid #dce9f7;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+            box-shadow: 0 .25rem .7rem rgba(27,64,112,.04);
+        }
+
+        .role-tile strong,
+        .mini-card strong,
+        .myth-card strong {
+            display: block;
+            color: #172033;
+            margin-bottom: .4rem;
+        }
+
+        .role-tile p,
+        .mini-card p,
+        .myth-card p {
+            color: #647184;
+            line-height: 1.55;
+            margin-bottom: .45rem;
+        }
+
+        .role-tile small {
+            display: inline-block;
+            padding: .28rem .55rem;
+            border-radius: 999px;
+            background: #eaf3ff;
+            border: 1px solid #d5e6fb;
+            color: #174d91;
+            font-size: .75rem;
+            font-weight: 600;
+        }
+
+        .role-title {
+            display: flex;
+            align-items: flex-start;
+            gap: .8rem;
+            margin-bottom: .8rem;
+        }
+
+        .role-title > span {
+            min-width: 2.8rem;
+            height: 2.5rem;
+            padding: 0 .55rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: .7rem;
+            background: #0d6efd;
+            color: #fff;
+            font-size: .74rem;
+            font-weight: 800;
+        }
+
+        .role-title h3 {
+            font-size: 1rem;
+            margin: 0;
+            color: #172033;
+        }
+
+        .role-title small {
+            color: #6b7787;
+        }
+
+        .role-owns {
+            margin-top: .8rem;
+            padding: .7rem .8rem;
+            border-radius: .7rem;
+            background: #eef6ff;
+            color: #274b72;
+            font-size: .86rem;
+        }
+
+        /* ---------- Time schedule ---------- */
+        .time-chip {
+            display: inline-flex;
+            justify-content: center;
+            min-width: 78px;
+            padding: .38rem .58rem;
+            border-radius: 999px;
+            background: #e8f2ff;
+            border: 1px solid #cfe2ff;
+            color: #0b57b7;
+            font-size: .78rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .day-insight {
+            display: flex;
+            align-items: flex-start;
+            gap: .9rem;
+            padding: 1rem 1.15rem;
+            border-radius: .9rem;
+            border: 1px solid #d6e7fb;
+            background: linear-gradient(135deg, #f5faff 0%, #edf6ff 100%);
+        }
+
+        .day-insight > i {
+            width: 2.2rem;
+            height: 2.2rem;
+            flex: 0 0 2.2rem;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: #0d6efd;
+            color: #fff;
+        }
+
+        /* ---------- Problem / insight spacing ---------- */
+        .scenario-box {
+            padding: 1.25rem;
+            border-radius: .9rem;
+            border: 1px solid #dce9f7;
+            background: linear-gradient(135deg, #f8fbff 0%, #eef6ff 100%);
+        }
+
+        .lesson-insight {
+            padding: 1rem 1.15rem;
+            border-left: 4px solid #0d6efd;
+            border-radius: 0 .9rem .9rem 0;
+            background: #eef6ff;
+            line-height: 1.55;
+        }
+
+        .lesson-section > p.text-secondary,
+        .lesson-section > p.lead {
+            line-height: 1.65;
+        }
+
+        @media (max-width: 991.98px) {
+            .role-sequence-table,
+            .role-detail-table,
+            .architecture-table,
+            .operations-table,
+            .raci-table,
+            .workflow-table,
+            .day-table,
+            .career-table,
+            #leadership .lesson-table,
+            #reference-app .lesson-table {
+                min-width: 900px;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .lesson-number {
+                width: 1.85rem;
+                height: 1.85rem;
+                min-width: 1.85rem;
+                font-size: .76rem;
+            }
+        }
+    </style>
+
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a th:href="@{/training}">Training</a></li>
+            <li class="breadcrumb-item" th:text="${section.title}">Part I — How Commercial IT Works</li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${lesson.title}">Roles and Responsibilities in an IT Shop</li>
+        </ol>
+    </nav>
+
+
+    <!-- Lesson hero -->
+    <section class="lesson-hero p-4 p-lg-5 mb-4 roles-hero">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <span class="lesson-chip">PART I</span>
+                    <span class="lesson-chip">LESSON <span th:text="${lesson.number}">3</span></span>
+                    <span class="lesson-chip">BEGINNER</span>
+                    <span class="lesson-chip">50–60 MIN</span>
+                </div>
+                <div class="small text-uppercase fw-bold opacity-75 mb-2">How Commercial IT Works</div>
+                <h1 class="display-5 fw-bold mb-3">Roles and Responsibilities in an IT Shop</h1>
+                <p class="lead mb-0 opacity-90">
+                    Learn who defines business value, who prioritizes work, who designs the solution,
+                    who builds and verifies it, who secures and deploys it, and who keeps it reliable in production.
+                </p>
+            </div>
+            <div class="col-lg-4">
+                <div class="lesson-hero-callout">
+                    <div class="fw-bold mb-2">Core mental model</div>
+                    <div class="small opacity-90">
+                        Business defines value → Product defines what → Architecture shapes how →
+                        Engineering builds → Quality/Security verify → Platform/SRE operate → Support closes the loop.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <div class="row g-4">
+        <div class="col-xl-9">
+<section id="objectives" class="soft-card p-4 p-lg-5 mb-4 lesson-section shadow-sm">
+                <div class="section-kicker">Learning objectives</div>
+                <h2 class="h4 fw-bold mb-3">By the end of this lesson, you should be able to</h2>
+                <div class="row g-3">
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">1</span><div class="flex-grow-1"><strong>Separate accountability from activity</strong><small>Understand who owns an outcome versus who contributes to the work.</small></div></div></div>
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">2</span><div class="flex-grow-1"><strong>Differentiate major IT roles</strong><small>Product, architecture, engineering, QA, security, DevOps, SRE, data and support.</small></div></div></div>
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">3</span><div class="flex-grow-1"><strong>Follow collaboration across delivery</strong><small>See how one requirement moves through many roles before it reaches production.</small></div></div></div>
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">4</span><div class="flex-grow-1"><strong>Recognize organization variants</strong><small>Titles differ by company; responsibilities and decision boundaries matter more than labels.</small></div></div></div>
+                </div>
+            </section>
+
+            <section id="problem" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Start with a real commercial problem</div>
+                <h2 class="h3 fw-bold">One feature can involve a dozen roles</h2>
+                <div class="scenario-box mt-3">
+                    <div class="scenario-label">BUSINESS REQUEST</div>
+                    <h3 class="h5 fw-bold">“Allow an authenticated customer to cancel an order before shipment begins.”</h3>
+                    <p class="mb-0 text-secondary">This sounds like a small button on a web page. In a commercial system it can affect policy, UX, APIs, database state, authorization, inventory, payment/refund processing, audit logs, testing, deployment, monitoring and customer support.</p>
+                </div>
+                <div class="lesson-insight mt-3"><strong>Core idea:</strong> Commercial software delivery is collaborative because no single role has enough authority, context and expertise to own every decision safely.</div>
+            </section>
+<section id="role-map" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Role map</div>
+                <h2 class="h3 fw-bold mb-2">The major responsibility groups in a commercial IT shop</h2>
+                <p class="text-secondary mb-4">
+                    This is a responsibility map, not a mandatory reporting hierarchy. In a startup one person may wear
+                    several hats; in a global enterprise each row may represent multiple specialized teams.
+                </p>
+
+                <div class="role-sequence-wrap">
+                    <div class="table-responsive">
+                        <table class="table role-sequence-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:90px;">Group</th>
+                                    <th style="width:24%;">Responsibility area</th>
+                                    <th style="width:34%;">Typical roles</th>
+                                    <th>Primary contribution</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="role-seq"><span>01</span></td>
+                                    <td><strong>Business &amp; Product</strong><small>Why and what</small></td>
+                                    <td>Business Sponsor · Product Manager · Product Owner · Business Analyst · UX</td>
+                                    <td>Define business outcomes, customer value, priorities, requirements and acceptance intent.</td>
+                                </tr>
+                                <tr>
+                                    <td class="role-seq"><span>02</span></td>
+                                    <td><strong>Architecture</strong><small>How the solution fits together</small></td>
+                                    <td>Enterprise Architect · Solution Architect · Application Architect · Data Architect · Security Architect</td>
+                                    <td>Shape boundaries, integrations, standards, non-functional requirements, risks and trade-offs.</td>
+                                </tr>
+                                <tr>
+                                    <td class="role-seq"><span>03</span></td>
+                                    <td><strong>Build &amp; Verify</strong><small>Create and prove behavior</small></td>
+                                    <td>Frontend · Backend · Full Stack · QA / Test Automation · Integration · Data Engineering</td>
+                                    <td>Implement working software, data movement, integrations, automated tests and defect fixes.</td>
+                                </tr>
+                                <tr>
+                                    <td class="role-seq"><span>04</span></td>
+                                    <td><strong>Secure, Deliver &amp; Operate</strong><small>Production readiness</small></td>
+                                    <td>Security Engineering · DevOps / Platform · Cloud Engineering · SRE · Operations · Support</td>
+                                    <td>Protect, deploy, observe, recover and continuously improve production services.</td>
+                                </tr>
+                                <tr>
+                                    <td class="role-seq"><span>05</span></td>
+                                    <td><strong>Leadership &amp; Governance</strong><small>Coordination and accountability</small></td>
+                                    <td>Engineering Manager · Tech Lead · Project / Program Management · Compliance · Risk · Vendor Management</td>
+                                    <td>Coordinate people, decisions, delivery, governance, risk, evidence and organizational capability.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="lesson-insight mt-4">
+                    <strong>Key point:</strong> Learn the decision boundary and accountability behind a title.
+                    Titles vary dramatically between organizations; the underlying responsibilities are more stable.
+                </div>
+            </section>
+<section id="business-product" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Business and product roles</div>
+                <h2 class="h3 fw-bold mb-2">Who decides why and what?</h2>
+                <p class="text-secondary mb-4">
+                    These roles turn business needs into prioritized, understandable work for delivery teams.
+                </p>
+
+                <div class="role-detail-table-wrap">
+                    <div class="table-responsive">
+                        <table class="table role-detail-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:85px;">Role</th>
+                                    <th style="width:25%;">Primary accountability</th>
+                                    <th>What the role does</th>
+                                    <th style="width:24%;">Typically owns</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="role-code"><span>BS</span></td>
+                                    <td><strong>Business Sponsor / Stakeholder</strong><small>Owns the business outcome</small></td>
+                                    <td>Defines the problem, desired outcome, business constraints and funding context.</td>
+                                    <td>Business value, policy intent and business-level priority.</td>
+                                </tr>
+                                <tr>
+                                    <td class="role-code"><span>PM</span></td>
+                                    <td><strong>Product Manager</strong><small>Owns product direction</small></td>
+                                    <td>Translates business goals and customer needs into product strategy, roadmap and prioritized outcomes.</td>
+                                    <td>Roadmap, product outcomes, prioritization and customer value.</td>
+                                </tr>
+                                <tr>
+                                    <td class="role-code"><span>PO</span></td>
+                                    <td><strong>Product Owner</strong><small>Owns the near-term backlog</small></td>
+                                    <td>Clarifies stories, acceptance criteria and ordering of work for a delivery team.</td>
+                                    <td>Backlog clarity, story priority and acceptance intent.</td>
+                                </tr>
+                                <tr>
+                                    <td class="role-code"><span>BA</span></td>
+                                    <td><strong>Business Analyst</strong><small>Connects process and requirements</small></td>
+                                    <td>Studies workflows, rules, exceptions, data and stakeholder needs, especially in complex or regulated domains.</td>
+                                    <td>Requirement analysis, process detail and traceability support.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <p class="small text-secondary mt-3 mb-0">
+                    In some organizations Product Manager and Product Owner are separate roles; in others one person performs both responsibilities.
+                </p>
+            </section>
+<section id="architecture" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Architecture roles</div>
+                <h2 class="h3 fw-bold mb-2">Who determines how the solution should fit together?</h2>
+                <p class="text-secondary mb-4">
+                    Architecture operates at different scopes. The distinction is primarily about breadth of responsibility,
+                    not about who is “more technical.”
+                </p>
+
+                <div class="architecture-table-wrap">
+                    <div class="table-responsive">
+                        <table class="table architecture-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:90px;">Scope</th>
+                                    <th style="width:25%;">Architecture role</th>
+                                    <th>Main focus</th>
+                                    <th style="width:29%;">Typical decisions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="arch-seq"><span>01</span></td>
+                                    <td><strong>Enterprise Architect</strong></td>
+                                    <td>Enterprise capabilities, portfolio direction, standards, roadmaps and cross-domain alignment.</td>
+                                    <td>Platform strategy, application rationalization, enterprise patterns, capability roadmaps.</td>
+                                </tr>
+                                <tr>
+                                    <td class="arch-seq"><span>02</span></td>
+                                    <td><strong>Solution Architect</strong></td>
+                                    <td>End-to-end solution across applications, integrations, data, security and infrastructure.</td>
+                                    <td>System boundaries, integration patterns, NFRs, dependencies, major technology trade-offs.</td>
+                                </tr>
+                                <tr>
+                                    <td class="arch-seq"><span>03</span></td>
+                                    <td><strong>Application Architect</strong></td>
+                                    <td>Internal application structure, frameworks, patterns, APIs and code-level boundaries.</td>
+                                    <td>Layering, framework conventions, API contracts, module boundaries, implementation patterns.</td>
+                                </tr>
+                                <tr>
+                                    <td class="arch-seq"><span>04</span></td>
+                                    <td><strong>Data Architect</strong></td>
+                                    <td>Data models, ownership, movement, lineage and data-platform patterns.</td>
+                                    <td>System of record, schemas, integration models, governance, analytical architecture.</td>
+                                </tr>
+                                <tr>
+                                    <td class="arch-seq"><span>05</span></td>
+                                    <td><strong>Security Architect</strong></td>
+                                    <td>Identity, trust boundaries, authentication, authorization, encryption and threat controls.</td>
+                                    <td>IAM patterns, trust models, security controls, privileged access, compliance architecture.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="lesson-insight mt-4">
+                    <strong>Important:</strong> Architecture is not “the person who draws diagrams.”
+                    Architecture is the discipline of making consequential design decisions and trade-offs before those choices become expensive to reverse.
+                </div>
+            </section>
+
+            <section id="engineering" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Engineering roles</div>
+                <h2 class="h3 fw-bold">Who builds the software?</h2>
+                <div class="row g-3 mt-1">
+                    <div class="col-md-4"><div class="role-tile"><strong>Frontend Engineer</strong><p>Browser/mobile UI, state management, accessibility, client-side validation, API integration.</p><small>Typical: Angular, React, Vue</small></div></div>
+                    <div class="col-md-4"><div class="role-tile"><strong>Backend Engineer</strong><p>APIs, services, domain logic, persistence, messaging, integrations and security enforcement.</p><small>Typical: Java/Spring, .NET, Python</small></div></div>
+                    <div class="col-md-4"><div class="role-tile"><strong>Full-Stack Engineer</strong><p>Works across both UI and backend boundaries, usually with deeper strength in one area.</p><small>Broad delivery ownership</small></div></div>
+                    <div class="col-md-4"><div class="role-tile"><strong>Integration Engineer</strong><p>Connects SaaS, ERP, APIs, files, queues and enterprise systems reliably.</p><small>APIs · Events · ETL · iPaaS</small></div></div>
+                    <div class="col-md-4"><div class="role-tile"><strong>Data Engineer</strong><p>Builds pipelines, transformations and reliable data movement into operational and analytical platforms.</p><small>Batch · Streaming · Lakehouse</small></div></div>
+                    <div class="col-md-4"><div class="role-tile"><strong>Tech Lead</strong><p>Provides technical direction to a team, reviews design/code and coordinates implementation decisions.</p><small>Leadership without necessarily being a manager</small></div></div>
+                </div>
+            </section>
+
+            <section id="quality-security" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Quality and security</div>
+                <h2 class="h3 fw-bold">Who proves the system is safe enough to release?</h2>
+                <div class="row g-3 mt-1">
+                    <div class="col-md-6"><div class="role-detail h-100"><div class="role-title"><span>QA</span><div><h3>QA / Quality Engineer</h3><small>Verifies behavior and quality</small></div></div><p>Designs test scenarios, automation, regression suites and non-functional tests. Good QA challenges assumptions before defects reach production.</p><div class="role-owns"><b>Focus:</b> correctness, regression, testability, evidence.</div></div></div>
+                    <div class="col-md-6"><div class="role-detail h-100"><div class="role-title"><span>SEC</span><div><h3>Security Engineer</h3><small>Reduces technical security risk</small></div></div><p>Works on IAM, secure coding, vulnerability management, secrets, application security, threat detection and security tooling.</p><div class="role-owns"><b>Focus:</b> confidentiality, integrity, availability, abuse resistance.</div></div></div>
+                </div>
+                <div class="lesson-insight mt-3"><strong>Shared responsibility:</strong> QA does not “own quality” alone and Security does not “own security” alone. Developers, architects, product teams and operators all contribute to both.</div>
+            </section>
+<section id="delivery-operations" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Delivery and operations</div>
+                <h2 class="h3 fw-bold mb-2">Who gets software into production and keeps it healthy?</h2>
+                <p class="text-secondary mb-4">
+                    Production engineering is a distinct discipline. Building the feature is only part of the lifecycle.
+                </p>
+
+                <div class="operations-table-wrap">
+                    <div class="table-responsive">
+                        <table class="table operations-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:90px;">Area</th>
+                                    <th style="width:27%;">Role</th>
+                                    <th>Primary responsibilities</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="ops-seq"><span>01</span></td><td><strong>DevOps / Platform Engineer</strong></td><td>CI/CD, build pipelines, infrastructure automation, developer platforms and repeatable deployment patterns.</td></tr>
+                                <tr><td class="ops-seq"><span>02</span></td><td><strong>Cloud Engineer</strong></td><td>Cloud accounts/subscriptions, networking, compute, managed services, IAM integration and cost controls.</td></tr>
+                                <tr><td class="ops-seq"><span>03</span></td><td><strong>Site Reliability Engineer (SRE)</strong></td><td>Reliability engineering, SLOs/SLIs, observability, capacity, automation and incident reduction.</td></tr>
+                                <tr><td class="ops-seq"><span>04</span></td><td><strong>Production Operations</strong></td><td>Runbooks, monitoring, incident response, batch operations, environment health and operational support.</td></tr>
+                                <tr><td class="ops-seq"><span>05</span></td><td><strong>Service Desk / Support</strong></td><td>User incidents, triage, known-error procedures, escalation and communication.</td></tr>
+                                <tr><td class="ops-seq"><span>06</span></td><td><strong>Database Administrator / Platform DBA</strong></td><td>Database availability, backup/recovery, performance, access, patching and operational controls.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="leadership" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Leadership and coordination</div>
+                <h2 class="h3 fw-bold">Roles that organize people, delivery and decisions</h2>
+                <div class="table-responsive mt-3">
+                    <table class="table lesson-table align-middle mb-0">
+                        <thead><tr><th>Role</th><th>Primary responsibility</th><th>Common misunderstanding</th></tr></thead>
+                        <tbody>
+                        <tr><td><strong>Engineering Manager</strong></td><td>People leadership, staffing, delivery health, coaching and engineering capability.</td><td>Not simply the “best coder promoted.”</td></tr>
+                        <tr><td><strong>Scrum Master</strong></td><td>Facilitates Scrum practices, removes impediments, improves team flow.</td><td>Not the team's boss and not the Product Owner.</td></tr>
+                        <tr><td><strong>Project Manager</strong></td><td>Scope, schedule, dependencies, risk, budget and coordination.</td><td>Does not necessarily decide product priority.</td></tr>
+                        <tr><td><strong>Program Manager</strong></td><td>Coordinates multiple related projects/workstreams toward a larger outcome.</td><td>Different from managing one engineering team.</td></tr>
+                        <tr><td><strong>Compliance / Risk</strong></td><td>Interprets required controls, evidence, policy and regulatory obligations.</td><td>Not a substitute for engineering security controls.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+<section id="raci" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Accountability model</div>
+                <h2 class="h3 fw-bold mb-2">RACI: a simple way to clarify who does what</h2>
+                <p class="text-secondary mb-4">
+                    RACI is useful when many teams contribute to the same outcome and ownership needs to be explicit.
+                </p>
+
+                <div class="raci-table-wrap">
+                    <div class="table-responsive">
+                        <table class="table raci-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:100px;">Code</th>
+                                    <th style="width:23%;">Meaning</th>
+                                    <th>What it means in practice</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="raci-code"><span>R</span></td><td><strong>Responsible</strong></td><td>Performs or coordinates the work required to complete the activity.</td></tr>
+                                <tr><td class="raci-code"><span>A</span></td><td><strong>Accountable</strong></td><td>Ultimately owns the outcome and has final accountability for the result.</td></tr>
+                                <tr><td class="raci-code"><span>C</span></td><td><strong>Consulted</strong></td><td>Provides expertise or input before the decision or activity is completed.</td></tr>
+                                <tr><td class="raci-code"><span>I</span></td><td><strong>Informed</strong></td><td>Needs awareness of progress, decisions or outcomes but does not perform the activity.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <p class="text-secondary mt-3 mb-0">
+                    RACI is not required for every story. It is most useful when ownership is ambiguous,
+                    many teams are involved, or regulated/operational responsibilities must be explicit.
+                </p>
+            </section>
+<section id="workflow" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Requirement → production</div>
+                <h2 class="h3 fw-bold mb-2">Watch the roles collaborate on one order-cancellation feature</h2>
+                <p class="text-secondary mb-4">
+                    The same business request moves through multiple responsibilities before it is safe to operate in production.
+                </p>
+
+                <div class="workflow-table-wrap">
+                    <div class="table-responsive">
+                        <table class="table workflow-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:90px;">Step</th>
+                                    <th style="width:25%;">Primary role group</th>
+                                    <th>Contribution to the feature</th>
+                                    <th style="width:25%;">Typical outputs</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="workflow-seq"><span>01</span></td><td><strong>Business / Product</strong></td><td>Define cancellation policy, user outcome and acceptance criteria.</td><td>Business rules, story, priority, acceptance criteria.</td></tr>
+                                <tr><td class="workflow-seq"><span>02</span></td><td><strong>Architecture</strong></td><td>Identify UI, API, service, database, IAM and integration impact.</td><td>Design decisions, boundaries, NFRs, integration/security approach.</td></tr>
+                                <tr><td class="workflow-seq"><span>03</span></td><td><strong>Engineering</strong></td><td>Implement controller, service, repository, UI behavior and automated tests.</td><td>Code, tests, API changes, schema/configuration changes.</td></tr>
+                                <tr><td class="workflow-seq"><span>04</span></td><td><strong>QA + Security</strong></td><td>Verify state transitions, authorization, negative paths and regressions.</td><td>Test evidence, defect findings, security validation.</td></tr>
+                                <tr><td class="workflow-seq"><span>05</span></td><td><strong>DevOps / SRE / Operations</strong></td><td>Deploy, observe, alert and support the behavior in production.</td><td>Pipeline execution, monitoring, alerts, runbooks, incident readiness.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="reference-app" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Reference application connection</div>
+                <h2 class="h3 fw-bold">Map these roles to the Spring Boot E-Commerce application</h2>
+                <p class="text-secondary">The codebase you are running is intentionally small, but it contains artifacts produced by several commercial IT responsibilities.</p>
+                <div class="table-responsive mt-3">
+                    <table class="table lesson-table align-middle mb-0">
+                        <thead><tr><th>Project artifact</th><th>Role perspective</th><th>Question to ask</th></tr></thead>
+                        <tbody>
+                        <tr><td><code>OrderRestController</code></td><td>Backend / API Engineering</td><td>What HTTP contract are we exposing?</td></tr>
+                        <tr><td><code>OrderService</code></td><td>Application Engineering / Architecture</td><td>Where should business rules live?</td></tr>
+                        <tr><td>JPA repositories / entities</td><td>Engineering + Data</td><td>How is application state persisted?</td></tr>
+                        <tr><td><code>SecurityConfig</code> + Keycloak</td><td>Security Engineering / Architecture</td><td>Who may access which functions?</td></tr>
+                        <tr><td><code>application.yml</code></td><td>Platform / Operations</td><td>How is runtime configuration externalized?</td></tr>
+                        <tr><td>MySQL schema</td><td>Data / DBA / Engineering</td><td>What integrity constraints must the database enforce?</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+<section id="day" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">A day in the life</div>
+                <h2 class="h3 fw-bold mb-2">What collaboration looks like for a new software engineer</h2>
+                <p class="text-secondary mb-4">
+                    A commercial engineering day mixes coding with product clarification, design, review, testing and operational learning.
+                </p>
+
+                <div class="day-table-wrap">
+                    <div class="table-responsive">
+                        <table class="table day-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:120px;">Time</th>
+                                    <th style="width:27%;">Activity</th>
+                                    <th>Who you collaborate with / what you learn</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><span class="time-chip">9:00 AM</span></td><td><strong>Stand-up</strong></td><td>Coordinate progress, plan and blockers with engineering, QA and product.</td></tr>
+                                <tr><td><span class="time-chip">9:30 AM</span></td><td><strong>Story review</strong></td><td>Clarify acceptance criteria and business intent with the Product Owner.</td></tr>
+                                <tr><td><span class="time-chip">10:30 AM</span></td><td><strong>Design discussion</strong></td><td>Confirm API, data and technical decisions with senior engineers or architects.</td></tr>
+                                <tr><td><span class="time-chip">11:30 AM</span></td><td><strong>Implementation</strong></td><td>Write production code and unit tests.</td></tr>
+                                <tr><td><span class="time-chip">2:00 PM</span></td><td><strong>Pull request</strong></td><td>Receive code-review feedback and discuss implementation trade-offs.</td></tr>
+                                <tr><td><span class="time-chip">3:00 PM</span></td><td><strong>QA collaboration</strong></td><td>Reproduce an edge-case defect and compare behavior with acceptance criteria.</td></tr>
+                                <tr><td><span class="time-chip">4:00 PM</span></td><td><strong>Delivery pipeline</strong></td><td>Review build, test, scan and deployment results.</td></tr>
+                                <tr><td><span class="time-chip">4:30 PM</span></td><td><strong>Production learning</strong></td><td>Review logs, metrics or a recent incident to understand real system behavior.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="day-insight mt-4">
+                    <i class="bi bi-lightbulb-fill"></i>
+                    <div>
+                        <strong>Beginner takeaway</strong>
+                        <p class="mb-0 mt-1">Writing code is essential, but commercial engineering success also depends on collaboration, evidence and operational awareness.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="hands-on" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Hands-on lab</div>
+                <h2 class="h3 fw-bold">Build a responsibility map for one feature</h2>
+                <p class="text-secondary">Use this course's E-Commerce reference application and choose one feature: place order, view order, cancel order, update customer information, or product search.</p>
+                <div class="mt-3">
+                    <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">1</span><div class="flex-grow-1"><strong>Write the business outcome</strong><p>State why the feature exists in one sentence.</p></div></div>
+                    <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">2</span><div class="flex-grow-1"><strong>Identify five roles</strong><p>Choose the roles whose decisions or work are required.</p></div></div>
+                    <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">3</span><div class="flex-grow-1"><strong>Assign responsibility</strong><p>For each role, write what it owns versus what it merely contributes.</p></div></div>
+                    <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">4</span><div class="flex-grow-1"><strong>Map project artifacts</strong><p>Locate controllers, services, repositories, templates, security configuration or schema associated with the feature.</p></div></div>
+                    <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">5</span><div class="flex-grow-1"><strong>Find one handoff risk</strong><p>Example: unclear acceptance criteria, missing authorization rule, environment mismatch or operational monitoring gap.</p></div></div>
+                </div>
+                <div class="lab-deliverable"><strong>Deliverable:</strong> one page containing Feature → Business Outcome → Roles → Responsibilities → Project Artifacts → One Handoff Risk.</div>
+            </section>
+
+            <section id="knowledge" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Knowledge check</div>
+                <h2 class="h3 fw-bold">Test your understanding</h2>
+                <div class="accordion lesson-accordion mt-3" id="roleQuiz">
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#rq1">1. Who primarily owns product priority and customer value?</button></h3><div id="rq1" class="accordion-collapse collapse" data-bs-parent="#roleQuiz"><div class="accordion-body"><strong>Product Management / Product Owner, depending on the organization's model.</strong> Business stakeholders provide goals and constraints, while product roles translate them into prioritized product work.</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#rq2">2. Is a Solution Architect the same as a senior developer?</button></h3><div id="rq2" class="accordion-collapse collapse" data-bs-parent="#roleQuiz"><div class="accordion-body"><strong>No.</strong> A senior developer may focus deeply on implementation. A Solution Architect is accountable for cross-component design, integrations, non-functional requirements and trade-offs across the end-to-end solution.</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#rq3">3. Who owns security?</button></h3><div id="rq3" class="accordion-collapse collapse" data-bs-parent="#roleQuiz"><div class="accordion-body"><strong>Everyone contributes.</strong> Security specialists provide expertise, architecture, tooling and governance, but engineers, product teams, operators and leaders all make decisions that affect security.</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#rq4">4. What is the difference between DevOps and SRE?</button></h3><div id="rq4" class="accordion-collapse collapse" data-bs-parent="#roleQuiz"><div class="accordion-body"><strong>DevOps is broader than a job title.</strong> It emphasizes collaboration and automation across development and operations. SRE applies software-engineering methods specifically to reliability, using concepts such as SLOs, SLIs and error budgets.</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#rq5">5. Why can job titles be misleading?</button></h3><div id="rq5" class="accordion-collapse collapse" data-bs-parent="#roleQuiz"><div class="accordion-body">Because companies divide responsibility differently. Focus on <strong>decision rights, accountability, interfaces and expected outcomes</strong>, not only the title printed on an org chart.</div></div></div>
+                </div>
+            </section>
+
+            <section id="misconceptions" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Common misconceptions</div>
+                <h2 class="h3 fw-bold">What beginners often get wrong</h2>
+                <div class="row g-3 mt-1">
+                    <div class="col-md-6"><div class="myth-card"><span class="myth">MISCONCEPTION</span><strong>“The developer owns the whole application.”</strong><p>Developers own important implementation decisions, but business, architecture, security, operations and product responsibilities remain distinct.</p></div></div>
+                    <div class="col-md-6"><div class="myth-card"><span class="myth">MISCONCEPTION</span><strong>“Architects just create PowerPoint diagrams.”</strong><p>Effective architects make and govern high-impact technical decisions, resolve trade-offs and keep solutions coherent across boundaries.</p></div></div>
+                    <div class="col-md-6"><div class="myth-card"><span class="myth">MISCONCEPTION</span><strong>“QA happens after coding is finished.”</strong><p>Quality engineering should influence acceptance criteria, testability, automation and risk throughout the delivery lifecycle.</p></div></div>
+                    <div class="col-md-6"><div class="myth-card"><span class="myth">MISCONCEPTION</span><strong>“DevOps means the deployment team.”</strong><p>DevOps is a delivery culture and set of practices. Some companies use DevOps Engineer as a role title, but the concept is broader.</p></div></div>
+                </div>
+            </section>
+
+            <section id="recap" class="lesson-recap p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker text-info">Lesson recap</div>
+                <h2 class="h3 fw-bold">Five things to remember</h2>
+                <div class="row g-3 mt-1">
+                    <div class="col-md-6 col-lg"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">1</span><div class="flex-grow-1"><strong>Business defines value</strong><small>Technology exists to serve an outcome.</small></div></div></div>
+                    <div class="col-md-6 col-lg"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">2</span><div class="flex-grow-1"><strong>Product defines what</strong><small>Roadmap, priority and acceptance intent.</small></div></div></div>
+                    <div class="col-md-6 col-lg"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">3</span><div class="flex-grow-1"><strong>Architecture shapes how</strong><small>Boundaries, trade-offs and system coherence.</small></div></div></div>
+                    <div class="col-md-6 col-lg"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">4</span><div class="flex-grow-1"><strong>Engineering builds</strong><small>Implementation, integration and automation.</small></div></div></div>
+                    <div class="col-md-6 col-lg"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">5</span><div class="flex-grow-1"><strong>Operations closes the loop</strong><small>Production reality feeds back into design.</small></div></div></div>
+                </div>
+            </section>
+<section id="career" class="soft-card p-4 p-lg-5 mb-4 lesson-section">
+                <div class="section-kicker">Career perspective</div>
+                <h2 class="h3 fw-bold mb-2">Strong engineers learn to work across role boundaries</h2>
+                <p class="lead mb-4">
+                    You do not need to become every role. You do need to understand what the people around you are responsible for.
+                </p>
+
+                <div class="career-table-wrap">
+                    <div class="table-responsive">
+                        <table class="table career-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:100px;">Stage</th>
+                                    <th style="width:30%;">Typical career position</th>
+                                    <th>How collaboration usually expands</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="career-seq"><span>01</span></td><td><strong>Graduate Engineer</strong></td><td>Learn the codebase, team process, terminology, quality standards and how assigned work fits into a larger product.</td></tr>
+                                <tr><td class="career-seq"><span>02</span></td><td><strong>Software Engineer</strong></td><td>Own features more independently and collaborate directly with product, QA and peer engineers.</td></tr>
+                                <tr><td class="career-seq"><span>03</span></td><td><strong>Senior Engineer</strong></td><td>Reason across components, mentor others and influence design, operational quality and cross-team decisions.</td></tr>
+                                <tr><td class="career-seq"><span>04</span></td><td><strong>Tech Lead</strong></td><td>Coordinate technical direction, implementation decisions and delivery across a team or workstream.</td></tr>
+                                <tr><td class="career-seq"><span>05</span></td><td><strong>Architect / Engineering Manager / Specialist</strong></td><td>Operate across broader organizational boundaries using technical depth, business understanding, communication and judgment.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <p class="text-secondary mt-4 mb-0">
+                    Seniority increasingly requires combining technical depth with business understanding,
+                    communication, judgment and the ability to coordinate decisions across disciplines.
+                </p>
+            </section>
+
+            <section class="soft-card lesson-complete p-4 mb-4">
+                <div class="row align-items-center g-3">
+                    <div class="col-md"><div class="section-kicker">Lesson 3 complete</div><h2 class="h5 fw-bold mb-1">Next: Agile, Scrum, Sprints and Retrospectives</h2><p class="text-secondary mb-0">Now that you understand the roles, learn how those roles organize work, collaborate in iterations and continuously improve delivery.</p></div>
+                    <div class="col-md-auto d-flex gap-2"><a class="btn btn-outline-primary" th:href="@{/training/part-1-commercial-it/business-domains}">← Previous</a><a class="btn btn-primary" th:href="@{/training/part-1-commercial-it/agile-scrum}">Continue →</a></div>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-xl-3">
+            <aside class="soft-card p-4 sticky-xl-top" style="top:90px;">
+                <div class="section-kicker">In this lesson</div>
+                <h2 class="h5 fw-bold">Lesson navigation</h2>
+                <nav class="nav flex-column lesson-toc small mt-3">
+                    <a class="nav-link" href="#objectives">Learning objectives</a><a class="nav-link" href="#problem">Business problem</a><a class="nav-link" href="#role-map">Role map</a><a class="nav-link" href="#business-product">Business & product</a><a class="nav-link" href="#architecture">Architecture</a><a class="nav-link" href="#engineering">Engineering</a><a class="nav-link" href="#quality-security">Quality & security</a><a class="nav-link" href="#delivery-operations">Delivery & operations</a><a class="nav-link" href="#leadership">Leadership</a><a class="nav-link" href="#raci">RACI</a><a class="nav-link" href="#workflow">Requirement → production</a><a class="nav-link" href="#reference-app">Reference application</a><a class="nav-link" href="#day">Day in the life</a><a class="nav-link" href="#hands-on">Hands-on lab</a><a class="nav-link" href="#knowledge">Knowledge check</a><a class="nav-link" href="#misconceptions">Misconceptions</a><a class="nav-link" href="#recap">Lesson recap</a><a class="nav-link" href="#career">Career perspective</a>
+                </nav>
+                <hr>
+                <p class="small text-secondary mb-0"><strong>Instructor note:</strong> Teach responsibilities and decision boundaries, not job-title memorization. Titles vary widely between companies.</p>
+            </aside>
+        </div>
+    </div>
+</main>
+</html>

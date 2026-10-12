@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('IT Organization Structure', 'Learn how a commercial IT organization turns business needs into secure, reliable production software.', ~{::main})}">
+<main>
+
+    <style>
+        /* Keep lesson numbers beside their text, never on a separate line. */
+        .lesson-number {
+            width: 2rem;
+            height: 2rem;
+            min-width: 2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #0d6efd;
+            color: #fff;
+            font-size: .84rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-top: .05rem;
+            box-shadow: 0 0 0 4px rgba(13, 110, 253, .08);
+        }
+
+        .lesson-number-light {
+            background: rgba(255,255,255,.96);
+            color: #0d6efd;
+            box-shadow: 0 0 0 4px rgba(255,255,255,.14);
+        }
+
+        .objective-item,
+        .timeline-item,
+        .lab-step,
+        .recap-item {
+            min-width: 0;
+        }
+
+        .objective-item > div,
+        .timeline-item > div,
+        .lab-step > div,
+        .recap-item > div {
+            min-width: 0;
+        }
+
+        .objective-item strong,
+        .timeline-item strong,
+        .lab-step strong,
+        .recap-item strong {
+            display: block;
+            margin-bottom: .2rem;
+        }
+
+        .objective-item small,
+        .timeline-item p,
+        .lab-step p,
+        .recap-item small {
+            display: block;
+            margin-bottom: 0;
+        }
+
+        .timeline-item,
+        .lab-step {
+            padding: 1rem 0;
+        }
+
+        .timeline-item + .timeline-item,
+        .lab-step + .lab-step {
+            border-top: 1px solid rgba(15, 23, 42, .08);
+        }
+
+        #objectives,
+        .lesson-section {
+            scroll-margin-top: 95px;
+        }
+
+        @media (max-width: 767.98px) {
+            .lesson-number {
+                width: 1.85rem;
+                height: 1.85rem;
+                min-width: 1.85rem;
+                font-size: .78rem;
+            }
+        }
+    
+        /* Sequenced Commercial IT capability table */
+        .org-sequence-table-wrap {
+            border: 1px solid rgba(13, 110, 253, .14);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 .35rem 1rem rgba(15, 42, 70, .06);
+            background: #fff;
+        }
+
+        .org-sequence-table {
+            --bs-table-bg: transparent;
+            font-size: .94rem;
+        }
+
+        .org-sequence-table thead th {
+            background: linear-gradient(135deg, #0d3b82 0%, #0d6efd 100%);
+            color: #fff;
+            border: 0;
+            padding: 1rem 1.1rem;
+            font-size: .79rem;
+            text-transform: uppercase;
+            letter-spacing: .045em;
+            white-space: nowrap;
+        }
+
+        .org-sequence-table tbody td {
+            padding: 1.05rem 1.1rem;
+            border-color: rgba(15, 23, 42, .07);
+            color: #26364a;
+            line-height: 1.48;
+        }
+
+        .org-sequence-table tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .org-seq-col {
+            width: 7rem;
+            text-align: center;
+        }
+
+        .org-seq {
+            text-align: center;
+        }
+
+        .org-seq span {
+            width: 2.55rem;
+            height: 2.55rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid #0d6efd;
+            color: #0d6efd;
+            font-weight: 800;
+            font-size: .82rem;
+            box-shadow: 0 0 0 4px rgba(13,110,253,.07);
+        }
+
+        .org-function {
+            display: flex;
+            align-items: flex-start;
+            gap: .75rem;
+            min-width: 280px;
+        }
+
+        .org-function > i {
+            width: 2.2rem;
+            height: 2.2rem;
+            flex: 0 0 2.2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: .7rem;
+            background: rgba(13, 110, 253, .10);
+            color: #0d6efd;
+            font-size: 1rem;
+        }
+
+        .org-function strong {
+            display: block;
+            color: #172033;
+            font-size: .98rem;
+            line-height: 1.3;
+        }
+
+        .org-function small {
+            display: block;
+            margin-top: .22rem;
+            color: #6b7787;
+            line-height: 1.35;
+        }
+
+        .org-pill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .35rem;
+        }
+
+        .org-pill-list span {
+            display: inline-block;
+            padding: .28rem .55rem;
+            border-radius: 999px;
+            background: rgba(13, 110, 253, .08);
+            color: #174d91;
+            font-size: .78rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* Alternating stage shading keeps sequence readable without arrows. */
+        .org-stage-business td    { background: #f8fbff; }
+        .org-stage-product td     { background: #f3f8ff; }
+        .org-stage-architecture td{ background: #eef5ff; }
+        .org-stage-engineering td { background: #f8fbff; }
+        .org-stage-assurance td   { background: #f3f8ff; }
+        .org-stage-operations td  { background: #eef5ff; }
+        .org-stage-production td  { background: #f8fbff; }
+        .org-stage-support td     { background: #f3f8ff; }
+
+        .org-stage:hover td {
+            background: #e9f3ff !important;
+        }
+
+        .org-sequence-note {
+            display: flex;
+            align-items: flex-start;
+            gap: .85rem;
+            padding: 1rem 1.15rem;
+            border-radius: .9rem;
+            background: linear-gradient(135deg, #f7fbff 0%, #eef6ff 100%);
+            border: 1px solid rgba(13,110,253,.14);
+        }
+
+        .org-sequence-note-icon {
+            width: 2.25rem;
+            height: 2.25rem;
+            flex: 0 0 2.25rem;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: #0d6efd;
+            color: #fff;
+        }
+
+        @media (max-width: 991.98px) {
+            .org-sequence-table {
+                min-width: 980px;
+            }
+        }
+
+    
+        /* =============================================================
+           Reference application — polished shaded tables
+           ============================================================= */
+        .reference-panel {
+            border: 1px solid #d8e7fb;
+            border-radius: 1rem;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 .35rem 1.1rem rgba(27, 64, 112, .06);
+        }
+
+        .reference-panel + .reference-panel {
+            margin-top: 1.5rem;
+        }
+
+        .reference-panel-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.15rem 1.3rem;
+            background: linear-gradient(135deg, #eef6ff 0%, #f8fbff 100%);
+            border-bottom: 1px solid #d8e7fb;
+        }
+
+        .reference-panel-security .reference-panel-header {
+            background: linear-gradient(135deg, #eefbf5 0%, #f8fffb 100%);
+            border-bottom-color: #d7eee1;
+        }
+
+        .reference-panel-icon {
+            width: 2.7rem;
+            height: 2.7rem;
+            flex: 0 0 2.7rem;
+            display: grid;
+            place-items: center;
+            border-radius: .8rem;
+            background: #0d6efd;
+            color: white;
+            font-size: 1.15rem;
+            box-shadow: 0 .3rem .8rem rgba(13,110,253,.18);
+        }
+
+        .reference-panel-security .reference-panel-icon {
+            background: #198754;
+            box-shadow: 0 .3rem .8rem rgba(25,135,84,.17);
+        }
+
+        .reference-panel-kicker {
+            color: #0d6efd;
+            font-size: .72rem;
+            font-weight: 800;
+            letter-spacing: .08em;
+            margin-bottom: .15rem;
+        }
+
+        .reference-panel-security .reference-panel-kicker {
+            color: #198754;
+        }
+
+        .reference-table thead th {
+            padding: .8rem 1rem;
+            background: #173b67;
+            color: #fff;
+            border: 0;
+            font-size: .76rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .045em;
+        }
+
+        .reference-panel-security .reference-table thead th {
+            background: #176a4a;
+        }
+
+        .reference-table tbody td {
+            padding: 1rem;
+            border-color: rgba(28, 54, 87, .08);
+            line-height: 1.45;
+        }
+
+        .reference-table tbody tr:nth-child(odd) td {
+            background: #fbfdff;
+        }
+
+        .reference-table tbody tr:nth-child(even) td {
+            background: #f3f8ff;
+        }
+
+        .reference-panel-security .reference-table tbody tr:nth-child(odd) td {
+            background: #fbfefc;
+        }
+
+        .reference-panel-security .reference-table tbody tr:nth-child(even) td {
+            background: #f1faf5;
+        }
+
+        .reference-table tbody tr:hover td {
+            background: #eaf4ff !important;
+        }
+
+        .reference-panel-security .reference-table tbody tr:hover td {
+            background: #eaf8f0 !important;
+        }
+
+        .reference-step {
+            text-align: center;
+        }
+
+        .reference-step span {
+            width: 2.35rem;
+            height: 2.35rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #0d6efd;
+            color: #fff;
+            font-size: .78rem;
+            font-weight: 800;
+            box-shadow: 0 0 0 4px rgba(13,110,253,.08);
+        }
+
+        .reference-panel-security .reference-step span {
+            background: #198754;
+            box-shadow: 0 0 0 4px rgba(25,135,84,.08);
+        }
+
+        .reference-layer {
+            display: flex;
+            align-items: center;
+            gap: .8rem;
+            min-width: 250px;
+        }
+
+        .reference-layer > i {
+            width: 2.15rem;
+            height: 2.15rem;
+            flex: 0 0 2.15rem;
+            display: grid;
+            place-items: center;
+            border-radius: .65rem;
+            background: rgba(13,110,253,.09);
+            color: #0d6efd;
+        }
+
+        .reference-panel-security .reference-layer > i {
+            background: rgba(25,135,84,.09);
+            color: #198754;
+        }
+
+        .reference-layer strong {
+            display: block;
+            color: #172033;
+            line-height: 1.25;
+        }
+
+        .reference-layer small {
+            display: block;
+            color: #6c7888;
+            margin-top: .18rem;
+            line-height: 1.25;
+        }
+
+        .reference-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.25rem;
+            padding: 1.15rem 1.25rem;
+            background: #f8fbff;
+            border: 1px solid #dce9f7;
+            border-radius: .9rem;
+        }
+
+        /* =============================================================
+           A realistic day — polished schedule table
+           ============================================================= */
+        .day-table-wrap {
+            border: 1px solid #d8e7fb;
+            border-radius: 1rem;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 .35rem 1.1rem rgba(27, 64, 112, .06);
+        }
+
+        .day-table thead th {
+            padding: .9rem 1rem;
+            border: 0;
+            background: linear-gradient(135deg, #143c73 0%, #0d6efd 100%);
+            color: #fff;
+            font-size: .77rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .045em;
+        }
+
+        .day-table tbody td {
+            padding: 1rem 1.05rem;
+            border-color: rgba(28,54,87,.08);
+            line-height: 1.45;
+        }
+
+        .day-table tbody tr:nth-child(odd) td {
+            background: #fbfdff;
+        }
+
+        .day-table tbody tr:nth-child(even) td {
+            background: #f2f7fe;
+        }
+
+        .day-table tbody tr:hover td {
+            background: #e8f2ff !important;
+        }
+
+        .time-chip {
+            display: inline-flex;
+            justify-content: center;
+            min-width: 76px;
+            padding: .38rem .55rem;
+            border-radius: 999px;
+            background: #e8f2ff;
+            border: 1px solid #cfe2ff;
+            color: #0b57b7;
+            font-size: .79rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .day-activity {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            min-width: 220px;
+        }
+
+        .day-activity i {
+            width: 2.1rem;
+            height: 2.1rem;
+            flex: 0 0 2.1rem;
+            display: grid;
+            place-items: center;
+            border-radius: .65rem;
+            background: rgba(13,110,253,.09);
+            color: #0d6efd;
+        }
+
+        .day-activity strong {
+            color: #172033;
+        }
+
+        .day-insight {
+            display: flex;
+            align-items: flex-start;
+            gap: .9rem;
+            padding: 1rem 1.15rem;
+            border-radius: .9rem;
+            border: 1px solid #d6e7fb;
+            background: linear-gradient(135deg, #f5faff 0%, #edf6ff 100%);
+        }
+
+        .day-insight > i {
+            width: 2.2rem;
+            height: 2.2rem;
+            flex: 0 0 2.2rem;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: #0d6efd;
+            color: #fff;
+        }
+
+        #reference-app > p,
+        #day-in-life > p {
+            line-height: 1.65;
+        }
+
+        @media (max-width: 991.98px) {
+            .reference-table,
+            .day-table {
+                min-width: 880px;
+            }
+
+            .reference-actions {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+    </style>
+
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a th:href="@{/training}">Training</a></li>
+            <li class="breadcrumb-item" th:text="${section.title}">Part I — How Commercial IT Works</li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${lesson.title}">IT Organization Structure</li>
+        </ol>
+    </nav>
+
+    <!-- Lesson hero -->
+    <section class="lesson-hero p-4 p-lg-5 mb-4">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <span class="lesson-chip">PART I</span>
+                    <span class="lesson-chip">LESSON <span th:text="${lesson.number}">1</span></span>
+                    <span class="lesson-chip">BEGINNER</span>
+                    <span class="lesson-chip">40–50 MIN</span>
+                </div>
+                <div class="small text-uppercase fw-bold opacity-75 mb-2">How Commercial IT Works</div>
+                <h1 class="display-5 fw-bold mb-3">IT Organization Structure</h1>
+                <p class="lead mb-0 opacity-90">Software engineering does not happen in isolation. Learn how business, product, architecture, engineering, security, data, quality, platform, operations and support work together to deliver a real business capability.</p>
+            </div>
+            <div class="col-lg-4">
+                <div class="lesson-hero-callout">
+                    <div class="fw-bold mb-2">The mental model for this lesson</div>
+                    <div class="small opacity-90">Business need → Product decision → Architecture → Build → Secure & test → Deploy → Operate → Improve</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="row g-4">
+        <div class="col-xl-9">
+<!-- Objectives -->
+            <section id="objectives" class="soft-card lesson-section p-4 p-lg-5 mb-4 shadow-sm">
+                <div class="section-kicker">Learning objectives</div>
+                <h2 class="h3 fw-bold mb-3">What you should be able to explain after this lesson</h2>
+                <p class="text-secondary mb-4">Do not try to memorize job titles. Learn the responsibilities and the flow of work. Titles vary among companies; these capabilities exist in some form in nearly every serious commercial IT organization.</p>
+                <div class="row g-3">
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">1</span><div class="flex-grow-1"><strong>Explain the major functions</strong><br><small>Business, Product, Architecture, Engineering, QA, Security, Data, Platform and Operations.</small></div></div></div>
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">2</span><div class="flex-grow-1"><strong>Trace work across teams</strong><br><small>Follow a business requirement from idea through production operation.</small></div></div></div>
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">3</span><div class="flex-grow-1"><strong>Separate key responsibilities</strong><br><small>Understand what Product, Architects, Developers and Operations are accountable for.</small></div></div></div>
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">4</span><div class="flex-grow-1"><strong>Recognize shared responsibilities</strong><br><small>Security, quality, reliability and documentation are not somebody else's problem.</small></div></div></div>
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">5</span><div class="flex-grow-1"><strong>Understand your place as a new engineer</strong><br><small>See how individual coding tasks connect to a much larger delivery system.</small></div></div></div>
+                    <div class="col-md-6"><div class="objective-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">6</span><div class="flex-grow-1"><strong>Apply the model to this course</strong><br><small>Connect the organization to the Spring Boot E-Commerce reference application.</small></div></div></div>
+                </div>
+            </section>
+
+            <!-- Business problem -->
+            <section id="business-problem" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Start with the business</div>
+                <h2 class="h3 fw-bold">One button can involve an entire organization</h2>
+                <p class="lead">Imagine that an e-commerce company asks for one apparently simple feature:</p>
+                <div class="scenario-box my-4">
+                    <div class="scenario-label">BUSINESS REQUEST</div>
+                    <div class="h4 fw-bold mb-2">“Allow a customer to cancel an order before it ships.”</div>
+                    <div class="text-secondary">Who builds this? The answer is not simply “a Java developer.”</div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-4"><div class="mini-card h-100"><strong>Business rules</strong><p>When is cancellation allowed? What happens to payment, inventory and customer communication?</p></div></div>
+                    <div class="col-md-4"><div class="mini-card h-100"><strong>Technology</strong><p>UI, API, service logic, database transactions and downstream integrations must work together.</p></div></div>
+                    <div class="col-md-4"><div class="mini-card h-100"><strong>Operational controls</strong><p>Identity, authorization, testing, deployment, logging, monitoring and support must be considered.</p></div></div>
+                </div>
+                <div class="lesson-insight mt-4"><strong>Core idea:</strong> Commercial IT converts business outcomes into technology capabilities that can be operated safely and reliably.</div>
+            </section>
+
+            <!-- Organization map -->
+            <section id="organization" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Organization mental model</div>
+                <h2 class="h3 fw-bold mb-2">The major functions in a commercial IT organization</h2>
+                <p class="text-secondary mb-4">This is a capability map, not a mandatory reporting hierarchy. A small company may combine several functions into one team; a global enterprise may have many teams for each function.</p>
+
+                <div class="org-sequence-table-wrap mb-4">
+                    <div class="table-responsive">
+                        <table class="table org-sequence-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="org-seq-col">Sequence</th>
+                                    <th>Commercial IT function</th>
+                                    <th>Primary purpose</th>
+                                    <th>Typical responsibilities</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="org-stage org-stage-business">
+                                    <td class="org-seq"><span>01</span></td>
+                                    <td>
+                                        <div class="org-function">
+                                            <i class="bi bi-briefcase-fill"></i>
+                                            <div>
+                                                <strong>Business Leadership &amp; Domain Teams</strong>
+                                                <small>Where the business need begins</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Define the outcome the organization needs to achieve.</td>
+                                    <td>Business goals, customer needs, operating policy, budget, domain rules and measurable outcomes.</td>
+                                </tr>
+
+                                <tr class="org-stage org-stage-product">
+                                    <td class="org-seq"><span>02</span></td>
+                                    <td>
+                                        <div class="org-function">
+                                            <i class="bi bi-kanban-fill"></i>
+                                            <div>
+                                                <strong>Product Management</strong>
+                                                <small>Turns business goals into prioritized capabilities</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Decide what should be built, why it matters and when it should be delivered.</td>
+                                    <td>Roadmap, backlog, requirements, prioritization, user stories, acceptance criteria and stakeholder alignment.</td>
+                                </tr>
+
+                                <tr class="org-stage org-stage-architecture">
+                                    <td class="org-seq"><span>03</span></td>
+                                    <td>
+                                        <div class="org-function">
+                                            <i class="bi bi-diagram-3-fill"></i>
+                                            <div>
+                                                <strong>Enterprise / Solution / Application Architecture</strong>
+                                                <small>Connects business intent to a coherent technical design</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Determine how applications, data, security, integrations and infrastructure should fit together.</td>
+                                    <td>Solution structure, boundaries, standards, integration decisions, non-functional requirements, risks and trade-offs.</td>
+                                </tr>
+
+                                <tr class="org-stage org-stage-engineering">
+                                    <td class="org-seq"><span>04</span></td>
+                                    <td>
+                                        <div class="org-function">
+                                            <i class="bi bi-code-slash"></i>
+                                            <div>
+                                                <strong>Software &amp; Data Engineering</strong>
+                                                <small>Builds the working technology capability</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Implement the approved design as usable, testable software and data services.</td>
+                                    <td>
+                                        <div class="org-pill-list">
+                                            <span>UI Engineering</span>
+                                            <span>API &amp; Service Engineering</span>
+                                            <span>Data Engineering</span>
+                                            <span>Integrations</span>
+                                            <span>Automated Tests</span>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="org-stage org-stage-assurance">
+                                    <td class="org-seq"><span>05</span></td>
+                                    <td>
+                                        <div class="org-function">
+                                            <i class="bi bi-shield-check"></i>
+                                            <div>
+                                                <strong>Quality, Security, Platform &amp; DevOps</strong>
+                                                <small>Makes the solution safe, repeatable and production-ready</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Validate quality, enforce security controls and provide reliable delivery/runtime foundations.</td>
+                                    <td>
+                                        <div class="org-pill-list">
+                                            <span>Quality Engineering</span>
+                                            <span>Security / IAM</span>
+                                            <span>CI/CD</span>
+                                            <span>Cloud / Platform</span>
+                                            <span>Infrastructure Automation</span>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="org-stage org-stage-operations">
+                                    <td class="org-seq"><span>06</span></td>
+                                    <td>
+                                        <div class="org-function">
+                                            <i class="bi bi-activity"></i>
+                                            <div>
+                                                <strong>Operations / SRE</strong>
+                                                <small>Keeps production healthy and dependable</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Operate the solution reliably after deployment.</td>
+                                    <td>Monitoring, availability, SLOs, logging, alerting, incident response, capacity, resilience and recovery.</td>
+                                </tr>
+
+                                <tr class="org-stage org-stage-production">
+                                    <td class="org-seq"><span>07</span></td>
+                                    <td>
+                                        <div class="org-function">
+                                            <i class="bi bi-people-fill"></i>
+                                            <div>
+                                                <strong>Production Systems &amp; Users</strong>
+                                                <small>Where business value is actually realized</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Serve real customers, employees and business processes.</td>
+                                    <td>Real transactions, real data, revenue impact, customer experience and operational business outcomes.</td>
+                                </tr>
+
+                                <tr class="org-stage org-stage-support">
+                                    <td class="org-seq"><span>08</span></td>
+                                    <td>
+                                        <div class="org-function">
+                                            <i class="bi bi-life-preserver"></i>
+                                            <div>
+                                                <strong>Service Desk / Support / Incident Management</strong>
+                                                <small>Closes the feedback and recovery loop</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Help users, restore service and feed operational learning back into improvement.</td>
+                                    <td>User support, ticket triage, escalation, incident coordination, recovery, knowledge articles and feedback.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="org-sequence-note mb-4">
+                    <div class="org-sequence-note-icon"><i class="bi bi-arrow-repeat"></i></div>
+                    <div>
+                        <strong>This sequence is a flow of responsibility—not a rigid reporting hierarchy.</strong>
+                        <div class="small text-secondary mt-1">
+                            Real delivery is iterative. Operations, Support, Security, Architecture, Product and Engineering continuously feed information back into earlier stages.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-insight"><strong>Architectural perspective:</strong> Architecture is deliberately shown between business/product intent and implementation. Architects collaborate horizontally across engineering, security, data, infrastructure and operations; they are not merely people who draw diagrams.</div>
+            </section>
+
+            <!-- Roles -->
+            <section id="roles" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Responsibilities</div>
+                <h2 class="h3 fw-bold mb-4">Who asks which question?</h2>
+                <div class="table-responsive">
+                    <table class="table align-middle lesson-table mb-0">
+                        <thead><tr><th>Function</th><th>Primary question</th><th>Typical outputs</th></tr></thead>
+                        <tbody>
+                        <tr><td><strong>Business / Domain</strong></td><td>Why do we need this?</td><td>Business goals, rules, constraints, KPIs</td></tr>
+                        <tr><td><strong>Product</strong></td><td>What should we build and when?</td><td>Roadmap, backlog, stories, acceptance criteria</td></tr>
+                        <tr><td><strong>Architecture</strong></td><td>How should the solution fit together?</td><td>Design, standards, NFRs, trade-offs, integration decisions</td></tr>
+                        <tr><td><strong>Engineering</strong></td><td>How do we implement it correctly?</td><td>UI, APIs, services, integrations, tests</td></tr>
+                        <tr><td><strong>Quality Engineering</strong></td><td>Does it behave as required?</td><td>Test strategy, automation, defect evidence</td></tr>
+                        <tr><td><strong>Security / IAM</strong></td><td>Who can do what, and how is it protected?</td><td>Controls, threat analysis, IAM, vulnerability management</td></tr>
+                        <tr><td><strong>Data & Analytics</strong></td><td>How is data governed and made useful?</td><td>Pipelines, models, analytics, data products</td></tr>
+                        <tr><td><strong>Platform / DevOps</strong></td><td>How do we build and deliver repeatedly?</td><td>CI/CD, infrastructure, runtime platform, automation</td></tr>
+                        <tr><td><strong>Operations / SRE</strong></td><td>How do we keep it healthy?</td><td>Monitoring, SLOs, alerts, incident response</td></tr>
+                        <tr><td><strong>Support</strong></td><td>How do we restore service for the user?</td><td>Tickets, triage, escalation, knowledge articles</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="small text-secondary mt-3 mb-0"><strong>Important:</strong> These boundaries are intentionally simplified for learning. Real organizations use different titles and operating models.</p>
+            </section>
+
+            <!-- Requirement walkthrough -->
+            <section id="workflow" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">End-to-end workflow</div>
+                <h2 class="h3 fw-bold mb-2">Follow “Cancel Order” from idea to production</h2>
+                <p class="text-secondary mb-4">This is the commercial context behind the code you will eventually write.</p>
+                <div class="timeline-list">
+                    <div class="timeline-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">1</span><div class="flex-grow-1"><strong>Business defines the policy</strong><p>Cancellation is allowed only before shipment. The business also decides refund and inventory implications.</p></div></div>
+                    <div class="timeline-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">2</span><div class="flex-grow-1"><strong>Product makes it implementable</strong><p>A Product Manager or Product Owner creates/refines the story, priority and acceptance criteria with stakeholders.</p></div></div>
+                    <div class="timeline-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">3</span><div class="flex-grow-1"><strong>Architecture identifies affected components</strong><p>Browser, Spring MVC, REST API, service layer, MySQL, Keycloak/Spring Security and any payment or fulfillment integration are considered.</p></div></div>
+                    <div class="timeline-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">4</span><div class="flex-grow-1"><strong>Engineering implements the capability</strong><p>Developers change UI/API contracts, business rules, persistence logic, integration behavior and automated tests.</p></div></div>
+                    <div class="timeline-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">5</span><div class="flex-grow-1"><strong>Security and quality validate critical behavior</strong><p>A customer must not cancel another customer's order. Invalid order states must be rejected. Regression tests protect existing behavior.</p></div></div>
+                    <div class="timeline-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">6</span><div class="flex-grow-1"><strong>CI/CD builds and deploys</strong><p>The change is compiled, tested, scanned, packaged and promoted through controlled environments.</p></div></div>
+                    <div class="timeline-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">7</span><div class="flex-grow-1"><strong>Production serves real traffic</strong><p>The feature now affects real customers, transactions, revenue and business operations.</p></div></div>
+                    <div class="timeline-item d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">8</span><div class="flex-grow-1"><strong>Operations observes and improves</strong><p>Logs, metrics, traces, alerts, incidents and user feedback reveal whether the capability is healthy and useful.</p></div></div>
+                </div>
+            </section>
+<!-- Reference architecture -->
+            <section id="reference-app" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Course reference application</div>
+                <h2 class="h3 fw-bold mb-2">Connect the organization to the codebase you are running</h2>
+                <p class="text-secondary mb-4">
+                    The Commercial IT Bootcamp includes a Spring Boot E-Commerce reference application.
+                    Throughout the course, you will revisit the same application from different professional viewpoints.
+                </p>
+
+                <div class="reference-panel mb-4">
+                    <div class="reference-panel-header">
+                        <div class="reference-panel-icon">
+                            <i class="bi bi-diagram-3"></i>
+                        </div>
+                        <div>
+                            <div class="reference-panel-kicker">APPLICATION REQUEST FLOW</div>
+                            <h3 class="h5 fw-bold mb-0">How a browser request reaches the database</h3>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table reference-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 90px;">Step</th>
+                                    <th style="width: 29%;">Application layer</th>
+                                    <th>What happens here</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="reference-step"><span>01</span></td>
+                                    <td>
+                                        <div class="reference-layer">
+                                            <i class="bi bi-window"></i>
+                                            <div>
+                                                <strong>Browser / Thymeleaf UI</strong>
+                                                <small>User-facing presentation layer</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>The user views pages, submits forms, clicks buttons and initiates HTTP requests.</td>
+                                </tr>
+                                <tr>
+                                    <td class="reference-step"><span>02</span></td>
+                                    <td>
+                                        <div class="reference-layer">
+                                            <i class="bi bi-signpost-split"></i>
+                                            <div>
+                                                <strong>Controller / REST Controller</strong>
+                                                <small>HTTP entry point</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Receives the HTTP request, validates request-level input and delegates work to the service layer.</td>
+                                </tr>
+                                <tr>
+                                    <td class="reference-step"><span>03</span></td>
+                                    <td>
+                                        <div class="reference-layer">
+                                            <i class="bi bi-gear-wide-connected"></i>
+                                            <div>
+                                                <strong>Service Layer</strong>
+                                                <small>Business logic</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Applies business rules, coordinates operations and controls application behavior.</td>
+                                </tr>
+                                <tr>
+                                    <td class="reference-step"><span>04</span></td>
+                                    <td>
+                                        <div class="reference-layer">
+                                            <i class="bi bi-database-gear"></i>
+                                            <div>
+                                                <strong>Repository / JPA</strong>
+                                                <small>Persistence abstraction</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Maps Java entities to database operations and handles persistence through Spring Data JPA.</td>
+                                </tr>
+                                <tr>
+                                    <td class="reference-step"><span>05</span></td>
+                                    <td>
+                                        <div class="reference-layer">
+                                            <i class="bi bi-database-fill"></i>
+                                            <div>
+                                                <strong>MySQL 8</strong>
+                                                <small>Persistent data store</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Stores customers, products, orders and other durable transactional application data.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="reference-panel reference-panel-security mb-4">
+                    <div class="reference-panel-header">
+                        <div class="reference-panel-icon">
+                            <i class="bi bi-shield-lock"></i>
+                        </div>
+                        <div>
+                            <div class="reference-panel-kicker">SECURITY REQUEST FLOW</div>
+                            <h3 class="h5 fw-bold mb-0">How authentication and authorization protect the application</h3>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table reference-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 90px;">Step</th>
+                                    <th style="width: 29%;">Security component</th>
+                                    <th>Responsibility</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="reference-step"><span>01</span></td>
+                                    <td>
+                                        <div class="reference-layer">
+                                            <i class="bi bi-person"></i>
+                                            <div>
+                                                <strong>Browser</strong>
+                                                <small>User starts the request</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>The user attempts to access a protected application page or API.</td>
+                                </tr>
+                                <tr>
+                                    <td class="reference-step"><span>02</span></td>
+                                    <td>
+                                        <div class="reference-layer">
+                                            <i class="bi bi-key"></i>
+                                            <div>
+                                                <strong>Keycloak</strong>
+                                                <small>Identity Provider</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Authenticates the user and issues trusted OAuth 2.0 / OpenID Connect security tokens.</td>
+                                </tr>
+                                <tr>
+                                    <td class="reference-step"><span>03</span></td>
+                                    <td>
+                                        <div class="reference-layer">
+                                            <i class="bi bi-shield-check"></i>
+                                            <div>
+                                                <strong>Spring Security</strong>
+                                                <small>Application security boundary</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Validates identity, evaluates roles/authorities and enforces access-control rules.</td>
+                                </tr>
+                                <tr>
+                                    <td class="reference-step"><span>04</span></td>
+                                    <td>
+                                        <div class="reference-layer">
+                                            <i class="bi bi-check2-circle"></i>
+                                            <div>
+                                                <strong>Authorized Application Request</strong>
+                                                <small>Protected business processing</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>The request reaches application logic only after required security checks succeed.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="reference-actions">
+                    <div>
+                        <strong class="d-block mb-1">Explore the running reference application</strong>
+                        <span class="small text-secondary">Use these pages to connect the conceptual architecture above to working Spring Boot code.</span>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a class="btn btn-primary" th:href="@{/ecommerce/architecture}">
+                            <i class="bi bi-diagram-3 me-1"></i> Open Architecture Guide
+                        </a>
+                        <a class="btn btn-outline-primary" th:href="@{/ecommerce/api-guide}">
+                            <i class="bi bi-braces me-1"></i> Open REST API Guide
+                        </a>
+                        <a class="btn btn-outline-primary" th:href="@{/ecommerce/orders}">
+                            <i class="bi bi-receipt me-1"></i> View Orders
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- College vs commercial -->
+            <section id="comparison" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">The transition into industry</div>
+                <h2 class="h3 fw-bold mb-4">College project vs. commercial software</h2>
+                <div class="table-responsive">
+                    <table class="table lesson-table comparison-table mb-0">
+                        <thead><tr><th>College / learning project</th><th>Commercial IT system</th></tr></thead>
+                        <tbody>
+                        <tr><td>Small team or individual</td><td>Multiple specialized teams and stakeholders</td></tr>
+                        <tr><td>Short project lifetime</td><td>Systems may evolve for years or decades</td></tr>
+                        <tr><td>Limited users and test data</td><td>Real users, money, data and business commitments</td></tr>
+                        <tr><td>Simple login or no security</td><td>Enterprise IAM, least privilege and auditability</td></tr>
+                        <tr><td>Run locally</td><td>Multiple environments, cloud/data center and CI/CD</td></tr>
+                        <tr><td>Developer verifies the result</td><td>Layered automated testing and quality engineering</td></tr>
+                        <tr><td>Failure affects a grade/demo</td><td>Failure may affect customers, revenue, compliance or reputation</td></tr>
+                        <tr class="table-primary"><td><strong>Code is often the assignment</strong></td><td><strong>Business outcome is the objective; code is one means of delivering it</strong></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+<!-- Day in life -->
+            <section id="day-in-life" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Your first engineering job</div>
+                <h2 class="h3 fw-bold mb-2">A realistic day is more than writing code</h2>
+                <p class="text-secondary mb-4">
+                    The exact schedule varies by company and team, but commercial software engineering is collaborative,
+                    evidence-driven and spread across design, development, review, testing and delivery activities.
+                </p>
+
+                <div class="day-table-wrap">
+                    <div class="table-responsive">
+                        <table class="table day-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 115px;">Time</th>
+                                    <th style="width: 30%;">Activity</th>
+                                    <th>What you are doing</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="time-chip">9:00 AM</span></td>
+                                    <td>
+                                        <div class="day-activity">
+                                            <i class="bi bi-people"></i>
+                                            <strong>Daily stand-up</strong>
+                                        </div>
+                                    </td>
+                                    <td>Share yesterday's progress, today's plan and anything blocking delivery.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="time-chip">9:30 AM</span></td>
+                                    <td>
+                                        <div class="day-activity">
+                                            <i class="bi bi-kanban"></i>
+                                            <strong>Review Jira story</strong>
+                                        </div>
+                                    </td>
+                                    <td>Read the business requirement, acceptance criteria, dependencies and expected behavior before coding.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="time-chip">10:00 AM</span></td>
+                                    <td>
+                                        <div class="day-activity">
+                                            <i class="bi bi-diagram-3"></i>
+                                            <strong>Design discussion</strong>
+                                        </div>
+                                    </td>
+                                    <td>Discuss API contracts, application boundaries, data changes, security concerns and integration dependencies.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="time-chip">11:00 AM</span></td>
+                                    <td>
+                                        <div class="day-activity">
+                                            <i class="bi bi-code-slash"></i>
+                                            <strong>Implement</strong>
+                                        </div>
+                                    </td>
+                                    <td>Write production code, unit tests and supporting configuration while following team standards.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="time-chip">1:30 PM</span></td>
+                                    <td>
+                                        <div class="day-activity">
+                                            <i class="bi bi-git"></i>
+                                            <strong>Pull request</strong>
+                                        </div>
+                                    </td>
+                                    <td>Submit changes for peer review, explain important decisions and respond to reviewer feedback.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="time-chip">2:30 PM</span></td>
+                                    <td>
+                                        <div class="day-activity">
+                                            <i class="bi bi-plug"></i>
+                                            <strong>Integration work</strong>
+                                        </div>
+                                    </td>
+                                    <td>Resolve API, database, environment, authentication or downstream-system integration issues.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="time-chip">3:30 PM</span></td>
+                                    <td>
+                                        <div class="day-activity">
+                                            <i class="bi bi-check2-square"></i>
+                                            <strong>Work with QA</strong>
+                                        </div>
+                                    </td>
+                                    <td>Validate acceptance criteria, reproduce defects, inspect evidence and confirm corrected behavior.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="time-chip">4:30 PM</span></td>
+                                    <td>
+                                        <div class="day-activity">
+                                            <i class="bi bi-infinity"></i>
+                                            <strong>Check the delivery pipeline</strong>
+                                        </div>
+                                    </td>
+                                    <td>Review build, automated tests, security scans and deployment status before concluding the workday.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="day-insight mt-4">
+                    <i class="bi bi-lightbulb-fill"></i>
+                    <div>
+                        <strong>What beginners should notice</strong>
+                        <p class="mb-0 mt-1">
+                            Only part of the day is spent typing code. Commercial engineering also requires communication,
+                            requirements analysis, design, peer review, integration, testing and operational awareness.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lab -->
+            <section id="lab" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Hands-on lab</div>
+                <h2 class="h3 fw-bold">Trace one request through the reference application</h2>
+                <p class="lead">Your goal is not to change code yet. Your goal is to discover how the layers connect.</p>
+                <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">1</span><div class="flex-grow-1"><strong>Open the E-Commerce Reference menu.</strong><p>Navigate to Products, Customers and Orders. Observe what a business user sees.</p></div></div>
+                <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">2</span><div class="flex-grow-1"><strong>Find a Spring MVC controller.</strong><p>Open <code>EcommerceController</code>. Identify a <code>@GetMapping</code> and the Thymeleaf template it returns.</p></div></div>
+                <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">3</span><div class="flex-grow-1"><strong>Find a REST controller.</strong><p>Open <code>OrderRestController</code> or <code>ProductRestController</code>. Identify the HTTP endpoint and service call.</p></div></div>
+                <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">4</span><div class="flex-grow-1"><strong>Follow the service layer.</strong><p>Open <code>OrderService</code>. Look for business logic and repository usage.</p></div></div>
+                <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">5</span><div class="flex-grow-1"><strong>Follow persistence.</strong><p>Open a repository and its corresponding <code>@Entity</code>. Connect the Java model to the MySQL schema in <code>database/01-schema.sql</code>.</p></div></div>
+                <div class="lab-step d-flex align-items-start gap-3"><span class="lesson-number flex-shrink-0">6</span><div class="flex-grow-1"><strong>Find the security boundary.</strong><p>Open <code>SecurityConfig</code> and identify where authentication/authorization enters the application architecture.</p></div></div>
+                <div class="lab-deliverable mt-4"><strong>Lab deliverable:</strong> On paper or in a note, draw <code>Browser → Controller → Service → Repository → MySQL</code>, then add Keycloak/Spring Security at the security boundary. Write one sentence describing the responsibility of each component.</div>
+            </section>
+
+            <!-- Knowledge check -->
+            <section id="knowledge-check" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Knowledge check</div>
+                <h2 class="h3 fw-bold mb-2">Can you reason about the organization?</h2>
+                <p class="text-secondary mb-4">Answer before opening each explanation.</p>
+                <div class="accordion lesson-accordion" id="knowledgeAccordion">
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#q1">1. Who primarily decides what business capability should be prioritized?</button></h3><div id="q1" class="accordion-collapse collapse" data-bs-parent="#knowledgeAccordion"><div class="accordion-body"><strong>Product Management, working with business stakeholders.</strong> Engineering and Architecture contribute feasibility and technical context, but prioritization begins with business/product outcomes.</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#q2">2. Which function asks how multiple systems and concerns should fit together?</button></h3><div id="q2" class="accordion-collapse collapse" data-bs-parent="#knowledgeAccordion"><div class="accordion-body"><strong>Architecture.</strong> Architects reason across application boundaries, integrations, security, data, infrastructure, non-functional requirements and trade-offs.</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#q3">3. Is security solely the Security team's responsibility?</button></h3><div id="q3" class="accordion-collapse collapse" data-bs-parent="#knowledgeAccordion"><div class="accordion-body"><strong>No.</strong> Security specialists provide deep expertise, controls and governance, but secure design, coding, testing, configuration and operations are shared engineering responsibilities.</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#q4">4. Why does production change the engineering problem?</button></h3><div id="q4" class="accordion-collapse collapse" data-bs-parent="#knowledgeAccordion"><div class="accordion-body">Production introduces real users, real data and real business consequences. Reliability, security, scalability, observability, recoverability and controlled change become essential.</div></div></div>
+                    <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#q5">5. Why should a new developer understand teams outside Engineering?</button></h3><div id="q5" class="accordion-collapse collapse" data-bs-parent="#knowledgeAccordion"><div class="accordion-body">Because requirements, design decisions, security controls, test evidence, deployment, incidents and user feedback all cross team boundaries. Strong engineers understand the system around their code.</div></div></div>
+                </div>
+            </section>
+
+            <!-- Misconceptions -->
+            <section id="misconceptions" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Common beginner misconceptions</div>
+                <h2 class="h3 fw-bold mb-4">Correct these mental models early</h2>
+                <div class="row g-3">
+                    <div class="col-md-6"><div class="myth-card"><div class="myth">MYTH</div><strong>“The developer owns the entire application.”</strong><p>Commercial systems normally have shared ownership across product, engineering, security, platform and operations.</p></div></div>
+                    <div class="col-md-6"><div class="myth-card"><div class="myth">MYTH</div><strong>“Architecture means drawing diagrams.”</strong><p>Architecture is decision-making about structure, constraints, trade-offs and qualities that materially affect the system.</p></div></div>
+                    <div class="col-md-6"><div class="myth-card"><div class="myth">MYTH</div><strong>“QA happens after development.”</strong><p>Quality is designed and tested continuously; late testing alone is an expensive way to discover defects.</p></div></div>
+                    <div class="col-md-6"><div class="myth-card"><div class="myth">MYTH</div><strong>“Production is just another server.”</strong><p>Production requires operational ownership, monitoring, controlled access, resilience, recovery and change discipline.</p></div></div>
+                </div>
+            </section>
+
+            <!-- Recap -->
+            <section id="recap" class="lesson-recap p-4 p-lg-5 mb-4">
+                <div class="section-kicker text-white opacity-75">Lesson recap</div>
+                <h2 class="h3 fw-bold mb-4">Five ideas to carry into the rest of the bootcamp</h2>
+                <div class="row g-3">
+                    <div class="col-md-6"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">1</span><div class="flex-grow-1"><strong>Business comes first.</strong><small>Technology exists to deliver an organizational outcome.</small></div></div></div>
+                    <div class="col-md-6"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">2</span><div class="flex-grow-1"><strong>IT is multidisciplinary.</strong><small>Successful systems require much more than programmers.</small></div></div></div>
+                    <div class="col-md-6"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">3</span><div class="flex-grow-1"><strong>Architecture connects concerns.</strong><small>Applications, data, integrations, security and infrastructure must form a coherent system.</small></div></div></div>
+                    <div class="col-md-6"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">4</span><div class="flex-grow-1"><strong>Production changes everything.</strong><small>Reliability, security, supportability and observability become business concerns.</small></div></div></div>
+                    <div class="col-md-12"><div class="recap-item d-flex align-items-start gap-3"><span class="lesson-number lesson-number-light flex-shrink-0">5</span><div class="flex-grow-1"><strong>Your code lives inside a larger socio-technical system.</strong><small>Understanding that system is one of the differences between knowing a programming language and becoming a commercial software engineer.</small></div></div></div>
+                </div>
+            </section>
+
+            <!-- Career perspective -->
+            <section id="career" class="soft-card lesson-section p-4 p-lg-5 mb-4">
+                <div class="section-kicker">Career perspective</div>
+                <h2 class="h3 fw-bold">You do not need to master every function</h2>
+                <p class="lead">You do need to understand why the functions exist and how to collaborate with them.</p>
+                <div class="career-path my-4"><span>Intern / Graduate</span><b>→</b><span>Software Engineer</span><b>→</b><span>Senior Engineer</span><b>→</b><span>Tech Lead</span><b>→</b><span>Architect / Engineering Leadership</span></div>
+                <p class="text-secondary mb-0">This is only one possible path. Careers also branch into cybersecurity, data, cloud/platform engineering, product, quality, operations, management and many other specialties.</p>
+            </section>
+
+            <!-- Next -->
+            <section class="soft-card p-4 p-lg-5 lesson-complete">
+                <div class="row align-items-center g-3">
+                    <div class="col-lg-8">
+                        <div class="section-kicker">Lesson 1 complete</div>
+                        <h2 class="h4 fw-bold mb-1">Next: Business Domains</h2>
+                        <p class="text-secondary mb-0">See how Retail, Banking, Healthcare and Supply Chain create different business problems for technology teams to solve.</p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end">
+                        <a class="btn btn-outline-primary me-2" th:href="@{/training}">Course Overview</a>
+                        <a class="btn btn-primary" th:href="@{/training/part-1-commercial-it/business-domains}">Continue →</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Sticky lesson navigation -->
+        <aside class="col-xl-3">
+            <div class="soft-card p-4 sticky-xl-top lesson-toc" style="top: 90px;">
+                <div class="section-kicker">In this lesson</div>
+                <h2 class="h5 fw-bold mb-3">Lesson navigation</h2>
+                <nav class="nav flex-column small">
+                    <a class="nav-link" href="#objectives">Learning objectives</a>
+                    <a class="nav-link" href="#business-problem">Business problem</a>
+                    <a class="nav-link" href="#organization">Organization model</a>
+                    <a class="nav-link" href="#roles">Who does what?</a>
+                    <a class="nav-link" href="#workflow">Requirement → production</a>
+                    <a class="nav-link" href="#reference-app">Reference application</a>
+                    <a class="nav-link" href="#comparison">College vs. commercial IT</a>
+                    <a class="nav-link" href="#day-in-life">Day in the life</a>
+                    <a class="nav-link" href="#lab">Hands-on lab</a>
+                    <a class="nav-link" href="#knowledge-check">Knowledge check</a>
+                    <a class="nav-link" href="#misconceptions">Misconceptions</a>
+                    <a class="nav-link" href="#recap">Lesson recap</a>
+                    <a class="nav-link" href="#career">Career perspective</a>
+                </nav>
+                <hr>
+                <div class="small text-secondary"><strong>Instructor note:</strong> This page is intentionally useful both during the video and later as a standalone reference.</div>
+            </div>
+        </aside>
+    </div>
+</main>
+</html>

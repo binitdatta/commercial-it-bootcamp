@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('E-Commerce Architecture', 'Reference architecture for the capstone ecommerce application', ~{::main})}">
+<main>
+    <div class="section-kicker">Capstone guide</div><h1 class="fw-bold">Reference Architecture</h1><p class="lead text-secondary">A deliberately layered application students can inspect from HTTP request to database row.</p>
+    <div class="soft-card p-4 p-lg-5 mt-4">
+        <div class="code-panel">Browser / Postman
+        |
+        +--> Thymeleaf MVC Controllers ----------------------+
+        |                                                   |
+        +--> REST Controllers -- Bearer JWT validation      |
+                            |                               |
+                       Spring Security <---- Keycloak       |
+                            |                               |
+                         Services                           |
+                            |                               |
+                    Spring Data Repositories                |
+                            |                               |
+                       Hibernate / JPA                      |
+                            |                               |
+                         MySQL 8.x                          +</div>
+        <div class="row g-3 mt-3"><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>MVC</strong><p class="small text-secondary mb-0">Server-side rendered teaching UI with a shared Thymeleaf layout.</p></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Security</strong><p class="small text-secondary mb-0">OIDC login for people and JWT resource-server validation for APIs.</p></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><strong>Persistence</strong><p class="small text-secondary mb-0">Explicit schema, JPA entities, repositories and service transaction boundaries.</p></div></div></div>
+    </div>
+</main>
+</html>
