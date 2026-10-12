@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<section th:fragment="lesson" class="vsc-guide container-fluid px-0">
+<style>
+.vsc-guide{--vsc-blue:#075ef1;--vsc-ink:#152138;--vsc-muted:#576578;--vsc-border:#dae5f5;max-width:1320px;margin:0 auto;color:var(--vsc-ink)}
+.vsc-guide .vsc-back{font-size:.91rem;text-decoration:none;font-weight:600}.vsc-guide .vsc-eyebrow{font-size:.73rem;text-transform:uppercase;letter-spacing:.13em;color:#0759de;font-weight:800}
+.vsc-guide .vsc-hero{background:linear-gradient(120deg,#fff 0%,#eaf3ff 100%);border:1px solid var(--vsc-border);border-radius:18px;padding:2rem 2.2rem}
+.vsc-guide h1{font-size:clamp(2rem,3vw,3rem);font-weight:800;letter-spacing:-.035em}.vsc-guide h2{font-size:1.5rem;font-weight:800;letter-spacing:-.025em;margin-bottom:1rem}.vsc-guide h3{font-size:1.12rem;font-weight:750;margin:1.2rem 0 .7rem}
+.vsc-guide p,.vsc-guide li{line-height:1.65}.vsc-guide .vsc-summary{color:var(--vsc-muted);max-width:1020px}
+.vsc-guide .vsc-card{background:#fff;border:1px solid var(--vsc-border);border-radius:14px;padding:1.45rem;height:100%;box-shadow:0 3px 13px rgba(27,73,126,.035)}.vsc-guide .vsc-card p:last-child{margin-bottom:0}
+.vsc-guide .vsc-chip{display:inline-block;border-radius:999px;background:#e4efff;color:#0755c8;padding:.28rem .65rem;font-size:.76rem;font-weight:750;margin:.1rem}
+.vsc-guide .vsc-section{margin-top:2rem;scroll-margin-top:100px}.vsc-guide .vsc-toc{background:#fff;border:1px solid var(--vsc-border);border-radius:12px;padding:.85rem 1.1rem;display:flex;gap:.55rem 1.3rem;flex-wrap:wrap}.vsc-guide .vsc-toc a{font-weight:600;text-decoration:none;font-size:.86rem}
+.vsc-guide pre{background:#10213d;color:#eef5ff;padding:1.1rem 1.25rem;border-radius:10px;overflow-x:auto;line-height:1.55;font-size:.87rem;margin:1rem 0;white-space:pre}
+.vsc-guide code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.vsc-guide :not(pre)>code{background:#eef3fc;color:#18457a;border-radius:4px;padding:.13rem .32rem;font-size:.9em}
+.vsc-guide .vsc-note{border-left:4px solid #2075eb;padding:.85rem 1rem;background:#eef5ff;border-radius:0 9px 9px 0;margin:1rem 0}.vsc-guide .vsc-warn{border-left-color:#d39013;background:#fff8e8}
+.vsc-guide .vsc-table{width:100%;border-collapse:collapse}.vsc-guide .vsc-table th,.vsc-guide .vsc-table td{padding:.75rem .85rem;border-bottom:1px solid var(--vsc-border);vertical-align:top}.vsc-guide .vsc-table th{background:#f0f5ff;color:#193e74}
+.vsc-guide .vsc-num{display:inline-grid;place-items:center;border-radius:50%;background:#e1efff;color:#0a55b8;width:2rem;height:2rem;font-weight:800;flex:none}.vsc-guide .vsc-step{display:flex;gap:.8rem;align-items:flex-start;margin:1rem 0}.vsc-guide .vsc-step>div{flex:1;min-width:0}
+.vsc-guide .vsc-check label{display:block;border:1px solid var(--vsc-border);border-radius:9px;background:#f7faff;padding:.7rem .9rem;margin:.5rem 0}.vsc-guide .vsc-check input{margin-right:.65rem;accent-color:#0864e8}
+.vsc-guide .vsc-footer{font-size:.86rem;color:var(--vsc-muted)}
+@media(max-width:700px){.vsc-guide .vsc-hero{padding:1.35rem}.vsc-guide .vsc-card{padding:1.1rem}.vsc-guide .vsc-table{font-size:.86rem}}
+</style>
+<a class="vsc-back" th:href="@{/internships/tool-installation}">← Back to Tool Installation</a>
+<header class="vsc-hero mt-3">
+ <p class="vsc-eyebrow mb-2">Internships · Tool installation · Hands-on lab 03</p>
+ <h1>Install &amp; Configure Visual Studio Code on macOS, Windows &amp; Linux</h1>
+ <p class="lead vsc-summary mb-3">Install Visual Studio Code, configure a professional development workspace, connect OpenJDK 21, write and debug Java, work with Git, and learn the settings and extensions used on commercial software teams.</p>
+ <div><span class="vsc-chip">VS Code</span><span class="vsc-chip">macOS Apple Silicon / Intel</span><span class="vsc-chip">Windows 10 / 11</span><span class="vsc-chip">Ubuntu / Debian / Fedora</span><span class="vsc-chip">Java 21 + Git</span></div>
+</header>
+<div class="row g-3 mt-2">
+ <div class="col-md-4"><div class="vsc-card"><strong>Outcome 1 · Install</strong><p class="small text-secondary mt-2">Download the correct build, launch VS Code, and enable its terminal command.</p></div></div>
+ <div class="col-md-4"><div class="vsc-card"><strong>Outcome 2 · Configure</strong><p class="small text-secondary mt-2">Create a workspace, select Java 21, install trusted extensions, and configure formatting.</p></div></div>
+ <div class="col-md-4"><div class="vsc-card"><strong>Outcome 3 · Develop</strong><p class="small text-secondary mt-2">Compile, run, debug, inspect changes, and commit a small Java application.</p></div></div>
+</div>
+<nav class="vsc-toc mt-4" aria-label="Lesson sections">
+ <a href="#vsc-fundamentals">Fundamentals</a><a href="#vsc-download">Official download</a><a href="#vsc-macos">macOS</a><a href="#vsc-windows">Windows</a><a href="#vsc-linux">Linux</a><a href="#vsc-extensions">Extensions</a><a href="#vsc-java">Java 21</a><a href="#vsc-workflow">Debug &amp; Git</a><a href="#vsc-lab">Hands-on lab</a><a href="#vsc-issues">Troubleshooting</a><a href="#vsc-checklist">Checklist</a>
+</nav>
+<section id="vsc-fundamentals" class="vsc-section"><h2>1. Understand the VS Code development environment</h2><div class="vsc-card">
+<p><strong>Visual Studio Code</strong> is a lightweight, extensible code editor. It is not the same product as the full Visual Studio IDE. Language servers, extensions, runtimes, SDKs, build tools and debuggers give it IDE-style capabilities.</p>
+<table class="vsc-table"><thead><tr><th>Component</th><th>Purpose</th></tr></thead><tbody>
+<tr><td><strong>VS Code editor</strong></td><td>Editing, navigation, integrated terminal, debugging UI, extensions and source control UI.</td></tr>
+<tr><td><strong>OpenJDK 21</strong></td><td>Compiler and runtime for Java applications. Install the JDK separately; the editor is not the JDK.</td></tr>
+<tr><td><strong>Language extensions</strong></td><td>Add language-specific diagnostics, completion, tests, debugging and project support.</td></tr>
+<tr><td><strong>Git</strong></td><td>Distributed version-control software. Install Git separately and use VS Code as a client.</td></tr>
+<tr><td><strong>Workspace folder</strong></td><td>Project root containing source, configuration and possibly a <code>.vscode/</code> directory.</td></tr>
+<tr><td><strong>Integrated terminal</strong></td><td>Runs your real local shell, such as zsh, PowerShell or bash.</td></tr>
+</tbody></table>
+<div class="vsc-note"><strong>Commercial engineering principle:</strong> An editor does not replace the compiler, build tool, database or Git executable. Know which program performs each responsibility and verify it independently.</div>
+</div></section>
+<section id="vsc-download" class="vsc-section"><h2>2. Select the official VS Code distribution</h2><div class="vsc-card">
+<p>Use the official Microsoft VS Code release from <a href="https://code.visualstudio.com/Download" target="_blank" rel="noopener noreferrer">code.visualstudio.com/Download ↗</a>. Choose the installer for your operating system and processor architecture. Check current system requirements before installation.</p>
+<ul><li><strong>macOS:</strong> Universal download when offered, or a build suited to Apple Silicon (Arm64) or Intel (x64).</li><li><strong>Windows:</strong> User Installer is often easiest without administrator privileges; System Installer is an option for managed machines.</li><li><strong>Linux:</strong> Official <code>.deb</code> for Debian/Ubuntu, <code>.rpm</code> for Fedora/RHEL-family systems, or supported repository instructions.</li></ul>
+<p class="mb-0"><a href="https://code.visualstudio.com/docs/setup/setup-overview" target="_blank" rel="noopener noreferrer">Official installation guide ↗</a> · <a href="https://code.visualstudio.com/docs/supporting/requirements" target="_blank" rel="noopener noreferrer">System requirements ↗</a></p>
+<div class="vsc-note vsc-warn"><strong>Security:</strong> Avoid third-party re-packaged installers. Follow employer endpoint-management policies on corporate laptops. Install only necessary extensions from trusted publishers.</div>
+</div></section>
+<section id="vsc-macos" class="vsc-section"><h2>3. Install VS Code on macOS</h2><div class="vsc-card">
+<p class="vsc-eyebrow">MacBook · Apple Silicon and Intel</p>
+<div class="vsc-step"><span class="vsc-num">1</span><div>Open the <a href="https://code.visualstudio.com/Download" target="_blank" rel="noopener noreferrer">official download page</a>; download the macOS build compatible with your system.</div></div>
+<div class="vsc-step"><span class="vsc-num">2</span><div>Open the downloaded ZIP, then drag <strong>Visual Studio Code.app</strong> into <strong>Applications</strong>. Launch it from Applications and complete any macOS confirmation prompts.</div></div>
+<div class="vsc-step"><span class="vsc-num">3</span><div>Press <code>Cmd + Shift + P</code> to open the Command Palette. Run <strong>Shell Command: Install 'code' command in PATH</strong>, then open a new Terminal window.</div></div>
+<div class="vsc-step"><span class="vsc-num">4</span><div>Verify the CLI and open a workspace:<pre><code>code --version
+mkdir -p ~/Development/internship-vscode
+cd ~/Development/internship-vscode
+code .</code></pre></div></div>
+<h3>Optional: Homebrew Cask</h3><p>If Homebrew is installed and the formula is available, use the cask. Do not install a second copy if you already have a managed/official application installation.</p>
+<pre><code>brew info --cask visual-studio-code
+brew install --cask visual-studio-code</code></pre>
+<div class="vsc-note"><strong>If <code>code</code> is not found:</strong> Re-run the Command Palette shell command, close and reopen Terminal, and retry <code>code --version</code>. On managed Macs, the command may need an alternate approved installation method.</div>
+</div></section>
+<section id="vsc-windows" class="vsc-section"><h2>4. Install VS Code on Windows</h2><div class="vsc-card">
+<p class="vsc-eyebrow">Windows 10 / Windows 11 · PowerShell</p>
+<div class="vsc-step"><span class="vsc-num">1</span><div>Download the <strong>User Installer</strong> for your CPU architecture from the official website. On a managed workstation, follow IT's deployment method.</div></div>
+<div class="vsc-step"><span class="vsc-num">2</span><div>Run the installer. Where offered, select <strong>Add to PATH</strong> and useful Explorer context-menu actions. Finish the installation and restart your shell.</div></div>
+<div class="vsc-step"><span class="vsc-num">3</span><div>Open PowerShell and verify:<pre><code>code --version
+New-Item -ItemType Directory -Force "$HOME\Development\internship-vscode"
+Set-Location "$HOME\Development\internship-vscode"
+code .</code></pre></div></div>
+<h3>Alternative · Windows Package Manager</h3>
+<pre><code>winget search --id Microsoft.VisualStudioCode
+winget install --id Microsoft.VisualStudioCode --exact --source winget</code></pre>
+<p>When using <code>winget</code>, review the publisher/package shown by the search, confirm the installation result, and open a new terminal before checking <code>code --version</code>.</p>
+<div class="vsc-note vsc-warn"><strong>Do not confuse:</strong> VS Code with Microsoft Visual Studio, which has a different installer and product ID.</div>
+</div></section>
+<section id="vsc-linux" class="vsc-section"><h2>5. Install VS Code on Linux</h2><div class="vsc-card">
+<p class="vsc-eyebrow">Ubuntu / Debian / Fedora · Desktop Linux</p>
+<h3>Ubuntu / Debian: official DEB package</h3><p>Download the appropriate <code>.deb</code> from the official VS Code download page, then from the directory containing that file:</p>
+<pre><code>sudo apt update
+sudo apt install ./code_*.deb
+code --version
+code .</code></pre>
+<p>The glob should match only the downloaded official VS Code DEB. Alternatively, use the vendor's documented signed APT repository for ongoing updates.</p>
+<h3>Fedora / RHEL-family: official RPM package</h3><p>Download the appropriate <code>.rpm</code> from Microsoft, then:</p>
+<pre><code>sudo dnf install ./code-*.rpm
+code --version
+code .</code></pre>
+<h3>Verify architecture and launch</h3>
+<pre><code>uname -m
+command -v code
+code --version</code></pre>
+<div class="vsc-note"><strong>Important:</strong> VS Code is a GUI desktop application; a headless server typically uses Remote SSH from a local VS Code installation instead of running the full editor on the server. Package support and architectures vary by distribution.</div>
+<p class="mb-0"><a href="https://code.visualstudio.com/docs/setup/linux" target="_blank" rel="noopener noreferrer">Official Linux installation and repository instructions ↗</a></p>
+</div></section>
+<section id="vsc-extensions" class="vsc-section"><h2>6. Configure extensions and workspace settings</h2><div class="vsc-card">
+<p>Open <strong>Extensions</strong> with <code>Ctrl + Shift + X</code> (Windows/Linux) or <code>Cmd + Shift + X</code> (Mac). Search for these extension IDs and verify the publisher before installing:</p>
+<table class="vsc-table"><thead><tr><th>Extension</th><th>Purpose / notes</th></tr></thead><tbody>
+<tr><td><code>vscjava.vscode-java-pack</code></td><td>Extension Pack for Java; Java language features, debugging, testing and project management.</td></tr>
+<tr><td><code>vscjava.vscode-maven</code></td><td>Maven project support (included in typical Java pack configurations).</td></tr>
+<tr><td><code>ms-python.python</code></td><td>Python language support; interpreter selection and tooling integration.</td></tr>
+<tr><td><code>ms-vscode-remote.remote-ssh</code></td><td>Optional remote development over SSH; use only approved hosts.</td></tr>
+<tr><td><code>esbenp.prettier-vscode</code></td><td>Optional formatter for JavaScript, TypeScript, HTML, JSON and other supported files.</td></tr>
+</tbody></table>
+<h3>Installation via VS Code CLI (optional)</h3><pre><code>code --install-extension vscjava.vscode-java-pack
+code --install-extension ms-python.python
+code --list-extensions</code></pre>
+<h3>Workspace settings example</h3><p>Create a <code>.vscode/settings.json</code> file within a trusted project, as appropriate:</p>
+<pre><code>{
+  "editor.formatOnSave": true,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "editor.tabSize": 4
+}</code></pre>
+<div class="vsc-note vsc-warn"><strong>Workspace Trust:</strong> Open unfamiliar repositories in Restricted Mode until reviewed. Extension code, tasks, debug configurations and scripts may execute processes on your machine; only trust repositories and extensions after assessing them.</div>
+</div></section>
+<section id="vsc-java" class="vsc-section"><h2>7. Connect VS Code to OpenJDK 21</h2><div class="vsc-card">
+<p>Complete the <a th:href="@{/internships/tool-installation/jdk-21}">OpenJDK 21 lesson</a> first. VS Code must find a working JDK and the Java Extension Pack.</p>
+<h3>Validate Java before using the editor</h3><pre><code>java -version
+javac -version
+# macOS/Linux
+printf '%s\n' "$JAVA_HOME"
+# Windows PowerShell alternative:
+# $env:JAVA_HOME</code></pre>
+<h3>Tell the Java extension which JDK to use</h3>
+<ol><li>Open the Command Palette.</li><li>Run <strong>Java: Configure Java Runtime</strong>.</li><li>Inspect detected JDKs. Select or add the actual JDK 21 installation path for the project.</li><li>Reopen the workspace if VS Code prompts you to refresh the Java language server.</li></ol>
+<p>For an explicit runtime mapping, VS Code Java settings support <code>java.configuration.runtimes</code>. Substitute the <strong>real local JDK home</strong> for the example path:</p>
+<pre><code>{
+  "java.configuration.runtimes": [
+    {
+      "name": "JavaSE-21",
+      "path": "/absolute/path/to/your/jdk-21",
+      "default": true
+    }
+  ]
+}</code></pre>
+<div class="vsc-note"><strong>Important distinction:</strong> The Java language server may use a different JDK internally from the JDK used to build your project. Confirm your <code>pom.xml</code>/<code>build.gradle</code> language level and terminal <code>java</code>/<code>javac</code> versions align with the internship's Java 21 requirement.</div>
+</div></section>
+<section id="vsc-workflow" class="vsc-section"><h2>8. Debugging, terminal and Git workflows</h2><div class="vsc-card">
+<h3>Integrated terminal</h3><p>Use <strong>Terminal → New Terminal</strong> (or <code>Ctrl + `</code>) to build, test, run Git, inspect environmental variables and troubleshoot the program from the same project root.</p>
+<h3>Java debugging</h3><ol><li>Open a Java source file in a trusted workspace with Java extensions enabled.</li><li>Click in the left gutter to set a breakpoint.</li><li>Select <strong>Run and Debug</strong> and start debugging (typically <code>F5</code>).</li><li>Inspect <strong>Variables</strong>, <strong>Call Stack</strong>, <strong>Watch</strong> and step over / into methods.</li></ol>
+<h3>Git and source control</h3><pre><code>git --version
+git init
+git status
+git add HelloIntern.java
+git commit -m "Add Java 21 VS Code internship lab"
+git log --oneline -3</code></pre>
+<p>Use the <strong>Source Control</strong> sidebar to inspect file diffs and stage changes; the underlying repository remains a normal Git repository. Configure your own Git identity if a commit reports it is missing.</p>
+<div class="vsc-note vsc-warn"><strong>Good practice:</strong> Never commit passwords, API keys, OAuth client secrets, private keys or local <code>.env</code> files to Git. Review staged changes before committing.</div>
+</div></section>
+<section id="vsc-lab" class="vsc-section"><h2>9. Hands-on lab · Java 21 in VS Code</h2><div class="vsc-card">
+<p><strong>Lab objective:</strong> Demonstrate an end-to-end workflow: create a folder → open VS Code → write code → compile → debug → commit.</p>
+<ol><li>Create a new folder <code>internship-vscode</code> and open it using <code>code .</code>.</li><li>Make a file named <code>HelloIntern.java</code> containing the following code.</li></ol>
+<pre><code>public class HelloIntern {
+    public static void main(String[] args) {
+        String student = "Intern";
+        int completedLabs = 3;
+        System.out.printf("Hello, %s! Completed labs: %d%n",
+                student, completedLabs);
+    }
+}</code></pre>
+<ol start="3"><li>Open the integrated terminal and run:</li></ol>
+<pre><code>javac HelloIntern.java
+java HelloIntern</code></pre>
+<p><strong>Expected output:</strong> <code>Hello, Intern! Completed labs: 3</code></p>
+<ol start="4"><li>Place a breakpoint on the <code>System.out.printf</code> statement, debug, and inspect the <code>student</code> and <code>completedLabs</code> variables.</li><li>Change <code>completedLabs</code> to <code>4</code>, save and rerun the program.</li><li>Initialize a Git repository, inspect the diff and commit your completed exercise.</li></ol>
+<h3>Optional advanced exercise · Maven project</h3><p>Open an existing Java 21 Maven project and run <code>mvn -version</code>, then <code>mvn test</code>. Explain the distinction between VS Code, Maven and the JDK.</p>
+</div></section>
+<section id="vsc-issues" class="vsc-section"><h2>10. Troubleshooting common setup failures</h2><div class="vsc-card"><table class="vsc-table"><thead><tr><th>Symptom</th><th>Likely cause / corrective action</th></tr></thead><tbody>
+<tr><td><code>code: command not found</code></td><td>Shell command not installed or terminal has stale <code>PATH</code>. Enable the CLI on macOS or use the installer PATH option on Windows; reopen terminal.</td></tr>
+<tr><td>Java extension cannot find JDK</td><td>Check <code>java -version</code>, <code>javac -version</code>, <code>JAVA_HOME</code> and <strong>Java: Configure Java Runtime</strong>.</td></tr>
+<tr><td>Code runs on wrong Java version</td><td>Multiple JDKs installed. Compare terminal paths, configured runtimes and build-tool compiler settings.</td></tr>
+<tr><td>Java extension remains loading</td><td>Wait for workspace indexing; inspect Java language-server logs, trust state and extension compatibility. Restart language server only if necessary.</td></tr>
+<tr><td>VS Code cannot launch on Linux</td><td>Verify desktop session, supported architecture, complete package installation and required graphical libraries.</td></tr>
+<tr><td><code>git</code> is missing</td><td>Install Git SCM separately; reopen VS Code to refresh environment variables.</td></tr>
+<tr><td>Run/debug not available</td><td>Confirm source folder is trusted, Java extensions are installed, the file is valid Java and a supported JDK is selected.</td></tr>
+<tr><td>Extensions blocked</td><td>Company policy or restricted workspace. Do not bypass IT restrictions; seek approved extensions and distributions.</td></tr>
+</tbody></table></div></section>
+<section id="vsc-checklist" class="vsc-section"><h2>11. Internship assessment &amp; completion checklist</h2><div class="vsc-card">
+<div class="vsc-check">
+<label><input type="checkbox"> Installed the official VS Code release for my operating system.</label>
+<label><input type="checkbox"> Verified <code>code --version</code> in a fresh terminal.</label>
+<label><input type="checkbox"> Opened a local workspace with <code>code .</code>.</label>
+<label><input type="checkbox"> Installed and verified the Java Extension Pack publisher.</label>
+<label><input type="checkbox"> Configured a working JDK 21 and verified <code>javac -version</code>.</label>
+<label><input type="checkbox"> Built and ran <code>HelloIntern.java</code>.</label>
+<label><input type="checkbox"> Set a breakpoint and inspected variable values.</label>
+<label><input type="checkbox"> Inspected a Git diff and created a commit without secrets.</label>
+</div>
+<h3>Knowledge check</h3><ol><li>What is the difference between VS Code, a JDK and Maven?</li><li>Why is the system <code>PATH</code> relevant to both VS Code and Java?</li><li>Why should you verify extension publishers and workspace trust?</li><li>What is the difference between compiling Java and debugging Java?</li><li>Where does VS Code store project-specific settings?</li></ol>
+<p class="mb-0"><strong>Submission evidence:</strong> Screenshot of <code>code --version</code>, <code>java -version</code>, successful HelloIntern output, debugger variables and Git commit history. Do not include credentials in screenshots.</p>
+</div></section>
+<footer class="vsc-footer mt-4 pb-4">Official references: <a href="https://code.visualstudio.com/docs" target="_blank" rel="noopener noreferrer">VS Code documentation</a> · <a href="https://code.visualstudio.com/docs/java/java-tutorial" target="_blank" rel="noopener noreferrer">Java in VS Code</a> · <a href="https://code.visualstudio.com/docs/sourcecontrol/overview" target="_blank" rel="noopener noreferrer">Source control</a> · <a href="https://code.visualstudio.com/docs/editor/workspaces/workspace-trust" target="_blank" rel="noopener noreferrer">Workspace Trust</a>. Follow current vendor installation instructions when distribution packaging changes.</footer>
+</section>
+</body>
+</html>

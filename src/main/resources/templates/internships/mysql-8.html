@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<section th:fragment="lesson" class="mysql-guide container-fluid px-0">
+<style>
+.mysql-guide{--sql-blue:#075ef1;--sql-ink:#152138;--sql-muted:#576578;--sql-border:#dae5f5;max-width:1320px;margin:0 auto;color:var(--sql-ink)}
+.mysql-guide .sql-back{font-size:.91rem;text-decoration:none;font-weight:600}.mysql-guide .sql-eyebrow{font-size:.73rem;text-transform:uppercase;letter-spacing:.13em;color:#0759de;font-weight:800}
+.mysql-guide .sql-hero{background:linear-gradient(120deg,#fff 0%,#eaf3ff 100%);border:1px solid var(--sql-border);border-radius:18px;padding:2rem 2.2rem}
+.mysql-guide h1{font-size:clamp(2rem,3vw,3rem);font-weight:800;letter-spacing:-.035em}.mysql-guide h2{font-weight:800;font-size:1.5rem;letter-spacing:-.025em;margin-bottom:1rem}.mysql-guide h3{font-weight:750;font-size:1.1rem;margin-top:1.2rem}
+.mysql-guide p,.mysql-guide li{line-height:1.65}.mysql-guide .sql-summary{color:var(--sql-muted);max-width:1000px}
+.mysql-guide .sql-card{background:#fff;border:1px solid var(--sql-border);border-radius:14px;padding:1.45rem;height:100%;box-shadow:0 3px 13px rgba(27,73,126,.035)}
+.mysql-guide .sql-card p:last-child{margin-bottom:0}.mysql-guide .sql-platform{border-top:4px solid var(--sql-blue)}
+.mysql-guide .sql-chip{display:inline-block;border-radius:999px;background:#e4efff;color:#0755c8;padding:.28rem .65rem;font-size:.76rem;font-weight:750;margin:.1rem}
+.mysql-guide .sql-section{margin-top:2rem;scroll-margin-top:95px}.mysql-guide .sql-toc{background:#fff;border:1px solid var(--sql-border);border-radius:12px;padding:.85rem 1.1rem;display:flex;gap:.55rem 1.3rem;flex-wrap:wrap}
+.mysql-guide .sql-toc a{font-weight:600;text-decoration:none;font-size:.86rem}.mysql-guide pre{background:#0e203b;color:#e6f0ff;padding:1.1rem 1.25rem;border-radius:10px;overflow-x:auto;line-height:1.55;font-size:.88rem;margin:1rem 0}
+.mysql-guide code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.mysql-guide :not(pre)>code{background:#eef3fc;color:#18457a;border-radius:4px;padding:.13rem .32rem;font-size:.9em}
+.mysql-guide .sql-note{border-left:4px solid #2075eb;padding:.8rem 1rem;background:#eef5ff;border-radius:0 9px 9px 0;margin:1rem 0}.mysql-guide .sql-warn{border-left-color:#d39013;background:#fff8e8}
+.mysql-guide .sql-step{display:flex;align-items:flex-start;gap:.7rem;margin:1rem 0}.mysql-guide .sql-num{flex-shrink:0;display:inline-grid;place-items:center;background:#e1efff;border-radius:50%;width:2rem;height:2rem;color:#0a55b8;font-weight:800}.mysql-guide .sql-step-body{min-width:0;flex:1}
+.mysql-guide .sql-table{width:100%;border-collapse:collapse;background:#fff}.mysql-guide .sql-table th,.mysql-guide .sql-table td{padding:.7rem .8rem;border-bottom:1px solid var(--sql-border);vertical-align:top}.mysql-guide .sql-table th{background:#f0f5ff;color:#193e74}
+.mysql-guide .sql-checklist label{display:block;background:#f7faff;border:1px solid var(--sql-border);padding:.8rem 1rem;border-radius:9px;margin:.55rem 0}.mysql-guide .sql-checklist input{margin-right:.65rem;accent-color:#0864e8}
+.mysql-guide .sql-footer{font-size:.86rem;color:var(--sql-muted)}@media(max-width:700px){.mysql-guide .sql-hero{padding:1.35rem}.mysql-guide .sql-card{padding:1.1rem}}
+</style>
+<a class="sql-back" th:href="@{/internships/tool-installation}">← Back to Tool Installation</a>
+<header class="sql-hero mt-3">
+ <p class="sql-eyebrow mb-2">Internships · Tool installation · Hands-on lab 02</p>
+ <h1>Install MySQL 8 on macOS, Windows &amp; Linux</h1>
+ <p class="lead sql-summary mb-3">Build a local relational database development environment. Install MySQL Community Server, configure its service and clients, secure accounts, create an application database, and execute your first SQL transactions.</p>
+ <div><span class="sql-chip">MySQL Community Server 8.x</span><span class="sql-chip">macOS Apple Silicon / Intel</span><span class="sql-chip">Windows 10 / 11</span><span class="sql-chip">Ubuntu / Debian / Fedora</span><span class="sql-chip">Spring Boot ready</span></div>
+</header>
+<div class="row g-3 mt-2">
+ <div class="col-md-4"><div class="sql-card"><strong>Outcome 1 · Install</strong><p class="small text-secondary mt-2">Choose a compatible MySQL 8 release and start a database server on your computer.</p></div></div>
+ <div class="col-md-4"><div class="sql-card"><strong>Outcome 2 · Secure</strong><p class="small text-secondary mt-2">Understand the root account, authentication, least-privilege users and local-network access.</p></div></div>
+ <div class="col-md-4"><div class="sql-card"><strong>Outcome 3 · Validate</strong><p class="small text-secondary mt-2">Connect using the CLI/Workbench, run SQL and connect a Spring Boot application.</p></div></div>
+</div>
+<nav class="sql-toc mt-4" aria-label="Lesson contents">
+ <a href="#sql-concepts">Fundamentals</a><a href="#sql-versions">Version selection</a><a href="#sql-macos">macOS</a><a href="#sql-windows">Windows</a><a href="#sql-linux">Linux</a><a href="#sql-security">Security</a><a href="#sql-lab">SQL lab</a><a href="#sql-spring">Spring Boot</a><a href="#sql-troubleshooting">Troubleshooting</a><a href="#sql-assessment">Checklist</a>
+</nav>
+<section class="sql-section" id="sql-concepts"><h2>1. Understand the MySQL architecture</h2><div class="sql-card">
+ <table class="sql-table"><thead><tr><th>Component</th><th>Role in a commercial application</th></tr></thead><tbody>
+ <tr><td><strong>MySQL Server</strong> (<code>mysqld</code>)</td><td>Database service that stores data, executes SQL statements, manages transactions and enforces access controls.</td></tr>
+ <tr><td><strong>MySQL CLI</strong> (<code>mysql</code>)</td><td>Command-line client that connects to the server and executes SQL; installing only the client does not install a database server.</td></tr>
+ <tr><td><strong>MySQL Workbench</strong></td><td>Optional graphical SQL editor and administration tool; its version/OS support should be checked separately from the server.</td></tr>
+ <tr><td><strong>InnoDB</strong></td><td>Default transactional storage engine with ACID transactions, foreign keys and crash recovery.</td></tr>
+ <tr><td><strong>Connector/J</strong></td><td>JDBC driver that lets Spring Boot connect to MySQL over TCP (typically port <code>3306</code>).</td></tr>
+ <tr><td><strong>Schema / database</strong></td><td>Logical namespace for application tables, views and other database objects. <code>CREATE DATABASE</code> creates a schema.</td></tr>
+ </tbody></table>
+ <div class="sql-note mt-3"><strong>Architecture:</strong> Spring Boot API → JDBC / Spring Data JPA → MySQL Connector/J → local MySQL Server → InnoDB tables. MySQL Workbench is an optional client, not part of the runtime application path.</div>
+</div></section>
+<section class="sql-section" id="sql-versions"><h2>2. Select the correct MySQL 8 release</h2><div class="sql-card">
+ <p><strong>MySQL 8.0 and MySQL 8.4 LTS</strong> both belong to the MySQL 8 family, but they are different release series. For new training installations, prefer a current supported MySQL 8.4 LTS patch unless your existing application explicitly requires 8.0. Always confirm compatibility with the project's MySQL version and JDBC driver.</p>
+ <p>Choose <strong>MySQL Community Server</strong> (not Enterprise Edition), the correct operating system, CPU architecture and supported installer. Prefer Oracle's official installer or operating-system packages that clearly identify the MySQL version.</p>
+ <p><a href="https://dev.mysql.com/downloads/mysql/" target="_blank" rel="noopener noreferrer">MySQL Community Server downloads ↗</a> · <a href="https://dev.mysql.com/doc/refman/8.4/en/" target="_blank" rel="noopener noreferrer">MySQL 8.4 Reference Manual ↗</a> · <a href="https://dev.mysql.com/doc/refman/8.0/en/" target="_blank" rel="noopener noreferrer">MySQL 8.0 Reference Manual ↗</a></p>
+ <div class="sql-note sql-warn"><strong>Version check:</strong> Package-manager defaults change over time and across Linux distributions. Do not assume <code>mysql-server</code> or <code>brew install mysql</code> installs the same version on every machine. Always verify with <code>SELECT VERSION();</code>.</div>
+</div></section>
+<section class="sql-section" id="sql-macos"><h2>3. macOS — Apple Silicon and Intel</h2><div class="sql-card sql-platform">
+ <p class="sql-eyebrow">macOS · recommended for a predictable MySQL 8 installation</p>
+ <h3>Option A · Official MySQL Community DMG package</h3>
+ <div class="sql-step"><span class="sql-num">1</span><div class="sql-step-body">Open the <a href="https://dev.mysql.com/downloads/mysql/" target="_blank" rel="noopener noreferrer">official Community Server download page</a>. Choose macOS, a supported 8.x release and an architecture that matches your Mac (<strong>ARM64</strong> for Apple Silicon, <strong>x86_64</strong> for Intel).</div></div>
+ <div class="sql-step"><span class="sql-num">2</span><div class="sql-step-body">Download the <strong>DMG archive</strong>, open the included installer package and follow the installation wizard. Set a strong MySQL <code>root</code> password when prompted; save it in a password manager.</div></div>
+ <div class="sql-step"><span class="sql-num">3</span><div class="sql-step-body">Start the MySQL service using the installed MySQL preference pane or vendor-supplied startup tooling. If the command-line client is not on <code>PATH</code>, use its typical Oracle-package location:<pre><code>/usr/local/mysql/bin/mysql --version
+/usr/local/mysql/bin/mysql -u root -p</code></pre>Enter the root password interactively when asked.</div></div>
+ <div class="sql-step"><span class="sql-num">4</span><div class="sql-step-body">If needed, expose the Oracle-package CLI in zsh (without changing any existing Java configuration):<pre><code>echo 'export PATH="/usr/local/mysql/bin:$PATH"' &gt;&gt; ~/.zshrc
+source ~/.zshrc
+mysql --version</code></pre></div></div>
+ <h3>Option B · Homebrew, when an appropriate version-pinned formula is available</h3>
+ <p>Check the actual formula and supported version on your machine before installing. Use a version-pinned formula only if it is currently offered; the unpinned <code>mysql</code> formula may install a newer major release.</p>
+ <pre><code>brew search mysql
+brew info mysql@8.4
+# Only if the formula is available and suitable:
+brew install mysql@8.4
+brew services start mysql@8.4
+brew --prefix mysql@8.4</code></pre>
+ <p>Versioned Homebrew formulae may be keg-only. Follow the <code>brew info</code> output to add the correct <code>bin</code> directory to your <code>PATH</code>. Follow its printed initialization and root-login instructions; do not assume a default password.</p>
+ <div class="sql-note sql-warn">Choose <strong>one</strong> server installation method for a simple internship environment. Installing an Oracle DMG server and a Homebrew server simultaneously can cause port 3306 and data-directory conflicts.</div>
+</div></section>
+<section class="sql-section" id="sql-windows"><h2>4. Windows 10 / 11 installation</h2><div class="sql-card sql-platform">
+ <p class="sql-eyebrow">Windows · MySQL Installer or official MSI package</p>
+ <div class="sql-step"><span class="sql-num">1</span><div class="sql-step-body">Download a Windows Community Server installer from <a href="https://dev.mysql.com/downloads/mysql/" target="_blank" rel="noopener noreferrer">Oracle MySQL Downloads</a>. Where offered for your chosen release, MySQL Installer can also coordinate server and Workbench installation. Installer availability differs between the 8.0 and 8.4 series.</div></div>
+ <div class="sql-step"><span class="sql-num">2</span><div class="sql-step-body">Install MySQL Server and keep the installation folder documented (for example, <code>C:\Program Files\MySQL\MySQL Server 8.4\</code>). In the configuration wizard, choose a <strong>development machine</strong> profile when available and use TCP/IP port <code>3306</code> unless it is already occupied.</div></div>
+ <div class="sql-step"><span class="sql-num">3</span><div class="sql-step-body">Use a supported password-based authentication configuration, assign a strong root password, and register MySQL as a Windows Service so it can be started and stopped with the Services console. Keep the server bound to local access for training.</div></div>
+ <div class="sql-step"><span class="sql-num">4</span><div class="sql-step-body">Open <strong>PowerShell</strong>. Update this example path to the directory you actually installed:<pre><code>&amp; 'C:\Program Files\MySQL\MySQL Server 8.4\bin\mysql.exe' --version
+&amp; 'C:\Program Files\MySQL\MySQL Server 8.4\bin\mysql.exe' -h 127.0.0.1 -u root -p</code></pre></div></div>
+ <div class="sql-step"><span class="sql-num">5</span><div class="sql-step-body">For convenient command-line access, add the installed MySQL <code>bin</code> directory to the <strong>system or user Path</strong> via <em>Environment Variables</em>, then reopen PowerShell and run <code>mysql --version</code>.</div></div>
+ <h3>Service verification</h3><pre><code># PowerShell (service name may differ)
+Get-Service *mysql*
+# Start only the service name displayed on your machine:
+Start-Service -Name MySQL84</code></pre>
+ <div class="sql-note">Workbench is a separate graphical client. Install a supported edition if you want a visual SQL editor; select host <code>127.0.0.1</code>, port <code>3306</code>, and the application account you create in the security lab below.</div>
+</div></section>
+<section class="sql-section" id="sql-linux"><h2>5. Linux — Ubuntu, Debian and Fedora</h2><div class="sql-card sql-platform">
+ <p class="sql-eyebrow">Linux · distribution packages or Oracle MySQL repository</p>
+ <h3>Ubuntu / Debian · Inspect the package candidate first</h3>
+ <pre><code>sudo apt update
+apt-cache policy mysql-server
+# Read the candidate version before installing
+sudo apt install mysql-server
+sudo systemctl enable --now mysql
+sudo systemctl status mysql --no-pager</code></pre>
+ <p>Package availability and exact MySQL version vary by release and repository. Some systems ship a different major version or MariaDB via alternate packages. If you require an exact Oracle MySQL 8 release, use the official <a href="https://dev.mysql.com/downloads/repo/apt/" target="_blank" rel="noopener noreferrer">MySQL APT repository configuration</a> and follow its documentation for selecting the right release before installation.</p>
+ <p>On some Debian/Ubuntu setups, the administrative <code>root</code> account uses local socket authentication. You may initially administer MySQL using <code>sudo mysql</code> rather than a root password. Do not change this to password authentication solely to make a tutorial command work.</p>
+ <h3>Fedora / RPM-based systems</h3>
+ <p>Check available packages and repositories first. Fedora and enterprise RPM-based distributions may offer MariaDB instead of Oracle MySQL by default. For exact MySQL 8, use the matching official <a href="https://dev.mysql.com/downloads/repo/yum/" target="_blank" rel="noopener noreferrer">MySQL Yum repository</a> instructions for your supported distribution.</p>
+ <pre><code>sudo dnf info mysql-server
+# Proceed only after verifying the package provider/version:
+sudo dnf install mysql-server
+sudo systemctl enable --now mysqld
+sudo systemctl status mysqld --no-pager</code></pre>
+ <p>On some distributions the service is named <code>mysql</code> instead of <code>mysqld</code>. Use <code>systemctl list-unit-files '*mysql*' '*mysqld*'</code> to identify your actual unit.</p>
+ <h3>Verify the daemon and connect</h3>
+ <pre><code>mysql --version
+sudo ss -ltnp | grep ':3306'
+# Use either the configured root password or local socket login:
+mysql -u root -p
+# On socket-authenticated installations, instead use: sudo mysql</code></pre>
+ <div class="sql-note sql-warn">Avoid opening inbound port <code>3306</code> to the public internet. For this lab, prefer local connections only, or use an explicitly secured tunnel if remote administration is later required.</div>
+</div></section>
+<section class="sql-section" id="sql-security"><h2>6. Secure the server and provision an application user</h2><div class="sql-card">
+ <p>Log in as a MySQL administrator using the method appropriate to your OS. On installations supporting it, run <code>mysql_secure_installation</code> and review its prompts for anonymous accounts, remote root login, test databases and password policy. Behavior depends on the installer and installed version.</p>
+ <p><strong>Never run a Spring Boot application as <code>root</code>.</strong> Instead, create a dedicated local account and a training schema. Run the following SQL in an administrative MySQL session:</p>
+ <pre><code>CREATE DATABASE IF NOT EXISTS internship_lab
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_0900_ai_ci;
+
+CREATE USER IF NOT EXISTS 'intern_app'@'localhost'
+  IDENTIFIED BY 'REPLACE_WITH_UNIQUE_STRONG_PASSWORD';
+
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER,
+      INDEX, DROP, REFERENCES
+ON internship_lab.* TO 'intern_app'@'localhost';
+
+SHOW GRANTS FOR 'intern_app'@'localhost';</code></pre>
+ <p>The privileges above support <strong>local development and schema exercises</strong>. In production, manage schema changes through an authorized migration identity and grant the application only the DML privileges it needs.</p>
+ <div class="sql-note sql-warn"><strong>Security note:</strong> Replace the example password before executing. Do not commit passwords to Git or copy them into public screenshots. If connecting over TCP to <code>127.0.0.1</code>, test that the account's host matching works on your installation; use a deliberately scoped <code>'intern_app'@'127.0.0.1'</code> account if required rather than an unrestricted <code>'%'</code> account.</div>
+ <h3>Test the least-privilege connection</h3><pre><code>mysql -h localhost -u intern_app -p internship_lab
+SELECT CURRENT_USER(), DATABASE(), VERSION();</code></pre>
+</div></section>
+<section class="sql-section" id="sql-lab"><h2>7. Hands-on lab — SQL, keys and ACID transactions</h2><div class="sql-card">
+ <p>Connect as <code>intern_app</code> to <code>internship_lab</code>. Execute these statements in order. Observe the effect of a rollback and a committed transfer.</p>
+ <pre><code>USE internship_lab;
+
+CREATE TABLE IF NOT EXISTS customer (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  full_name VARCHAR(120) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS account (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  customer_id BIGINT NOT NULL,
+  balance DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+  CONSTRAINT fk_account_customer FOREIGN KEY (customer_id)
+    REFERENCES customer(id)
+) ENGINE=InnoDB;
+
+INSERT INTO customer (full_name, email)
+VALUES ('Alex Morgan', 'alex@example.test'),
+       ('Taylor Reed', 'taylor@example.test');
+
+INSERT INTO account (customer_id, balance)
+SELECT id, 250.00 FROM customer WHERE email='alex@example.test';
+INSERT INTO account (customer_id, balance)
+SELECT id, 100.00 FROM customer WHERE email='taylor@example.test';
+
+SELECT c.full_name, a.balance
+FROM customer c JOIN account a ON a.customer_id=c.id;
+
+START TRANSACTION;
+UPDATE account SET balance=balance-25.00 WHERE customer_id=1;
+UPDATE account SET balance=balance+25.00 WHERE customer_id=2;
+ROLLBACK;
+
+SELECT * FROM account;
+
+START TRANSACTION;
+UPDATE account SET balance=balance-25.00 WHERE customer_id=1;
+UPDATE account SET balance=balance+25.00 WHERE customer_id=2;
+COMMIT;
+
+SELECT * FROM account;</code></pre>
+ <div class="sql-note sql-warn"><strong>Exercise assumption:</strong> The transfer uses IDs <code>1</code> and <code>2</code>, which normally appear in a brand-new schema. If you already have records, query the generated customer IDs first and substitute the correct values. Re-running the inserts without clearing the database may violate the unique-email constraint.</div>
+ <h3>Concepts to explain to a reviewer</h3>
+ <ul><li>Why money balances use <code>DECIMAL</code> instead of floating-point types.</li><li>What primary keys, unique constraints and foreign keys protect.</li><li>Why <code>ROLLBACK</code> undoes uncommitted DML and <code>COMMIT</code> makes changes durable.</li><li>Why a SQL client can be closed without stopping the MySQL database service.</li></ul>
+</div></section>
+<section class="sql-section" id="sql-spring"><h2>8. Connect Spring Boot 4 / Java 21 to MySQL 8</h2><div class="sql-card">
+ <p>Your Commercial IT Bootcamp already uses MySQL and Spring Data JPA. For a new training application, include <strong>Spring Data JPA</strong> and the <strong>MySQL Connector/J</strong> runtime driver. With Spring Boot dependency management, usually omit the driver's explicit version.</p>
+ <pre><code>&lt;dependency&gt;
+  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-boot-starter-data-jpa&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;com.mysql&lt;/groupId&gt;
+  &lt;artifactId&gt;mysql-connector-j&lt;/artifactId&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+ <p>Example development-only <code>application.yml</code>, with the password supplied through an environment variable:</p>
+ <pre><code>spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/internship_lab
+    username: intern_app
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false</code></pre>
+ <p>Use <code>ddl-auto: validate</code> once your tables are established and JPA entities match the schema; without entities or for initial experimental schema creation, your bootstrap process may differ. For commercial projects, use database migrations such as Flyway or Liquibase instead of relying on automatic schema creation.</p>
+ <div class="sql-note"><strong>Connection diagnostics:</strong> A JDBC URL describes where the server listens; the driver is a Java dependency; a database user grants access. Each is separate, and each can fail independently.</div>
+</div></section>
+<section class="sql-section" id="sql-troubleshooting"><h2>9. Troubleshooting and operational checks</h2><div class="sql-card">
+ <table class="sql-table"><thead><tr><th>Symptom</th><th>Likely cause / check</th></tr></thead><tbody>
+ <tr><td><code>mysql: command not found</code></td><td>Client not installed or the installation's <code>bin</code> directory is missing from <code>PATH</code>.</td></tr>
+ <tr><td><code>ERROR 2002</code> / connection refused</td><td>Server stopped; incorrect socket, host or port; confirm the service and listening address.</td></tr>
+ <tr><td><code>ERROR 1045 Access denied</code></td><td>Incorrect user/password or host-specific MySQL account match. Check the user definition and chosen auth method.</td></tr>
+ <tr><td>Port <code>3306</code> already occupied</td><td>Another MySQL/MariaDB or container instance may be running. Identify it before changing ports or stopping services.</td></tr>
+ <tr><td>Workbench cannot connect</td><td>Check the server independently with the CLI; verify host, port, credentials and SSL/TLS settings.</td></tr>
+ <tr><td>Spring Boot JDBC failure</td><td>Check <code>mysql-connector-j</code>, schema name, environment variables, account grants and MySQL service health.</td></tr>
+ <tr><td>Wrong version installed</td><td><code>SELECT VERSION();</code> reports the connected server, not just the client's version; inspect your package or service selection.</td></tr>
+ </tbody></table>
+ <h3>Useful read-only diagnostics</h3><pre><code>mysql --version
+mysql -h localhost -u intern_app -p -e "SELECT VERSION(), CURRENT_USER();"
+# In an administrative SQL session:
+SHOW VARIABLES LIKE 'port';
+SHOW VARIABLES LIKE 'bind_address';
+SHOW DATABASES;</code></pre>
+</div></section>
+<section class="sql-section" id="sql-assessment"><h2>10. Internship submission and knowledge check</h2><div class="sql-card">
+ <p>Demonstrate your environment, not merely an installation screenshot. Provide redacted evidence showing the server version, a successful non-root connection, the created schema and tables, and a rollback/commit exercise.</p>
+ <div class="sql-checklist">
+  <label><input type="checkbox"> I can explain the relationship between MySQL Server, CLI, Workbench and Connector/J.</label>
+  <label><input type="checkbox"> I installed MySQL Community Server 8.x and verified the running server version.</label>
+  <label><input type="checkbox"> I can start/stop the service and explain which TCP port it uses.</label>
+  <label><input type="checkbox"> I created <code>internship_lab</code> with UTF-8 support and a non-root user.</label>
+  <label><input type="checkbox"> I created related tables with keys and executed SELECT, INSERT and UPDATE queries.</label>
+  <label><input type="checkbox"> I demonstrated the difference between ROLLBACK and COMMIT.</label>
+  <label><input type="checkbox"> I can describe how a Spring Boot datasource connects to the server.</label>
+  <label><input type="checkbox"> I excluded secrets, passwords and personal data from my screenshots and Git repository.</label>
+ </div>
+ <h3>Short oral assessment</h3><ol><li>What happens when the SQL client exits? Does the server stop?</li><li>How is <code>'intern_app'@'localhost'</code> different from a remote account?</li><li>Why must a Spring Boot application avoid using the MySQL <code>root</code> account?</li><li>What is the difference between a database schema, a table, a primary key and a foreign key?</li><li>How does InnoDB support an atomic multi-statement transaction?</li></ol>
+</div></section>
+<footer class="sql-footer mt-4 pb-4">Official references: <a href="https://dev.mysql.com/doc/" target="_blank" rel="noopener noreferrer">MySQL documentation</a> · <a href="https://dev.mysql.com/downloads/mysql/" target="_blank" rel="noopener noreferrer">Community Server downloads</a> · <a href="https://dev.mysql.com/downloads/workbench/" target="_blank" rel="noopener noreferrer">Workbench downloads</a>. Commands vary by OS, distribution and point release; verify installer output before applying service changes.</footer>
+</section>
+</body>
+</html>

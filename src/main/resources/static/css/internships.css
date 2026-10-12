@@ -1,0 +1,16 @@
+/* Load after existing global stylesheets. Scoped to internship navigation and pages. */
+.internship-navbar{background:linear-gradient(100deg,#172958,#315ee7)}
+.internship-dropdown{min-width:290px;border:1px solid #d8e3f6;border-radius:7px;box-shadow:0 14px 30px #152c5422;padding:.4rem}
+.internship-dropdown .dropdown-item{font-size:.88rem;color:#17233c;padding:.55rem .75rem;white-space:normal}
+.internship-dropdown .dropdown-item:hover,.internship-dropdown .dropdown-item:focus{background:#edf3ff;color:#2455db}
+.internship-dropdown .dropdown-submenu{position:relative}
+.internship-dropdown .dropdown-submenu>.dropdown-menu{left:100%;top:-.4rem;min-width:240px;border:1px solid #d8e3f6;box-shadow:0 12px 25px #152c5420}
+.internship-dropdown .submenu-toggle{border:0;background:transparent;color:#263e72;font-size:1.4rem;padding:0 .8rem;cursor:pointer}
+.internship-dropdown .dropdown-submenu:hover>.dropdown-menu,.internship-dropdown .dropdown-submenu:focus-within>.dropdown-menu,.internship-dropdown .dropdown-submenu.open>.dropdown-menu{display:block}
+.internship-page{background:#f5f7fc;min-height:100vh;color:#172033;padding:2rem 0 5rem}
+.internship-page .internship-panel{background:#fff;border:1px solid #d9e4f7;border-radius:12px;padding:1.5rem;box-shadow:0 8px 20px #183a6a0b}
+.internship-page .eyebrow{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:#2d56df}
+.internship-page .topic-card{display:block;height:100%;text-decoration:none;color:#172033;background:#fff;border:1px solid #d9e4f7;border-radius:9px;padding:1.15rem;transition:box-shadow .15s,border-color .15s}
+.internship-page .topic-card:hover{border-color:#315ee7;box-shadow:0 8px 18px #315ee71c}
+.internship-page .muted{color:#59677a}
+@media(max-width:991.98px){.internship-dropdown .dropdown-submenu>.dropdown-menu{position:static;left:auto;top:auto;box-shadow:none;border:0;border-left:2px solid #d9e4f7;margin-left:1rem}.internship-dropdown .dropdown-submenu:hover>.dropdown-menu{display:none}.internship-dropdown .dropdown-submenu.open>.dropdown-menu{display:block}}

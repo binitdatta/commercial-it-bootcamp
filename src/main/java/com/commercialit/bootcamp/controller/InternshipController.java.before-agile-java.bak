@@ -1,0 +1,80 @@
+package com.commercialit.bootcamp.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+@Controller
+public class InternshipController {
+    private static final Map<String, String> SECTIONS = new LinkedHashMap<>();
+    private static final Map<String, Map<String, String>> TOPICS = new LinkedHashMap<>();
+    static {
+        SECTIONS.put("tool-installation", "Tool Installation");
+        TOPICS.put("tool-installation", Map.ofEntries(
+            Map.entry("jdk-21", "JDK 21"),
+            Map.entry("mysql-8", "MySQL 8"),
+            Map.entry("vscode", "Visual Studio Code"),
+            Map.entry("intellij-community", "IntelliJ IDEA Community Edition"),
+            Map.entry("mysql-workbench", "MySQL Workbench"),
+            Map.entry("git-scm", "Git SCM"),
+            Map.entry("keycloak-26", "Keycloak 26+")
+        ));
+        SECTIONS.put("agile-scrum-kanban", "Agile / Scrum / Kanban");
+        SECTIONS.put("java-crash-course", "Java Crash Course");
+        TOPICS.put("java-crash-course", Map.ofEntries(
+            Map.entry("data-types", "Data Types"),
+            Map.entry("generics", "Generics"),
+            Map.entry("logical-decisions", "Logical Decision Making"),
+            Map.entry("loops", "Loops"),
+            Map.entry("math", "Math"),
+            Map.entry("dates", "Dates"),
+            Map.entry("functional-programming", "Functional Programming")
+        ));
+        SECTIONS.put("angular-crash-course", "Angular Crash Course");
+        SECTIONS.put("react-crash-course", "React Crash Course");
+        SECTIONS.put("python-3-crash-course", "Python 3 Crash Course");
+        SECTIONS.put("cloud-computing", "Cloud Computing");
+        TOPICS.put("cloud-computing", Map.ofEntries(
+            Map.entry("aws", "AWS"),
+            Map.entry("google-cloud", "Google Cloud"),
+            Map.entry("azure", "Microsoft Azure")
+        ));
+        SECTIONS.put("git-deep-dive", "Git Deep Dive Workflow");
+    }
+    @GetMapping("/internships")
+    public String overview(Model model) {
+        model.addAttribute("title", "Internship Learning Path");
+        model.addAttribute("sections", SECTIONS);
+        model.addAttribute("topics", TOPICS);
+        return "internships/index";
+    }
+    @GetMapping("/internships/{section}")
+    public String section(@PathVariable String section, Model model) {
+        if (!SECTIONS.containsKey(section)) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        model.addAttribute("title", SECTIONS.get(section));
+        model.addAttribute("section", section);
+        model.addAttribute("sectionTopics", TOPICS.getOrDefault(section, Map.of()));
+        return "internships/section";
+    }
+    @GetMapping("/internships/{section}/{topic}")
+    public String topic(@PathVariable String section, @PathVariable String topic, Model model) {
+        if (!TOPICS.getOrDefault(section, Map.of()).containsKey(topic)) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        model.addAttribute("title", TOPICS.get(section).get(topic));
+        model.addAttribute("sectionTitle", SECTIONS.get(section));
+        model.addAttribute("section", section);
+        model.addAttribute("topic", topic);
+                if ("tool-installation".equals(section) && "jdk-21".equals(topic)) return "internships/lesson-jdk-21";
+        if ("tool-installation".equals(section) && "mysql-8".equals(topic)) return "internships/lesson-mysql-8";
+        if ("tool-installation".equals(section) && "vscode".equals(topic)) return "internships/lesson-vscode";
+        if ("tool-installation".equals(section) && "intellij-community".equals(topic)) return "internships/lesson-intellij-community";
+        if ("tool-installation".equals(section) && "mysql-workbench".equals(topic)) return "internships/lesson-mysql-workbench";
+                if ("tool-installation".equals(section) && "git-scm".equals(topic)) return "internships/lesson-git-scm";
+        if ("tool-installation".equals(section) && "keycloak-26".equals(topic)) return "internships/lesson-keycloak-26";
+        return "internships/topic";
+    }
+}

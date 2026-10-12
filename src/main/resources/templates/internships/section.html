@@ -1,0 +1,6 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout(${title}, 'Internship learning curriculum', ~{::section})}">
+<body>
+<section class="internship-page"><div class="container"><a th:href="@{/internships}" class="text-decoration-none">← Internship Overview</a><p class="eyebrow mt-4">Internship curriculum</p><h1 class="fw-bold" th:text="${title}">Module</h1><div class="internship-panel mt-4"><p class="muted" th:if="${#maps.isEmpty(sectionTopics)}">This module is ready for detailed lesson content, exercises, and project assignments.</p><div class="row g-3" th:unless="${#maps.isEmpty(sectionTopics)}"><div class="col-md-6" th:each="entry : ${sectionTopics}"><a class="topic-card" th:href="@{/internships/{s}/{t}(s=${section},t=${entry.key})}"><h2 class="h5 fw-bold" th:text="${entry.value}">Topic</h2><span class="muted">Open topic →</span></a></div></div></div></div></section>
+</body></html>

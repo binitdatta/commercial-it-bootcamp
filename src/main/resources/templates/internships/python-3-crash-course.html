@@ -1,0 +1,57 @@
+<!DOCTYPE html><html lang="en" xmlns:th="http://www.thymeleaf.org"><body><section th:fragment="lesson" class="rpc container-fluid px-0"><style>.rpc{max-width:1120px;margin:auto;color:#19263d}.rpc .hero{background:linear-gradient(115deg,#fff,#e7f1ff);border:1px solid #d7e4f8;border-radius:16px;padding:2rem}.rpc .eyebrow{font-size:.75rem;font-weight:800;letter-spacing:.12em;color:#075be0;text-transform:uppercase}.rpc h1{font-size:clamp(2rem,3.2vw,2.65rem);font-weight:800;letter-spacing:-.03em}.rpc h2{font-size:1.45rem;font-weight:800;margin:0 0 1rem}.rpc h3{font-size:1.05rem;font-weight:750;margin:1.1rem 0 .55rem}.rpc p,.rpc li{line-height:1.65}.rpc .muted{color:#51647c}.rpc .panel{background:#fff;border:1px solid #d7e4f8;border-radius:12px;padding:1.25rem;margin:.8rem 0}.rpc .block{margin-top:2rem;scroll-margin-top:90px}.rpc .toc{display:flex;flex-wrap:wrap;gap:.65rem 1.1rem;padding:.85rem 1rem;border:1px solid #d7e4f8;border-radius:10px;background:#fff;margin-top:1.1rem}.rpc .toc a{font-size:.86rem;font-weight:650;text-decoration:none}.rpc .tag{background:#e3eeff;color:#0754cf;font-size:.78rem;font-weight:750;padding:.22rem .6rem;border-radius:20px;display:inline-block;margin:.2rem .2rem .1rem 0}.rpc pre{background:#142840;color:#f0f8ff;padding:1.15rem;border-radius:9px;overflow-x:auto;white-space:pre;line-height:1.6;font-size:.87rem}.rpc :not(pre)>code{background:#ecf3ff;color:#164b85;border-radius:4px;padding:.1rem .3rem}.rpc .note{border-left:4px solid #1264e4;background:#eff6ff;padding:.8rem 1rem;margin:1rem 0}.rpc table{width:100%;border-collapse:collapse}.rpc th,.rpc td{padding:.7rem;border-bottom:1px solid #d7e4f8;vertical-align:top}.rpc th{background:#edf4ff}.rpc .check{display:block;padding:.55rem;margin:.4rem 0;background:#fff;border:1px solid #d7e4f8;border-radius:8px}.rpc .check input{margin-right:.5rem}.rpc .back{display:inline-block;margin-bottom:1.1rem;text-decoration:none;font-weight:650}@media(max-width:650px){.rpc .hero{padding:1.2rem}}</style><a class="back" th:href="@{/internships}">← Internship Overview</a><header class="hero"><p class="eyebrow">Internships · Python 3 Crash Course · Applied engineering</p><h1>Python 3 Crash Course — Applied Enterprise Programming</h1><p class="lead muted">Work with Python 3, virtual environments, data structures, APIs, tests and a real-world reconciliation capstone.</p><span class="tag">Python 3</span><span class="tag">venv</span><span class="tag">Type hints</span><span class="tag">pytest</span><span class="tag">JSON/CSV</span></header><div class="row g-3 my-2"><div class="col-md-4"><div class="panel h-100"><strong>Understand</strong><p class="muted mb-0">Identify key concepts, components, responsibilities and trade-offs.</p></div></div><div class="col-md-4"><div class="panel h-100"><strong>Build</strong><p class="muted mb-0">Practice working commands and a realistic enterprise use case.</p></div></div><div class="col-md-4"><div class="panel h-100"><strong>Validate</strong><p class="muted mb-0">Verify results, troubleshoot failures and apply security controls.</p></div></div></div><nav class="toc" aria-label="Lesson contents"><a href="#s1">Python runtime, virtual environments and packaging</a><a href="#s2">Install and validate on macOS, Windows, Linux</a><a href="#s3">Variables and core types</a><a href="#s4">Control flow and functions</a><a href="#s5">Data classes, typing and exceptions</a><a href="#s6">Files, JSON and datetime</a><a href="#s7">HTTP APIs and FastAPI basics</a><a href="#s8">Testing and dependency control</a><a href="#s9">Enterprise capstone: CSV reconciliation</a><a href="#s10">Troubleshooting</a><a href="#references">References</a><a href="#checklist">Checklist</a></nav><section class="block" id="s1"><h2>1. Python runtime, virtual environments and packaging</h2><div class="panel"><p>Python 3 runs interpreted Python programs using CPython or an alternative implementation. Use project-specific virtual environments to isolate installed libraries.</p><div class="table-responsive"><table><thead><tr><th>Concept</th><th>Purpose</th></tr></thead><tbody><tr><td>Interpreter</td><td>Executes Python source and bytecode</td></tr><tr><td>pip</td><td>Installs Python packages</td></tr><tr><td>venv</td><td>Isolates project dependencies</td></tr><tr><td>pyproject.toml</td><td>Describes project metadata and tooling configuration</td></tr><tr><td>Type hints</td><td>Help static tooling; they are not runtime validation</td></tr></tbody></table></div></div></section><section class="block" id="s2"><h2>2. Install and validate on macOS, Windows, Linux</h2><div class="panel"><p>Choose a supported Python 3 release compatible with required dependencies. Do not modify the operating system Python installation.</p><pre><code># macOS / Linux
+python3 --version
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip --version
+
+# Windows PowerShell (use the Python launcher where available)
+py -3 --version
+py -3 -m venv .venv
+.venv\Scripts\Activate.ps1
+python -m pip --version</code></pre><p>If PowerShell execution policy blocks activation, run the environment’s <code>python.exe</code> directly or follow approved security policy. Verify your IDE has selected the virtual environment.</p></div></section><section class="block" id="s3"><h2>3. Variables and core types</h2><div class="panel"><p>Learn integers, floats, booleans, strings, lists, tuples, dictionaries, sets and None. Be careful with floating-point money: use Decimal.</p><pre><code>from decimal import Decimal
+order = {&quot;id&quot;: 101, &quot;items&quot;: [&quot;A&quot;, &quot;B&quot;], &quot;paid&quot;: False}
+subtotal = Decimal(&quot;19.99&quot;) * 3
+print(order[&quot;id&quot;], subtotal)</code></pre><p>Lab: create a dictionary representing an order with status and amount.</p></div></section><section class="block" id="s4"><h2>4. Control flow and functions</h2><div class="panel"><p>Python uses indentation to define blocks. Understand if/elif/else, for/while loops, comprehensions and function signatures.</p><pre><code>def shipping_band(total: float) -&gt; str:
+    if total &gt;= 100:
+        return &quot;FREE&quot;
+    elif total &gt;= 50:
+        return &quot;STANDARD&quot;
+    return &quot;PAID&quot;
+
+for amount in [20, 60, 120]:
+    print(amount, shipping_band(amount))</code></pre><p>Lab: refactor to handle invalid negative totals and add unit tests.</p></div></section><section class="block" id="s5"><h2>5. Data classes, typing and exceptions</h2><div class="panel"><p>Use dataclasses for local data structures and typing for readability. Convert and validate untrusted API input explicitly.</p><pre><code>from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class Order:
+    id: int
+    customer: str
+
+def lookup_order(orders: dict[int, Order], order_id: int) -&gt; Order:
+    try:
+        return orders[order_id]
+    except KeyError as exc:
+        raise ValueError(&quot;Order not found&quot;) from exc</code></pre><p>Error handling should identify recoverable conditions; avoid bare except and silent failures.</p></div></section><section class="block" id="s6"><h2>6. Files, JSON and datetime</h2><div class="panel"><p>Use context managers for safe file access and timezone-aware UTC timestamps for event data.</p><pre><code>import json
+from datetime import datetime, timezone
+from pathlib import Path
+
+record = {&quot;id&quot;: 1, &quot;created&quot;: datetime.now(timezone.utc).isoformat()}
+Path(&quot;order.json&quot;).write_text(json.dumps(record, indent=2))
+print(json.loads(Path(&quot;order.json&quot;).read_text()))</code></pre><p>Lab: load a JSON order list and write a summary CSV without leaking personal data.</p></div></section><section class="block" id="s7"><h2>7. HTTP APIs and FastAPI basics</h2><div class="panel"><p>Understand REST, status codes, JSON and request validation. FastAPI is an optional web framework; install dependencies into a virtual environment.</p><pre><code>python -m pip install fastapi uvicorn
+# app.py
+from fastapi import FastAPI
+app = FastAPI()
+@app.get(&quot;/health&quot;)
+def health():
+    return {&quot;status&quot;: &quot;ok&quot;}
+
+# Start locally:
+# python -m uvicorn app:app --reload</code></pre><p>Development reload must not be used as a production process manager. API authentication and authorization belong server-side.</p></div></section><section class="block" id="s8"><h2>8. Testing and dependency control</h2><div class="panel"><p>Unit tests guard business logic; pinned/locked dependencies and scanning reduce supply-chain risk.</p><pre><code>python -m pip install pytest
+# test_shipping.py
+def shipping_band(total):
+    return &quot;FREE&quot; if total &gt;= 100 else &quot;PAID&quot;
+
+def test_shipping():
+    assert shipping_band(120) == &quot;FREE&quot;
+
+# run:
+# python -m pytest</code></pre><p>Document the supported Python version. Never put API keys or passwords directly into source control.</p></div></section><section class="block" id="s9"><h2>9. Enterprise capstone: CSV reconciliation</h2><div class="panel"><p>Write a command-line program that imports orders from CSV, validates types, groups amounts by customer, reports errors and emits JSON.</p><ul><li>Isolate parsing, validation and aggregation in separate functions.</li><li>Use Decimal for currency and timezone-aware timestamps.</li><li>Use argparse for input/output paths, logging for diagnostics and pytest for unit tests.</li><li>Return a nonzero exit code when unrecoverable input errors occur.</li><li>Create README instructions and an example test dataset.</li></ul></div></section><section class="block" id="s10"><h2>10. Troubleshooting</h2><div class="panel"><div class="table-responsive"><table><thead><tr><th>Issue</th><th>Resolution</th></tr></thead><tbody><tr><td>ModuleNotFoundError</td><td>Check active virtual environment and python -m pip</td></tr><tr><td>Wrong Python version</td><td>Inspect python/py launchers and IDE interpreter</td></tr><tr><td>Permission denied</td><td>Avoid installing into system Python; use venv</td></tr><tr><td>Encoding problems</td><td>Read/write files with an explicit UTF-8 encoding</td></tr><tr><td>Datetime offset error</td><td>Use aware datetime values consistently</td></tr></tbody></table></div></div></section><section class="block" id="references"><h2>References</h2><div class="panel"><p><strong>Official documentation:</strong> <a href="https://docs.python.org/3/" target="_blank" rel="noopener noreferrer">Python docs</a> · <a href="https://packaging.python.org/" target="_blank" rel="noopener noreferrer">Python packaging guide</a> · <a href="https://docs.pytest.org/" target="_blank" rel="noopener noreferrer">pytest</a></p></div></section><section class="block" id="checklist"><h2>Completion checklist</h2><div class="panel"><label class="check"><input type="checkbox"> I can explain the architecture and primary components</label><label class="check"><input type="checkbox"> I completed the setup and validation commands</label><label class="check"><input type="checkbox"> I completed the hands-on lab</label><label class="check"><input type="checkbox"> I can explain key security boundaries and operational failure cases</label></div></section></section></body></html>

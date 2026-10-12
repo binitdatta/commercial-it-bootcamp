@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<section th:fragment="lesson" class="git-course container-fluid px-0">
+<style>
+.git-course{max-width:1100px;margin:0 auto;color:#172238}.git-course .hero{background:linear-gradient(112deg,#fff,#e7f1ff);border:1px solid #d6e4fa;border-radius:16px;padding:2rem}.git-course .eyebrow{color:#0759dc;font-weight:800;text-transform:uppercase;letter-spacing:.13em;font-size:.72rem}.git-course h1{font-size:clamp(2rem,3vw,2.65rem);font-weight:800;letter-spacing:-.035em}.git-course h2{font-size:1.5rem;font-weight:800;margin-bottom:1rem}.git-course h3{font-size:1.13rem;font-weight:750;margin:1.15rem 0 .55rem}.git-course p,.git-course li{line-height:1.65}.git-course .muted{color:#53657b}.git-course .panel{background:#fff;border:1px solid #d7e4f8;border-radius:12px;padding:1.3rem;margin:.85rem 0}.git-course .unit{margin-top:2.4rem;scroll-margin-top:100px}.git-course .toc{display:flex;flex-wrap:wrap;gap:.55rem 1rem;background:#fff;border:1px solid #d7e4f8;border-radius:10px;padding:1rem;margin-top:1.25rem}.git-course .toc a{font-size:.87rem;text-decoration:none;font-weight:650}.git-course .tag{background:#e3efff;color:#0756cb;font-weight:750;font-size:.78rem;padding:.2rem .6rem;border-radius:20px;display:inline-block;margin:.15rem}.git-course pre{background:#14243d;color:#f1f6ff;border-radius:10px;padding:1.15rem;overflow-x:auto;line-height:1.6;font-size:.85rem;white-space:pre}.git-course :not(pre)>code{background:#edf3ff;color:#154b86;border-radius:4px;padding:.1rem .28rem}.git-course table{width:100%;border-collapse:collapse}.git-course th,.git-course td{padding:.7rem;vertical-align:top;border-bottom:1px solid #d7e4f8}.git-course th{background:#eef4ff}.git-course .callout{border-left:4px solid #1264e8;background:#eff6ff;padding:1rem;margin:1rem 0}.git-course .warning{border-left-color:#d58c00;background:#fff8e7}.git-course .exercise{background:#f5f9ff;border:1px solid #c9ddf9;border-radius:10px;padding:1rem;margin:1rem 0}.git-course .exercise strong{color:#084dad}.git-course .checklist label{display:block;border:1px solid #d7e4f8;background:#fff;border-radius:8px;padding:.65rem;margin:.5rem 0}.git-course .checklist input{margin-right:.6rem}.git-course .diagram{font-family:ui-monospace,SFMono-Regular,monospace;background:#f0f5ff;padding:1rem;border-radius:8px;white-space:pre-wrap;overflow-x:auto}.git-course .back{display:inline-block;text-decoration:none;font-weight:650;margin-bottom:1rem}@media(max-width:700px){.git-course .hero{padding:1.2rem}.git-course .panel{padding:1rem}}
+</style>
+<a class="back" th:href="@{/internships}">← Internship Overview</a>
+<header class="hero">
+<p class="eyebrow">Internships · Professional Engineering · Practical Git Lab</p>
+<h1>Git Deep Dive — From First Commit to Enterprise Team Workflow</h1>
+<p class="lead muted">Learn what Git stores, how developers collaborate, and how to safely recover when branches, merges, and remote history become complicated. Follow a single realistic Order Management example from local changes to reviewed release.</p>
+<span class="tag">Git SCM</span><span class="tag">GitHub / GitLab</span><span class="tag">Java + Spring Boot</span><span class="tag">Team Collaboration</span><span class="tag">Hands-on Labs</span>
+</header>
+<div class="row g-3 my-2"><div class="col-md-4"><div class="panel h-100"><strong>Understand</strong><p class="muted mb-0">Git's working tree, staging index, commits, branches and remotes.</p></div></div><div class="col-md-4"><div class="panel h-100"><strong>Execute</strong><p class="muted mb-0">Clone, commit, branch, fetch, rebase, merge, review and release.</p></div></div><div class="col-md-4"><div class="panel h-100"><strong>Recover</strong><p class="muted mb-0">Resolve conflicts, undo mistakes and protect shared history.</p></div></div></div>
+<nav class="toc" aria-label="Git lesson navigation">
+<a href="#model">Mental model</a><a href="#install">Install and configure</a><a href="#repo">Repositories</a><a href="#daily">Daily workflow</a><a href="#inspect">Inspect history</a><a href="#branches">Branching</a><a href="#merge">Merging</a><a href="#rebase">Rebasing</a><a href="#remotes">Remotes</a><a href="#fork">Forks and PRs</a><a href="#workflows">Team workflows</a><a href="#undo">Undo and recovery</a><a href="#advanced">Advanced tools</a><a href="#security">Security and hygiene</a><a href="#labs">Capstone labs</a><a href="#reference">Reference</a><a href="#assessment">Assessment</a>
+</nav>
+<section class="unit" id="model"><h2>1. The Git mental model — how source control really works</h2><div class="panel"><p><strong>Git is a distributed version control system (DVCS).</strong> Each normal clone contains its own commit history and can create commits offline. A hosted service such as GitHub is a collaboration platform, not Git itself.</p>
+<div class="diagram">Working directory  -- git add --&gt;  Staging index  -- git commit --&gt;  Local repository
+      ^                               |                                     |
+      |                          git restore                                | git push
+      +-------- git switch / restore --+                                     v
+                                                                   Remote repository</div>
+<div class="table-responsive"><table><thead><tr><th>Component</th><th>Meaning</th><th>Useful command</th></tr></thead><tbody>
+<tr><td>Working tree</td><td>Files currently present in your checkout, including unsaved-from-Git changes.</td><td><code>git status</code></td></tr>
+<tr><td>Index / staging area</td><td>The proposed snapshot for the next commit; not the same as all changed files.</td><td><code>git add</code> / <code>git diff --cached</code></td></tr>
+<tr><td>Local repository</td><td><code>.git</code> object database and refs storing history.</td><td><code>git log</code></td></tr>
+<tr><td>Commit</td><td>Immutable snapshot with metadata and one or more parents, identified by a hash.</td><td><code>git show</code></td></tr>
+<tr><td>Branch</td><td>Movable name pointing at a commit; not a separate copy of the entire project.</td><td><code>git branch -vv</code></td></tr>
+<tr><td>HEAD</td><td>Usually a symbolic pointer to the currently checked-out branch.</td><td><code>git symbolic-ref --short HEAD</code></td></tr>
+<tr><td>Remote-tracking branch</td><td>Local record of a branch last observed on a remote, e.g. <code>origin/main</code>.</td><td><code>git branch -r</code></td></tr>
+</tbody></table></div>
+<h3>Commits, trees, blobs and tags</h3><p>Git objects include blobs (file contents), trees (directory snapshots), commits (metadata/parents/root tree) and annotated tag objects. Git's staging index constructs the tree for the next commit. A normal commit typically has one parent; a merge commit commonly has two.</p>
+<div class="callout"><strong>Critical distinction:</strong> <code>git add</code> stages; <code>git commit</code> records locally; <code>git push</code> publishes to a remote. These are three different operations.</div></div></section>
+<section class="unit" id="install"><h2>2. Install Git and configure your identity</h2><div class="panel"><p>Use a supported Git release. On macOS, install with your package manager or Xcode Command Line Tools; on Windows use Git for Windows; on Linux use your distribution's package manager.</p>
+<pre><code># macOS (Homebrew)
+brew install git
+# Windows (PowerShell, with winget)
+winget install --id Git.Git -e
+# Ubuntu / Debian
+sudo apt update &amp;&amp; sudo apt install git
+# Fedora
+sudo dnf install git</code></pre>
+<p>In a new terminal, configure the identity written into future commits. This does not authenticate you to GitHub.</p>
+<pre><code>git --version
+git config --global user.name "Intern Developer"
+git config --global user.email "intern@example.com"
+git config --global init.defaultBranch main
+git config --global core.autocrlf input   # Typical for macOS/Linux; consider platform/team policy
+# On Windows teams often choose core.autocrlf true, or enforce line endings via .gitattributes
+git config --global --list --show-origin</code></pre>
+<p>Prefer repository-owned <code>.gitattributes</code> to enforce consistent line endings across platforms. Credential managers or SSH keys manage authentication; never save passwords or access tokens in tracked files.</p></div></section>
+<section class="unit" id="repo"><h2>3. Create, initialize and clone repositories</h2><div class="panel"><p><code>git init</code> creates a local repository in an existing folder. <code>git clone</code> creates a new directory from a remote repository, copies its reachable history, and normally configures a remote called <code>origin</code>.</p>
+<pre><code># New local repository
+mkdir order-service-lab &amp;&amp; cd order-service-lab
+git init -b main
+printf '# Order Service Lab\n' &gt; README.md
+git add README.md
+git commit -m "docs: initialize order service lab"
+
+# Existing project from a hosting service (run elsewhere)
+git clone https://github.com/ORG/REPOSITORY.git
+git -C REPOSITORY remote -v</code></pre>
+<p><strong>Local vs remote:</strong> a local repository can have commits not yet pushed. A remote may contain commits you have not fetched. A branch named <code>main</code> in your clone and <code>origin/main</code> are different refs.</p>
+<div class="exercise"><strong>Lab:</strong> Run <code>git rev-parse --show-toplevel</code> and <code>git status --short --branch</code>. Explain why the <code>.git</code> folder must not be copied into another unrelated project's repository.</div></div></section>
+<section class="unit" id="daily"><h2>4. Everyday workflow — status, add, commit, ignore and diff</h2><div class="panel"><p>Use the smallest coherent commits possible. Inspect staged changes before committing; <code>git add .</code> can stage more than intended.</p>
+<pre><code>git status                     # Summarize modified / staged / untracked files
+git status --short             # Compact M, A, ?? indicators
+git diff                       # Unstaged tracked changes
+git add src/main/java/Order.java
+git diff --cached              # Exactly what will go into next commit
+git commit -m "feat: validate order status"
+git log -1 --oneline</code></pre>
+<h3>Selective staging and .gitignore</h3>
+<pre><code>git add -p                     # Stage selected hunks interactively
+git restore --staged file.txt  # Unstage, retaining working-tree edits
+git diff --check               # Find whitespace problems
+
+# .gitignore example for a Java app
+target/
+.idea/
+*.iml
+.env
+*.log</code></pre>
+<p><code>.gitignore</code> affects untracked files, not files already tracked. To stop tracking a sensitive/generated file while keeping the local copy, first ensure its removal from Git history is handled if secrets were exposed, then use <code>git rm --cached</code> and commit.</p></div></section>
+<section class="unit" id="inspect"><h2>5. Read commit history and investigate changes</h2><div class="panel"><pre><code>git log --oneline --graph --decorate --all --max-count=25
+git show HEAD                 # Last commit patch
+git show HEAD:README.md       # File as stored in HEAD
+git diff main...feature/order-validation
+git blame src/main/java/Order.java
+git log --follow -- README.md
+git grep -n "TODO" -- src/</code></pre>
+<p><code>git diff A..B</code> compares the two snapshots; <code>git diff A...B</code> compares the merge base of A/B to B. The triple-dot meaning differs between <code>git diff</code> and <code>git log</code>; check the specific command before interpreting results.</p><div class="exercise"><strong>Lab:</strong> Create three distinct commits, then use <code>git show</code> to identify exactly which commit introduced an intentional change.</div></div></section>
+<section class="unit" id="branches"><h2>6. Branches, switching, tracking and branch hygiene</h2><div class="panel"><div class="diagram">A---B---C (main)
+     \
+      D---E (feature/order-validation)</div>
+<pre><code>git switch main
+git switch -c feature/order-validation
+# Edit, stage and commit changes
+git branch -vv
+git switch main
+git branch --merged
+git branch -d feature/order-validation  # Deletes safely only if merged</code></pre>
+<p>Create a branch per coherent work item. Choose names that communicate intent (e.g. <code>feature/ORD-42-validation</code>, <code>fix/ORD-87-null-status</code>). Switch only when the working tree is compatible with the requested checkout; commit or stash changes first.</p>
+<p>Use <code>git push -u origin feature/order-validation</code> to publish a new branch and set its upstream tracking relationship.</p></div></section>
+<section class="unit" id="merge"><h2>7. Merge strategies and conflict resolution</h2><div class="panel"><p>A <strong>fast-forward merge</strong> moves a branch pointer when no separate commits diverged. A <strong>three-way merge</strong> combines two branches using their common ancestor and may create a merge commit. <code>--no-ff</code> requests a merge commit even when a fast-forward would be possible.</p>
+<pre><code>git switch main
+git merge feature/order-validation     # Fast-forward or merge commit
+# Or retain explicit PR feature boundary when appropriate:
+git merge --no-ff feature/order-validation</code></pre>
+<p>When two branches change overlapping lines, Git may leave conflict markers. Resolve based on desired behavior, not simply by choosing “ours” or “theirs.”</p>
+<pre><code>git status                           # Lists unmerged paths
+# Open conflicted files; remove &lt;&lt;&lt;&lt;&lt;&lt;&lt;, ======= and &gt;&gt;&gt;&gt;&gt;&gt;&gt; markers
+# Run tests before completing the merge
+git add src/main/java/Order.java
+git merge --continue                   # Completes merge after resolving
+# Or cancel an in-progress merge:
+git merge --abort</code></pre>
+<div class="callout warning"><strong>Team rule:</strong> Never resolve a conflict without verifying the combined behavior and running relevant tests.</div></div></section>
+<section class="unit" id="rebase"><h2>8. Rebase — linear history and its consequences</h2><div class="panel"><p><code>git rebase main</code> takes commits unique to the current branch and replays their changes onto a new base. The replayed commits receive <strong>new hashes</strong>; rebase rewrites history.</p>
+<div class="diagram">Before: A---B---C (main)      After: A---B---C (main)
+            \\                            \
+             D---E (feature)               D'---E' (feature)</div>
+<pre><code>git fetch origin
+git switch feature/order-validation
+git rebase origin/main
+# Resolve conflicts if prompted:
+git add path/to/resolved-file
+git rebase --continue
+# Or undo an unfinished rebase:
+git rebase --abort</code></pre>
+<p><strong>Interactive rebase</strong> can reorder, squash, reword, or drop local commits:</p><pre><code>git rebase -i HEAD~3</code></pre>
+<p>Rebase private work before review if your team prefers it. Avoid rebasing a shared branch other developers have based work on unless everyone coordinates. After rebasing a published feature branch, <code>git push --force-with-lease</code> may be required, but it can still disrupt collaborators; never force-push protected or shared branches.</p>
+<div class="table-responsive"><table><thead><tr><th>Merge</th><th>Rebase</th></tr></thead><tbody><tr><td>Preserves original commit identities; may create merge commit.</td><td>Replays commits and changes identities.</td></tr><tr><td>Often preferred for shared integration branches.</td><td>Useful for local feature-branch cleanup.</td></tr><tr><td>Shows explicit lines of development.</td><td>Creates a more linear narrative.</td></tr></tbody></table></div></div></section>
+<section class="unit" id="remotes"><h2>9. Working with remotes — fetch, pull, push and tracking</h2><div class="panel"><p><strong>Fetch</strong> downloads remote objects and updates remote-tracking refs without automatically changing your checked-out files. <strong>Pull</strong> performs fetch plus integration (merge or rebase, depending on configuration/flags). <strong>Push</strong> sends objects and proposes remote ref updates.</p>
+<pre><code>git remote -v
+git remote add origin https://github.com/ORG/order-service.git
+git fetch origin
+git branch -a
+git log HEAD..origin/main --oneline   # Incoming commits relative to current HEAD
+git switch main
+git pull --ff-only origin main      # Rejects non-fast-forward integration
+git push -u origin main             # Requires permission and permitted server rules</code></pre>
+<p>For feature branches, fetch first and review incoming changes before integrating. <code>git pull --rebase</code> is one valid team convention, but should not be used blindly on shared work.</p>
+<div class="callout"><strong>Clarify the names:</strong> <code>origin</code> is merely a conventional remote alias; <code>upstream</code> is commonly used as the original repository when working from a fork.</div></div></section>
+<section class="unit" id="fork"><h2>10. Forking, cloning, pull requests and code review</h2><div class="panel"><p>A <strong>fork</strong> is a separate server-side repository under another account or organization. A <strong>clone</strong> is a local copy. A <strong>pull request</strong> (or merge request) is a hosting-service review workflow, not a core Git command.</p>
+<div class="diagram">Original project (upstream) --- fork on hosting service (origin)
+            ^                                      ^
+            | PR / merge request                   | push feature branch
+            +------------------- local clone ------+</div>
+<pre><code># Clone your fork (replace YOUR_ACCOUNT and ORG)
+git clone https://github.com/YOUR_ACCOUNT/order-service.git
+cd order-service
+git remote add upstream https://github.com/ORG/order-service.git
+git fetch upstream
+git switch main
+git merge --ff-only upstream/main
+git push origin main
+
+git switch -c feature/ORD-42-order-validation
+# edit, add, test, commit
+git push -u origin feature/ORD-42-order-validation
+# Open a PR: YOUR_ACCOUNT:feature/... into ORG:main</code></pre>
+<p>Reviewers inspect the diff, test results, security implications, migration effects and maintainability. Address review feedback with additional commits or a coordinated squash. Do not merge without required approvals and passing CI checks.</p></div></section>
+<section class="unit" id="workflows"><h2>11. Git workflows used in commercial software teams</h2><div class="panel"><div class="table-responsive"><table><thead><tr><th>Workflow</th><th>Pattern</th><th>Best fit / tradeoff</th></tr></thead><tbody><tr><td>Feature branch + PR</td><td>Short-lived branch → review → CI → merge to main.</td><td>Common default for collaborative product teams.</td></tr><tr><td>Trunk-based development</td><td>Integrate frequently into main; feature flags hide incomplete functionality.</td><td>Fast CI/CD; requires small changes and strong automated tests.</td></tr><tr><td>GitFlow</td><td>Longer-lived development/release/hotfix branches.</td><td>May fit scheduled releases but adds merge overhead.</td></tr><tr><td>Fork-based collaboration</td><td>Contributor pushes to own fork and proposes a PR to upstream.</td><td>External/open-source contributions without write access.</td></tr></tbody></table></div>
+<h3>Suggested intern-friendly team flow</h3><pre><code>git switch main
+git fetch origin
+git pull --ff-only origin main
+git switch -c feature/ORD-42-validation
+# Implement one small improvement; run tests
+git add -p
+git commit -m "feat(order): validate status transitions"
+git push -u origin feature/ORD-42-validation
+# Open PR; obtain review; pass CI; merge using team policy
+# After merging, synchronize main and delete stale local branch</code></pre>
+<p>Configure branch protection, required reviews, required status checks, and restricted force pushes in your repository hosting system. Decide whether PRs are merged with merge commits, squash merges, or rebases based on team policy.</p></div></section>
+<section class="unit" id="undo"><h2>12. Undoing mistakes safely — restore, reset, revert, stash and reflog</h2><div class="panel"><div class="table-responsive"><table><thead><tr><th>Situation</th><th>Recommended operation</th><th>Safety notes</th></tr></thead><tbody><tr><td>Discard unstaged tracked edits</td><td><code>git restore path</code></td><td>Destructive to those local edits.</td></tr><tr><td>Unstage a file</td><td><code>git restore --staged path</code></td><td>Working copy remains.</td></tr><tr><td>Undo a published commit</td><td><code>git revert &lt;sha&gt;</code></td><td>Creates a new inverse commit; preserves shared history.</td></tr><tr><td>Move local branch to an earlier commit</td><td><code>git reset --soft &lt;sha&gt;</code> or <code>--mixed</code></td><td>Soft keeps staged changes; mixed unstages them.</td></tr><tr><td>Discard committed and uncommitted changes</td><td><code>git reset --hard &lt;sha&gt;</code></td><td>Destructive; never run casually.</td></tr><tr><td>Temporarily set work aside</td><td><code>git stash push -u -m "WIP"</code></td><td>Includes untracked files with <code>-u</code>, not ignored ones.</td></tr><tr><td>Recover lost branch tip</td><td><code>git reflog</code></td><td>Reflog is local and retention-limited; act promptly.</td></tr></tbody></table></div>
+<pre><code>git stash list
+git stash show -p stash@{0}
+git stash apply stash@{0}  # Keeps stash entry
+git stash drop stash@{0}
+
+git revert HEAD            # Safe history-preserving fix to a shared commit
+git reflog --date=iso      # Locate prior local HEAD positions</code></pre>
+<div class="callout warning"><strong>Do not copy dangerous commands blindly:</strong> <code>reset --hard</code>, <code>clean -fd</code>, <code>push --force</code>, history filtering, and aggressive garbage collection can irreversibly destroy local work or disrupt teammates. Create a backup branch before recovery experiments.</div></div></section>
+<section class="unit" id="advanced"><h2>13. Advanced Git skills — cherry-pick, bisect, tags, worktrees and hooks</h2><div class="panel"><h3>Cherry-pick — apply a selected commit elsewhere</h3><pre><code>git switch release/1.0
+git cherry-pick &lt;commit-sha&gt;    # Apply one change onto this branch</code></pre><p>Useful for a targeted release hotfix; it creates a new commit identity and can cause conflicts or duplicate logical changes if misused.</p>
+<h3>Bisect — locate an introduced regression</h3><pre><code>git bisect start
+git bisect bad                 # Current revision fails
+git bisect good &lt;known-good-sha&gt;
+# Test the checked-out revision, then mark good or bad repeatedly
+git bisect reset</code></pre>
+<h3>Tags and releases</h3><pre><code>git tag -a v1.0.0 -m "Release 1.0.0"
+git push origin v1.0.0
+git tag --list</code></pre>
+<h3>Worktrees and additional skills</h3><pre><code>git worktree add ../order-hotfix -b fix/urgent main
+git worktree list
+git worktree remove ../order-hotfix</code></pre>
+<p>Learn <code>git submodule</code> only when your project intentionally uses nested repositories, and avoid accidental nested <code>.git</code> directories. Learn Git LFS for genuinely large binary assets. Client-side hooks can help, but required checks belong in CI because local hooks can be bypassed.</p></div></section>
+<section class="unit" id="security"><h2>14. Enterprise repository security, conventions and auditability</h2><div class="panel"><ul>
+<li><strong>Authentication:</strong> prefer organization-approved credential managers or SSH keys; enable MFA for hosting accounts.</li>
+<li><strong>Authorization:</strong> enforce least-privilege repository access, branch protection, required reviews and separation of duties.</li>
+<li><strong>Secrets:</strong> never commit passwords, API tokens, private keys, <code>.env</code> or production configuration with credentials; rotate exposed secrets even after removing the file from history.</li>
+<li><strong>Supply chain:</strong> review dependency changes, use CI secret scanning and dependency scanning, pin important automation actions, and verify third-party contributions.</li>
+<li><strong>History quality:</strong> use meaningful commit titles and descriptive PRs linked to ticket identifiers (e.g. Jira issue).</li>
+<li><strong>Traceability:</strong> connect requirement → branch → commit → PR → CI run → release tag → deployed artifact.</li>
+</ul><pre><code># Example conventional commit titles
+feat(order): add status validation
+fix(api): return 404 for missing order
+test(order): add transition cases
+docs(readme): document local setup</code></pre></div></section>
+<section class="unit" id="labs"><h2>15. Complete practical labs — simulated Order Management team</h2>
+<div class="exercise"><strong>Lab A — Solo developer (20 minutes)</strong><ol><li>Create a repository named <code>order-service-lab</code>.</li><li>Add a README and <code>orders.csv</code> with sample order IDs and statuses.</li><li>Create three atomic commits: initial README, data file, documentation update.</li><li>Use <code>git diff</code>, <code>git log --graph</code>, <code>git show</code>, and <code>git blame</code>.</li><li>Deliverable: screenshot or terminal output showing three commits and a clean status.</li></ol></div>
+<div class="exercise"><strong>Lab B — Two developers and a merge conflict (30 minutes)</strong><ol><li>Developer A creates <code>feature/status-validation</code> and edits a shared status definition.</li><li>Developer B creates <code>feature/order-reporting</code> from the same base and changes the same line differently.</li><li>Merge one branch into main, then merge the other to produce a conflict.</li><li>Resolve with a deliberate combined result; run tests; complete merge.</li><li>Deliverable: merge graph, explanation of the conflicting lines, and test evidence.</li></ol></div>
+<div class="exercise"><strong>Lab C — Remote collaboration and code review (45 minutes)</strong><ol><li>Create a disposable remote repository or fork under your training account.</li><li>Clone it, create a feature branch, commit, and push with upstream tracking.</li><li>Open a pull request; have another intern review the changes and suggest improvements.</li><li>Update the branch, pass automated checks, merge using your team's selected policy.</li><li>Fetch and fast-forward your local main; remove the merged feature branch.</li><li>Deliverable: PR link, approval, passing checks and synchronized main.</li></ol></div>
+<div class="exercise"><strong>Lab D — Rebase vs merge and safe recovery (35 minutes)</strong><ol><li>Create two local branches from the same commit; add divergent commits.</li><li>Merge in one disposable copy and rebase in another; compare commit hashes and graphs.</li><li>Undo a newly created local commit with <code>reset --soft</code>; preserve staged changes.</li><li>Use <code>revert</code> to undo a shared logical change in a safe test branch.</li><li>Find a previous HEAD position with <code>reflog</code>.</li><li>Deliverable: short written explanation of when to choose merge, rebase, reset and revert.</li></ol></div>
+<div class="exercise"><strong>Lab E — Release and regression debugging (30 minutes)</strong><ol><li>Create an annotated <code>v1.0.0</code> tag on a known-good commit.</li><li>Introduce a deliberate failing behavior in a later commit.</li><li>Use <code>git bisect</code> to identify the first bad revision.</li><li>Document the root cause and make a fix commit.</li><li>Deliverable: offending commit SHA, fix SHA and passing test output.</li></ol></div>
+</section>
+<section class="unit" id="reference"><h2>16. Practical Git command reference</h2><div class="panel"><div class="table-responsive"><table><thead><tr><th>Goal</th><th>Command</th></tr></thead><tbody>
+<tr><td>Inspect working tree</td><td><code>git status -sb</code></td></tr><tr><td>Stage precisely</td><td><code>git add -p</code></td></tr><tr><td>Commit staged changes</td><td><code>git commit -m "message"</code></td></tr><tr><td>Inspect graph</td><td><code>git log --oneline --graph --decorate --all</code></td></tr><tr><td>New branch</td><td><code>git switch -c feature/name</code></td></tr><tr><td>Change branch</td><td><code>git switch main</code></td></tr><tr><td>Download remote updates</td><td><code>git fetch origin</code></td></tr><tr><td>Integrate main safely</td><td><code>git pull --ff-only origin main</code></td></tr><tr><td>Publish branch</td><td><code>git push -u origin feature/name</code></td></tr><tr><td>Merge feature</td><td><code>git merge feature/name</code></td></tr><tr><td>Rebase private branch</td><td><code>git rebase origin/main</code></td></tr><tr><td>Abort merge/rebase</td><td><code>git merge --abort</code> / <code>git rebase --abort</code></td></tr><tr><td>Undo shared change</td><td><code>git revert &lt;sha&gt;</code></td></tr><tr><td>Temporarily save edits</td><td><code>git stash push -u</code></td></tr><tr><td>Find lost refs</td><td><code>git reflog</code></td></tr><tr><td>Locate regression</td><td><code>git bisect</code></td></tr>
+</tbody></table></div><p class="mb-0">Official documentation: <a href="https://git-scm.com/docs" target="_blank" rel="noopener noreferrer">Git Reference Manual</a>, <a href="https://git-scm.com/book/en/v2" target="_blank" rel="noopener noreferrer">Pro Git Book</a>, and <a href="https://docs.github.com/en/pull-requests" target="_blank" rel="noopener noreferrer">GitHub Pull Request documentation</a>.</p></div></section>
+<section class="unit" id="assessment"><h2>17. Knowledge check and internship completion criteria</h2><div class="panel"><h3>Explain these before completing the module</h3><ol><li>Why doesn't <code>git commit</code> automatically update GitHub?</li><li>What is the difference between <code>origin/main</code> and local <code>main</code>?</li><li>When should you use fetch instead of pull?</li><li>How is a fork different from a clone?</li><li>Why does a rebase change commit hashes?</li><li>When is <code>git revert</code> safer than <code>git reset</code>?</li><li>What makes a merge conflict dangerous beyond conflict markers?</li><li>What is the role of branch protection and CI status checks?</li></ol>
+<h3>Practical completion checklist</h3><div class="checklist"><label><input type="checkbox"> I can initialize or clone a repository and explain local versus remote.</label><label><input type="checkbox"> I can inspect status, stage selectively, commit and inspect history.</label><label><input type="checkbox"> I can branch, merge, resolve conflicts and verify tests.</label><label><input type="checkbox"> I can describe rebasing and avoid rewriting shared history.</label><label><input type="checkbox"> I can fetch, pull, push, fork and open a reviewed PR.</label><label><input type="checkbox"> I can safely undo a shared change using revert.</label><label><input type="checkbox"> I can complete the team capstone with an auditable commit/PR history.</label></div>
+<p class="muted mb-0"><strong>Instructor assessment:</strong> review the learner's Git graph, PR discussion, conflict-resolution evidence and recovery explanation—not just whether commands completed without errors.</p></div></section>
+</section>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<section th:fragment="lesson" class="lesson-guide container-fluid px-0">
+<style>
+.lesson-guide{--lesson-ink:#152138;--lesson-muted:#58677e;--lesson-line:#d9e5f7;max-width:1320px;margin:auto;color:var(--lesson-ink)}
+.lesson-guide .lesson-hero{border:1px solid var(--lesson-line);border-radius:18px;background:linear-gradient(120deg,#fff,#eaf3ff);padding:2rem 2.2rem}
+.lesson-guide .eyebrow{font-size:.75rem;text-transform:uppercase;letter-spacing:.12em;color:#065be7;font-weight:800}
+.lesson-guide h1{font-size:clamp(2rem,3vw,3rem);font-weight:800;letter-spacing:-.03em}
+.lesson-guide h2{font-size:1.5rem;font-weight:800;margin-bottom:1rem}.lesson-guide h3{font-size:1.12rem;font-weight:750;margin:1.15rem 0 .7rem}
+.lesson-guide p,.lesson-guide li{line-height:1.65}.lesson-guide .muted{color:var(--lesson-muted)}
+.lesson-guide .lesson-card{background:#fff;border:1px solid var(--lesson-line);border-radius:14px;padding:1.4rem;height:100%;box-shadow:0 3px 13px rgba(27,73,126,.035)}
+.lesson-guide .lesson-chip{display:inline-block;border-radius:20px;background:#e3efff;color:#0753be;padding:.28rem .7rem;margin:.1rem;font-size:.76rem;font-weight:700}
+.lesson-guide .lesson-toc{border:1px solid var(--lesson-line);border-radius:12px;background:#fff;padding:1rem;display:flex;gap:.5rem 1.25rem;flex-wrap:wrap}
+.lesson-guide .lesson-toc a{text-decoration:none;font-weight:600;font-size:.88rem}.lesson-guide .lesson-section{margin-top:2rem;scroll-margin-top:100px}
+.lesson-guide pre{background:#10213d;color:#edf6ff;padding:1rem 1.2rem;border-radius:10px;overflow-x:auto;line-height:1.55;font-size:.88rem}
+.lesson-guide code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.lesson-guide :not(pre)>code{background:#edf3fe;padding:.12rem .35rem;border-radius:4px;color:#15467a}
+.lesson-guide .lesson-note{padding:.8rem 1rem;border-left:4px solid #1972e8;background:#eff5ff;border-radius:0 9px 9px 0;margin:1rem 0}.lesson-guide .lesson-warn{border-left-color:#c88713;background:#fff8e6}
+.lesson-guide table{width:100%;border-collapse:collapse}.lesson-guide th,.lesson-guide td{border-bottom:1px solid var(--lesson-line);padding:.75rem .85rem;text-align:left;vertical-align:top}.lesson-guide th{background:#f0f5ff;color:#193e74}
+.lesson-guide .lesson-check label{display:block;margin:.5rem 0;padding:.7rem .9rem;border:1px solid var(--lesson-line);background:#f7faff;border-radius:9px}.lesson-guide .lesson-check input{margin-right:.6rem}
+@media(max-width:700px){.lesson-guide .lesson-hero{padding:1.3rem}.lesson-guide .lesson-card{padding:1.1rem}}
+</style>
+<a th:href="@{/internships/tool-installation}" class="text-decoration-none fw-semibold">← Back to Tool Installation</a>
+<header class="lesson-hero mt-3"><p class="eyebrow">Internships · Tool installation · Hands-on lab 04</p>
+<h1>Install &amp; Configure IntelliJ IDEA (Free Java Development)</h1>
+<p class="lead muted">Set up a professional Java 21 IDE on macOS, Windows or Linux, create a Maven project, debug code, run tests, and work with Git. Learn which capabilities are free and which need an Ultimate subscription.</p>
+<div><span class="lesson-chip">Free Java IDE</span><span class="lesson-chip">macOS Apple Silicon / Intel</span><span class="lesson-chip">Windows</span><span class="lesson-chip">Linux</span><span class="lesson-chip">Java 21 · Maven · Git</span></div></header>
+<div class="row g-3 mt-2"><div class="col-md-4"><div class="lesson-card"><strong>Outcome 1 · Install</strong><p class="muted small mt-2">Download, launch and navigate IntelliJ IDEA.</p></div></div><div class="col-md-4"><div class="lesson-card"><strong>Outcome 2 · Configure</strong><p class="muted small mt-2">Use JDK 21, Maven, code inspections and editor preferences.</p></div></div><div class="col-md-4"><div class="lesson-card"><strong>Outcome 3 · Develop</strong><p class="muted small mt-2">Run, debug, test and commit a sample Java application.</p></div></div></div>
+<nav class="lesson-toc mt-4" aria-label="Lesson sections"><a href="#idea-editions">Product &amp; licensing</a><a href="#idea-architecture">IDE basics</a><a href="#idea-macos">macOS</a><a href="#idea-windows">Windows</a><a href="#idea-linux">Linux</a><a href="#idea-config">JDK &amp; Maven</a><a href="#idea-project">First project</a><a href="#idea-debug">Debugging &amp; Git</a><a href="#idea-lab">Assessment</a><a href="#idea-help">Troubleshooting</a></nav>
+<section id="idea-editions" class="lesson-section"><h2>1. Choose the free IntelliJ IDEA functionality</h2><div class="lesson-card">
+<div class="lesson-note"><strong>Important naming change (2025.3 onward):</strong> JetBrains combined the former <em>Community Edition</em> and Ultimate installers into a single <strong>IntelliJ IDEA</strong> distribution. The free core features remain available for commercial and non-commercial Java development. You do <strong>not</strong> need to buy Ultimate for this bootcamp.</div>
+<table><thead><tr><th>Option</th><th>What interns should know</th></tr></thead><tbody>
+<tr><td><strong>Unified IntelliJ IDEA (current)</strong></td><td>Download one installer, then use the free core features for Java/Kotlin, Maven, tests, Git, basic database tools and Spring project creation.</td></tr>
+<tr><td><strong>Ultimate subscription</strong></td><td>Unlocks advanced professional features; optional, not required for the labs in this lesson.</td></tr>
+<tr><td><strong>Legacy Community Edition (≤2025.2)</strong></td><td>Older separate installers exist, but for new setups use the current unified IntelliJ IDEA.</td></tr></tbody></table>
+<p class="mt-3 mb-0">Official references: <a href="https://www.jetbrains.com/idea/download/" target="_blank" rel="noopener noreferrer">IntelliJ IDEA download</a> · <a href="https://www.jetbrains.com/help/idea/intellij-idea-single-distribution.html" target="_blank" rel="noopener noreferrer">Unified product and free features</a> · <a href="https://www.jetbrains.com/help/idea/installation-guide.html" target="_blank" rel="noopener noreferrer">Installation guide</a>.</p></div></section>
+<section id="idea-architecture" class="lesson-section"><h2>2. Understand the development toolchain</h2><div class="lesson-card"><table><thead><tr><th>Component</th><th>Purpose</th></tr></thead><tbody>
+<tr><td>IntelliJ IDEA IDE</td><td>Editor, refactoring, run/debug UI, test runner and Git UI.</td></tr>
+<tr><td>JetBrains Runtime</td><td>Runs the IDE itself; not necessarily the JDK used to compile your project.</td></tr>
+<tr><td>JDK 21</td><td>Project SDK, Java compiler and runtime. Configure explicitly for Java 21 projects.</td></tr>
+<tr><td>Maven</td><td>Build system that resolves dependencies, compiles, tests and packages Java applications.</td></tr>
+<tr><td>Git</td><td>Source version control; IDE integrates with the Git executable installed on your machine.</td></tr></tbody></table>
+<p class="mt-3 mb-0">Prerequisites: JDK 21 installed, internet access for initial Maven dependency resolution, and Git installed for the optional source-control exercise.</p></div></section>
+<section id="idea-macos" class="lesson-section"><h2>3. Install on macOS (Apple Silicon and Intel)</h2><div class="lesson-card">
+<ol><li>Open the <a href="https://www.jetbrains.com/idea/download/" target="_blank" rel="noopener noreferrer">official download page</a>.</li><li>Choose the macOS installer that matches your hardware: <strong>Apple Silicon (ARM64)</strong> or <strong>Intel (x64)</strong>. To verify architecture, use the command below.</li><li>Open the downloaded DMG, drag IntelliJ IDEA into <strong>Applications</strong>, then launch it.</li><li>Complete first-run prompts; choose free functionality. An Ultimate trial is optional.</li><li>For optional centralized install/update management, use <a href="https://www.jetbrains.com/toolbox-app/" target="_blank" rel="noopener noreferrer">JetBrains Toolbox App</a>.</li></ol>
+<pre><code>uname -m
+# arm64 = Apple Silicon; x86_64 = Intel
+java -version
+/usr/libexec/java_home -V</code></pre><div class="lesson-note">Using the wrong architecture build can reduce performance or prevent startup. Prefer the native build for your Mac.</div></div></section>
+<section id="idea-windows" class="lesson-section"><h2>4. Install on Windows 10/11</h2><div class="lesson-card">
+<ol><li>Download the Windows installer from <a href="https://www.jetbrains.com/idea/download/" target="_blank" rel="noopener noreferrer">JetBrains</a>. Choose the matching architecture.</li><li>Run the installer and choose an installation directory.</li><li>If offered, enable the <strong>Open Folder as Project</strong> Explorer integration and PATH launcher shortcut as appropriate.</li><li>Launch IntelliJ IDEA and complete first-run settings.</li><li>Confirm Java 21 is installed separately by opening PowerShell and running:</li></ol>
+<pre><code>java -version
+javac -version
+where.exe java</code></pre><div class="lesson-note">The IDE may ship with a runtime for itself; do not assume that runtime is the SDK for your projects.</div></div></section>
+<section id="idea-linux" class="lesson-section"><h2>5. Install on Linux (Ubuntu, Debian, Fedora)</h2><div class="lesson-card">
+<p>Preferred paths: JetBrains Toolbox or the official Linux tarball. Choose the package corresponding to your CPU architecture and supported desktop environment.</p>
+<ol><li>Download the Linux distribution from the <a href="https://www.jetbrains.com/idea/download/" target="_blank" rel="noopener noreferrer">official website</a>.</li><li>Extract the archive to a directory your account can access (for example, under <code>~/apps</code>).</li><li>Run the bundled launch script from its <code>bin</code> folder; actual extracted directory names vary by release.</li><li>From the IDE, optionally create a desktop entry using its Tools menu if available.</li></ol>
+<pre><code>uname -m
+java -version
+mkdir -p "$HOME/apps"
+# Extract your downloaded archive in $HOME/apps.
+# Then run the idea.sh script within its extracted bin/ directory.</code></pre>
+<div class="lesson-note lesson-warn">Avoid copying a hard-coded extraction folder name or downloading third-party binaries. Distribution-specific Snap/Flatpak methods may exist; always verify publisher and update policy.</div></div></section>
+<section id="idea-config" class="lesson-section"><h2>6. Configure Project SDK, Maven and the IDE</h2><div class="lesson-card">
+<h3>Java 21 SDK</h3><ol><li>Open <strong>File → Project Structure → Project</strong> (macOS shortcut and menu placement may vary by IDE version).</li><li>Set <strong>SDK</strong> to a locally installed <strong>JDK 21</strong>. If absent, choose <strong>Add SDK</strong> and select the JDK installation directory.</li><li>For Maven projects, check the Maven importer and runner JDK in <strong>Settings → Build, Execution, Deployment → Build Tools → Maven</strong>.</li><li>For a new project, configure Java language level and Maven compiler release to 21.</li></ol>
+<h3>Recommended basics</h3><p>Enable auto-import prompts for Maven changes, use built-in inspections, choose consistent formatting and avoid committing IDE-specific user settings. Inspect the <strong>Plugins</strong> screen and install only extensions from trusted publishers.</p>
+<pre><code>java -version
+mvn -version
+# Both should report the intended JDK version for the shell build.</code></pre><div class="lesson-note">IntelliJ's Project SDK, Maven runner JDK and terminal <code>JAVA_HOME</code> can be different. A project building in the IDE does not guarantee it builds from the command line.</div></div></section>
+<section id="idea-project" class="lesson-section"><h2>7. Hands-on: create a Java 21 Maven project</h2><div class="lesson-card">
+<ol><li>Choose <strong>New Project → Java</strong>, select <strong>Maven</strong> as the build system, set JDK 21 and name the project <code>intern-java21</code>.</li><li>Create package <code>com.bootcamp.lab</code> in <code>src/main/java</code>.</li><li>Create <code>Welcome.java</code> with the class below.</li><li>Run the green gutter triangle beside <code>main</code>.</li><li>Run Maven compile and test goals. Confirm the terminal and IDE both succeed.</li></ol>
+<pre><code>package com.bootcamp.lab;
+
+public class Welcome {
+    public static void main(String[] args) {
+        String intern = "Java Intern";
+        System.out.println("Hello, " + intern + " — Java "
+            + Runtime.version().feature());
+    }
+}</code></pre>
+<p>Expected output includes <code>Hello, Java Intern — Java 21</code> when launched with JDK 21. Use <strong>Run → Edit Configurations</strong> to confirm selected JRE if output differs.</p></div></section>
+<section id="idea-debug" class="lesson-section"><h2>8. Debugging, unit tests and Git workflow</h2><div class="lesson-card">
+<ol><li>Click the gutter beside <code>System.out.println</code> to add a breakpoint. Choose <strong>Debug</strong> instead of Run.</li><li>Inspect variables in the debugger; use <strong>Step Over</strong> and <strong>Resume Program</strong>.</li><li>Create <code>src/test/java</code> and a JUnit 5 test using your Maven project's test dependencies.</li><li>Use the Git menu to initialize a repository, add <code>.gitignore</code>, commit source code and inspect diffs.</li></ol>
+<pre><code># Example project .gitignore entries
+target/
+.idea/workspace.xml
+*.iml</code></pre>
+<div class="lesson-note lesson-warn">Avoid committing credentials, personal configuration, local run logs or database passwords. Review the staged diff before committing.</div></div></section>
+<section id="idea-lab" class="lesson-section"><h2>9. Internship assessment and completion checklist</h2><div class="lesson-card"><p>Deliverable: a Git repository containing your Java 21 Maven project, <code>Welcome.java</code>, a README with setup commands and evidence that you successfully ran and debugged the application.</p>
+<div class="lesson-check"><label><input type="checkbox">IntelliJ IDEA installed from a trusted JetBrains source</label><label><input type="checkbox">Project SDK and Maven JDK both set to Java 21</label><label><input type="checkbox">Hello World output verified</label><label><input type="checkbox">Breakpoint hit and local variable inspected</label><label><input type="checkbox">Maven build succeeds in terminal</label><label><input type="checkbox">Git commit created without local secrets</label></div>
+<h3>Knowledge check</h3><ol><li>Why does the IDE runtime not replace the project JDK?</li><li>What is the difference between the former Community Edition and the unified installer?</li><li>What could cause <code>mvn -version</code> and Project SDK to show different JDKs?</li></ol></div></section>
+<section id="idea-help" class="lesson-section"><h2>10. Troubleshooting reference</h2><div class="lesson-card"><table><thead><tr><th>Symptom</th><th>Likely cause / correction</th></tr></thead><tbody>
+<tr><td>JDK 21 missing from SDK list</td><td>Install a JDK 21 distribution and point Project Structure to its home directory.</td></tr>
+<tr><td>Unsupported class file version</td><td>Run/debug JRE is older than the compiled target; align JDK and Maven settings.</td></tr>
+<tr><td>Maven dependencies unresolved</td><td>Check connectivity, corporate proxy, Maven settings and configured repository credentials.</td></tr>
+<tr><td>Build works in IDE but fails in terminal</td><td>Compare <code>java -version</code>, <code>mvn -version</code>, Project SDK and Maven runner JDK.</td></tr>
+<tr><td>Source directory is not recognized</td><td>Reimport Maven project; confirm <code>pom.xml</code> and standard project structure.</td></tr>
+<tr><td>Git actions unavailable</td><td>Install Git separately and configure its executable in IDE version-control settings.</td></tr></tbody></table>
+<p class="small muted mt-3 mb-0">Official documentation: <a href="https://www.jetbrains.com/help/idea/" target="_blank" rel="noopener noreferrer">IntelliJ IDEA Help</a> · <a href="https://www.jetbrains.com/help/idea/sdk.html" target="_blank" rel="noopener noreferrer">Configure a JDK</a>.</p></div></section>
+</section>
+</body>
+</html>

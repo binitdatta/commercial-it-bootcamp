@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="lesson" class="container">
+    <a th:href="@{/internships/{s}(s=${section})}" class="text-decoration-none">← <span th:text="${sectionTitle}">Module</span></a>
+    <p class="eyebrow mt-4">Internship topic</p>
+    <h1 class="fw-bold" th:text="${title}">Topic</h1>
+    <div class="internship-panel mt-4">
+        <h2 class="h5 fw-bold">Learning objectives and hands-on practice</h2>
+        <p class="muted">This is a curriculum placeholder. Topic-specific instructional content will appear here.</p>
+    </div>
+</div>
+</body>
+</html>

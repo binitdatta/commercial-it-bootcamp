@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<section th:fragment="lesson" class="jdk-guide container-fluid px-0">
+<style>
+  .jdk-guide {--jdk-blue:#075ef1;--jdk-ink:#152138;--jdk-muted:#576578;--jdk-border:#dae5f5;--jdk-soft:#f3f7ff;max-width:1320px;margin:0 auto;color:var(--jdk-ink)}
+  .jdk-guide .jdk-back{font-size:.91rem;text-decoration:none;font-weight:600}
+  .jdk-guide .jdk-eyebrow{font-size:.73rem;text-transform:uppercase;letter-spacing:.13em;color:#0759de;font-weight:800}
+  .jdk-guide .jdk-hero{background:linear-gradient(120deg,#ffffff 0%,#eaf3ff 100%);border:1px solid var(--jdk-border);border-radius:18px;padding:2rem 2.2rem}
+  .jdk-guide h1{font-size:clamp(2rem,3vw,3rem);font-weight:800;letter-spacing:-.035em}
+  .jdk-guide h2{font-weight:800;font-size:1.5rem;letter-spacing:-.025em;margin-bottom:1rem}
+  .jdk-guide h3{font-weight:750;font-size:1.1rem;margin-top:1.2rem}
+  .jdk-guide p,.jdk-guide li{line-height:1.65}
+  .jdk-guide .jdk-summary{color:var(--jdk-muted);max-width:940px}
+  .jdk-guide .jdk-card{background:#fff;border:1px solid var(--jdk-border);border-radius:14px;padding:1.45rem;height:100%;box-shadow:0 3px 13px rgba(27,73,126,.035)}
+  .jdk-guide .jdk-card p:last-child{margin-bottom:0}
+  .jdk-guide .jdk-platform{border-top:4px solid #0762ea}
+  .jdk-guide .jdk-chip{display:inline-block;border-radius:999px;background:#e4efff;color:#0755c8;padding:.28rem .65rem;font-size:.76rem;font-weight:750;margin:.1rem}
+  .jdk-guide .jdk-section{margin-top:2rem;scroll-margin-top:95px}
+  .jdk-guide .jdk-toc{background:#fff;border:1px solid var(--jdk-border);border-radius:12px;padding:.85rem 1.1rem;display:flex;gap:.55rem 1.3rem;flex-wrap:wrap}
+  .jdk-guide .jdk-toc a{font-weight:600;text-decoration:none;font-size:.86rem}
+  .jdk-guide pre{background:#0e203b;color:#e6f0ff;padding:1.1rem 1.25rem;border-radius:10px;overflow-x:auto;line-height:1.55;font-size:.88rem;margin:1rem 0}
+  .jdk-guide code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .jdk-guide :not(pre)>code{background:#eef3fc;color:#18457a;border-radius:4px;padding:.13rem .32rem;font-size:.9em}
+  .jdk-guide .jdk-note{border-left:4px solid #2075eb;padding:.8rem 1rem;background:#eef5ff;border-radius:0 9px 9px 0;margin:1rem 0}
+  .jdk-guide .jdk-warn{border-left-color:#d39013;background:#fff8e8}
+  .jdk-guide .jdk-step{display:flex;align-items:flex-start;gap:.7rem;margin:1rem 0}
+  .jdk-guide .jdk-num{flex-shrink:0;display:inline-grid;place-items:center;background:#e1efff;border-radius:50%;width:2rem;height:2rem;color:#0a55b8;font-weight:800}
+  .jdk-guide .jdk-step-body{min-width:0;flex:1}
+  .jdk-guide .jdk-table{width:100%;border-collapse:collapse;background:#fff}
+  .jdk-guide .jdk-table th,.jdk-guide .jdk-table td{padding:.7rem .8rem;border-bottom:1px solid var(--jdk-border);vertical-align:top}
+  .jdk-guide .jdk-table th{background:#f0f5ff;color:#193e74}
+  .jdk-guide .jdk-checklist label{display:block;background:#f7faff;border:1px solid var(--jdk-border);padding:.8rem 1rem;border-radius:9px;margin:.55rem 0}
+  .jdk-guide .jdk-checklist input{margin-right:.65rem;accent-color:#0864e8}
+  .jdk-guide .jdk-footer{font-size:.86rem;color:var(--jdk-muted)}
+  @media(max-width:700px){.jdk-guide .jdk-hero{padding:1.35rem}.jdk-guide .jdk-card{padding:1.1rem}}
+</style>
+
+<a class="jdk-back" th:href="@{/internships/tool-installation}">← Back to Tool Installation</a>
+<header class="jdk-hero mt-3">
+    <p class="jdk-eyebrow mb-2">Internships · Tool installation · Hands-on lab 01</p>
+    <h1>Install OpenJDK 21 on macOS, Windows &amp; Linux</h1>
+    <p class="lead jdk-summary mb-3">Configure a production-grade Java development environment, understand the difference between JDK and JRE, set up <code>JAVA_HOME</code>, compile your first Java application, and troubleshoot common setup failures.</p>
+    <div><span class="jdk-chip">Java 21 (LTS)</span><span class="jdk-chip">macOS Apple Silicon / Intel</span><span class="jdk-chip">Windows 10 / 11</span><span class="jdk-chip">Ubuntu / Debian / Fedora</span><span class="jdk-chip">Beginner-friendly</span></div>
+</header>
+
+<div class="row g-3 mt-2">
+ <div class="col-md-4"><div class="jdk-card"><strong>Outcome 1 · Install</strong><p class="small text-secondary mt-2">Select a supported OpenJDK distribution and install its JDK 21 binaries.</p></div></div>
+ <div class="col-md-4"><div class="jdk-card"><strong>Outcome 2 · Configure</strong><p class="small text-secondary mt-2">Understand <code>PATH</code> and <code>JAVA_HOME</code> and support multiple installed JDKs.</p></div></div>
+ <div class="col-md-4"><div class="jdk-card"><strong>Outcome 3 · Validate</strong><p class="small text-secondary mt-2">Run <code>java</code>, <code>javac</code>, and <code>jshell</code>; compile and execute a Hello World program.</p></div></div>
+</div>
+
+<nav class="jdk-toc mt-4" aria-label="Lesson contents">
+ <a href="#concepts">Fundamentals</a><a href="#choices">Choose a distribution</a><a href="#mac">macOS</a><a href="#windows">Windows</a><a href="#linux">Linux</a><a href="#validation">Validation lab</a><a href="#tooling">IDE &amp; Maven</a><a href="#troubleshoot">Troubleshooting</a><a href="#assessment">Checklist</a>
+</nav>
+
+<section class="jdk-section" id="concepts">
+ <h2>1. Java installation fundamentals</h2>
+ <div class="jdk-card">
+  <table class="jdk-table"><thead><tr><th>Component</th><th>Purpose</th></tr></thead><tbody>
+   <tr><td><strong>JDK</strong> (Java Development Kit)</td><td>Everything needed to develop Java: compiler (<code>javac</code>), runtime (<code>java</code>), JShell, tools and standard libraries.</td></tr>
+   <tr><td><strong>JVM</strong> (Java Virtual Machine)</td><td>Executes compiled Java bytecode. The JVM implementation is part of the installed Java runtime.</td></tr>
+   <tr><td><strong>JRE</strong> (Java Runtime Environment)</td><td>Runtime components without the complete developer toolchain. For this bootcamp, install the <strong>JDK</strong>, not a runtime-only package.</td></tr>
+   <tr><td><strong>JAVA_HOME</strong></td><td>Environment variable identifying the JDK installation directory—not the <code>bin</code> directory.</td></tr>
+   <tr><td><strong>PATH</strong></td><td>Search path the shell uses to find commands such as <code>java</code>, <code>javac</code> and <code>mvn</code>.</td></tr>
+  </tbody></table>
+  <p class="mb-0 mt-3"><strong>Why 21?</strong> Java 21 is a long-term-support (LTS) release and a consistent baseline for this training course. The precise patch number (21.0.x) will change as security updates are released.</p>
+ </div>
+</section>
+
+<section class="jdk-section" id="choices">
+ <h2>2. Choose an OpenJDK distribution</h2>
+ <div class="jdk-card">
+  <p><strong>Recommended for consistent labs:</strong> Eclipse Temurin 21, a build of OpenJDK distributed by the Eclipse Adoptium project. Other OpenJDK distributions can also work, including operating-system OpenJDK packages and Microsoft Build of OpenJDK.</p>
+  <p>Always select <strong>version 21</strong>, the <strong>JDK</strong> package, and the correct architecture: <code>aarch64</code>/<code>ARM64</code> for Apple Silicon or ARM systems, and <code>x64</code>/<code>AMD64</code> for most Intel/AMD machines.</p>
+  <p class="mb-0"><a href="https://adoptium.net/temurin/releases/?version=21" target="_blank" rel="noopener noreferrer">Temurin 21 official downloads ↗</a> · <a href="https://adoptium.net/installation/" target="_blank" rel="noopener noreferrer">Official installation documentation ↗</a> · <a href="https://jdk.java.net/archive/" target="_blank" rel="noopener noreferrer">OpenJDK archives (not for routine patch updates) ↗</a></p>
+ </div>
+</section>
+
+<section class="jdk-section" id="mac">
+ <h2>3. macOS installation</h2>
+ <div class="jdk-card jdk-platform">
+  <p class="jdk-eyebrow">Apple Silicon (M1/M2/M3/M4/…) and Intel</p>
+  <h3>Option A · Install with Homebrew (recommended)</h3>
+  <div class="jdk-step"><span class="jdk-num">1</span><div class="jdk-step-body">Open <strong>Terminal</strong>. If Homebrew is not installed, follow its official installation instructions at <a href="https://brew.sh/" target="_blank" rel="noopener noreferrer">brew.sh</a>.</div></div>
+  <div class="jdk-step"><span class="jdk-num">2</span><div class="jdk-step-body">Install the <em>version-pinned</em> Temurin 21 cask, then locate its registered JDK home:<pre><code>brew update
+brew install --cask temurin@21
+/usr/libexec/java_home -V
+/usr/libexec/java_home -v 21</code></pre></div></div>
+  <div class="jdk-step"><span class="jdk-num">3</span><div class="jdk-step-body">For the default <strong>zsh</strong> shell, make Java 21 the active JDK in new terminal sessions:<pre><code>cat &gt;&gt; ~/.zshrc &lt;&lt;'END_JAVA_HOME_SETUP'
+export JAVA_HOME=$(/usr/libexec/java_home -v 21)
+export PATH="$JAVA_HOME/bin:$PATH"
+END_JAVA_HOME_SETUP
+source ~/.zshrc
+java -version
+javac -version
+echo "$JAVA_HOME"</code></pre><div class="jdk-note">These lines are for zsh. For Bash, put the two export statements in your active Bash startup file. Check your shell with <code>echo "$SHELL"</code>. Use a different heredoc marker if copying into another script.</div></div></div>
+  <h3>Option B · Graphical PKG installer</h3>
+  <p>Download the <strong>macOS JDK 21 PKG</strong> from Adoptium. Choose <strong>ARM64/AArch64</strong> for Apple Silicon or <strong>x64</strong> for Intel. Run the installer; then use <code>/usr/libexec/java_home -V</code> to confirm macOS registered your JDK.</p>
+  <div class="jdk-note jdk-warn"><strong>Version caution:</strong> <code>brew install --cask temurin</code> installs the current major release, which might not be 21. Use <code>temurin@21</code>.</div>
+ </div>
+</section>
+<section class="jdk-section" id="windows">
+ <h2>4. Windows installation</h2>
+ <div class="jdk-card jdk-platform">
+  <p class="jdk-eyebrow">Windows 10 / 11 · PowerShell</p>
+  <h3>Option A · Install with winget</h3>
+  <p>Launch <strong>PowerShell</strong> and confirm winget is present. Install the exact Temurin 21 package:</p>
+  <pre><code>winget --version
+winget install --id EclipseAdoptium.Temurin.21.JDK --exact --accept-package-agreements --accept-source-agreements</code></pre>
+  <p>Close and reopen PowerShell, then validate:</p>
+  <pre><code>java -version
+javac -version
+where.exe java
+$env:JAVA_HOME</code></pre>
+  <h3>Option B · Windows MSI</h3>
+  <p>Download the <strong>Windows JDK 21 MSI</strong> installer from <a href="https://adoptium.net/temurin/releases/?version=21" target="_blank" rel="noopener noreferrer">Temurin 21 releases</a>. Select your CPU architecture and enable the installer's <strong>JAVA_HOME</strong> and <strong>PATH</strong> options if offered. Reopen your terminal after installation.</p>
+  <h3>Setting JAVA_HOME manually</h3>
+  <ol><li>Open <strong>Start → Edit the system environment variables → Environment Variables</strong>.</li>
+  <li>Set <code>JAVA_HOME</code> to the <em>actual</em> installed JDK 21 root, such as <code>C:\Program Files\Eclipse Adoptium\jdk-21...-hotspot</code> (example only; use the directory you see).</li>
+  <li>Add <code>%JAVA_HOME%\bin</code> to your user or system <code>Path</code> and move it ahead of incorrect Java versions if necessary.</li>
+  <li>Open a new terminal and confirm <code>java -version</code> and <code>javac -version</code> both show 21.</li></ol>
+  <div class="jdk-note"><strong>Shell syntax:</strong> PowerShell displays <code>$env:JAVA_HOME</code>; Command Prompt uses <code>echo %JAVA_HOME%</code>.</div>
+ </div>
+</section>
+<section class="jdk-section" id="linux">
+ <h2>5. Linux installation</h2>
+ <div class="row g-3">
+  <div class="col-lg-6"><div class="jdk-card jdk-platform"><p class="jdk-eyebrow">Ubuntu 24.04 LTS / compatible Debian systems</p><h3>APT package</h3>
+  <pre><code>sudo apt update
+sudo apt install -y openjdk-21-jdk
+java -version
+javac -version
+readlink -f "$(command -v javac)"</code></pre>
+  <p>If you have several Java versions installed:</p><pre><code>sudo update-alternatives --config java
+sudo update-alternatives --config javac</code></pre>
+  <p class="small text-secondary">The package name and availability depend on the Linux release and enabled repositories.</p></div></div>
+  <div class="col-lg-6"><div class="jdk-card jdk-platform"><p class="jdk-eyebrow">Fedora / compatible RPM distributions</p><h3>DNF package</h3>
+  <pre><code>sudo dnf install -y java-21-openjdk-devel
+java -version
+javac -version
+sudo alternatives --config java
+sudo alternatives --config javac</code></pre>
+  <p>Enterprise Linux distributions may require a supported repository or different package naming. For vendor consistency, follow <a href="https://adoptium.net/installation/" target="_blank" rel="noopener noreferrer">Adoptium's Linux repository guide</a> and install <code>temurin-21-jdk</code>.</p></div></div>
+ </div>
+ <div class="jdk-card mt-3"><h3>JAVA_HOME on Linux</h3>
+ <p>Inspect the compiler's resolved path and remove the trailing <code>/bin/javac</code> to identify the JDK home. Paths vary by distribution and architecture.</p>
+ <pre><code>readlink -f "$(command -v javac)"
+# Example on Ubuntu: /usr/lib/jvm/java-21-openjdk-amd64/bin/javac
+# Only if that matches YOUR machine:
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+export PATH="$JAVA_HOME/bin:$PATH"
+echo "$JAVA_HOME"
+"$JAVA_HOME/bin/javac" -version</code></pre>
+ <p>Persist the correct <code>export</code> lines in <code>~/.bashrc</code> (Bash) or <code>~/.zshrc</code> (zsh). Launch a new shell afterwards.</p>
+ <div class="jdk-note jdk-warn">Do not blindly paste the example <code>JAVA_HOME</code> path, particularly on ARM64 hosts.</div></div>
+</section>
+<section class="jdk-section" id="validation">
+ <h2>6. Verify Java and compile your first application</h2>
+ <div class="jdk-card"><h3>Verify the Java runtime, compiler and REPL</h3>
+ <pre><code>java -version
+javac -version
+jshell --version</code></pre>
+ <p><strong>Pass:</strong> Java reports <code>21.0.x</code>, and <code>javac</code> reports version 21. The exact vendor and patch version depend on the build.</p>
+ <h3>Hands-on exercise: HelloBootcamp.java</h3><p>Create a folder called <code>java21-lab</code>. Inside it create the following source file named <code>HelloBootcamp.java</code>:</p>
+ <pre><code>public class HelloBootcamp {
+    public static void main(String[] args) {
+        System.out.println("Commercial IT Bootcamp - OpenJDK 21 ready!");
+        System.out.println("Runtime: " + System.getProperty("java.version"));
+        System.out.println("Vendor: " + System.getProperty("java.vendor"));
+    }
+}</code></pre>
+ <p>Change to that folder and compile/run it:</p>
+ <pre><code>javac HelloBootcamp.java
+java HelloBootcamp</code></pre>
+ <p><strong>Expected:</strong> a greeting followed by a Java 21 runtime version and a vendor string. Compilation generates <code>HelloBootcamp.class</code>.</p>
+ <h3>Explore JShell</h3><pre><code>jshell
+21 * 2
+System.getProperty("java.version")
+/exit</code></pre>
+ <div class="jdk-note"><strong>Architecture:</strong> The JDK compiler translates <code>.java</code> source into platform-independent <code>.class</code> bytecode. The installed JVM executes that bytecode.</div></div>
+</section>
+<section class="jdk-section" id="tooling">
+ <h2>7. Configure IntelliJ IDEA, VS Code and Maven</h2>
+ <div class="jdk-card">
+  <h3>IntelliJ IDEA</h3><p>Open <strong>File → Project Structure → Project</strong> and choose <strong>JDK 21</strong> as the Project SDK. If absent, add the JDK using its installed home directory. Ensure language level is compatible with Java 21.</p>
+  <h3>Visual Studio Code</h3><p>Install the <strong>Extension Pack for Java</strong> and open <strong>Java: Configure Java Runtime</strong> from the Command Palette. Set or confirm JDK 21 for your workspace.</p>
+  <h3>Maven</h3><p>After Maven is installed, check that it runs under Java 21:</p><pre><code>mvn -version</code></pre>
+  <p>For a Maven Java project, a typical compiler release property is:</p><pre><code>&lt;properties&gt;
+    &lt;maven.compiler.release&gt;21&lt;/maven.compiler.release&gt;
+&lt;/properties&gt;</code></pre>
+  <p>Setting a compiler release does not, by itself, change which JDK runs Maven or your IDE.</p>
+ </div>
+</section>
+<section class="jdk-section" id="troubleshoot">
+ <h2>8. Troubleshooting</h2><div class="jdk-card p-0 overflow-hidden"><div class="table-responsive">
+  <table class="jdk-table mb-0"><thead><tr><th>Problem</th><th>Cause</th><th>Remedy</th></tr></thead><tbody>
+   <tr><td><code>java: command not found</code> / “not recognized”</td><td>No Java executable on PATH</td><td>Install JDK, update PATH, open a fresh terminal.</td></tr>
+   <tr><td><code>javac</code> missing</td><td>Runtime-only install or wrong JDK selected</td><td>Install full JDK 21; inspect PATH and JAVA_HOME.</td></tr>
+   <tr><td><code>java -version</code> shows 17, 25, 26, etc.</td><td>Another JDK has precedence</td><td>Use macOS java_home, Windows Path, or Linux alternatives to select 21.</td></tr>
+   <tr><td>IDE uses a different Java version</td><td>IDE Project SDK differs from terminal JDK</td><td>Point IDE's project SDK to JDK 21.</td></tr>
+   <tr><td><code>UnsupportedClassVersionError</code></td><td>Runtime is older than compiled class target</td><td>Align compiler and runtime versions.</td></tr>
+   <tr><td><code>JAVA_HOME</code> doesn't update</td><td>Existing terminal session or config conflict</td><td>Open new terminal; inspect effective environment and shell startup config.</td></tr>
+   <tr><td>macOS “Unable to locate a Java Runtime”</td><td>JDK not installed/registered correctly</td><td>Recheck PKG and <code>/usr/libexec/java_home -V</code>.</td></tr>
+  </tbody></table></div></div>
+</section>
+<section class="jdk-section" id="assessment">
+ <h2>9. Completion checklist &amp; practical assessment</h2><div class="row g-3">
+ <div class="col-lg-7"><div class="jdk-card jdk-checklist"><p>Mark each item after you verify it. The checklist is local to this page and is not saved to a database.</p>
+ <label><input type="checkbox"> A full JDK 21 is installed for my OS and CPU architecture.</label>
+ <label><input type="checkbox"> <code>java -version</code> and <code>javac -version</code> both report Java 21.</label>
+ <label><input type="checkbox"> I can explain JDK, JRE, JVM, PATH and JAVA_HOME.</label>
+ <label><input type="checkbox"> JAVA_HOME points to the JDK root, not its bin directory.</label>
+ <label><input type="checkbox"> I compiled and ran HelloBootcamp.java.</label>
+ <label><input type="checkbox"> I opened JShell and located the IDE's configured JDK.</label></div></div>
+ <div class="col-lg-5"><div class="jdk-card"><h3 class="mt-0">Evidence to submit</h3><ol><li>Screenshot of Java, javac and JShell version checks.</li><li><code>HelloBootcamp.java</code> source file.</li><li>Screenshot or text output of successful execution.</li><li>Two sentences explaining where JAVA_HOME points and why.</li></ol><p class="small text-secondary">Do not include passwords, personal identifiers, secrets or unrelated environment variables in screenshots.</p></div></div>
+ </div>
+</section>
+<footer class="jdk-footer mt-4 pb-3"><p><strong>Official resources:</strong> <a href="https://adoptium.net/installation/" target="_blank" rel="noopener noreferrer">Adoptium installation</a> · <a href="https://formulae.brew.sh/cask/temurin@21" target="_blank" rel="noopener noreferrer">Homebrew Temurin 21</a> · <a href="https://ubuntu.com/developers/docs/howto/java-setup/" target="_blank" rel="noopener noreferrer">Ubuntu Java setup</a> · <a href="https://docs.oracle.com/en/java/javase/21/" target="_blank" rel="noopener noreferrer">Java 21 docs</a></p><p>Use the latest security-patched JDK 21 from a trusted source.</p><a class="btn btn-primary" th:href="@{/internships/tool-installation}">← Return to Tool Installation</a></footer>
+</section>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<section th:fragment="lesson" class="kc-guide container-fluid px-0">
+<style>
+.kc-guide{--kc-blue:#075eef;--kc-ink:#152139;--kc-muted:#58677d;--kc-line:#d7e3f7;max-width:1320px;margin:0 auto;color:var(--kc-ink)}
+.kc-guide .kc-back{font-size:.91rem;text-decoration:none;font-weight:650}.kc-guide .kc-hero{background:linear-gradient(115deg,#fff,#e7f1ff);border:1px solid var(--kc-line);border-radius:17px;padding:2rem 2.25rem}
+.kc-guide .kc-eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;font-weight:800;color:var(--kc-blue)}
+.kc-guide h1{font-size:clamp(2rem,3vw,3rem);font-weight:800;letter-spacing:-.035em}.kc-guide h2{font-size:1.5rem;font-weight:800;letter-spacing:-.025em;margin-bottom:1rem}.kc-guide h3{font-size:1.08rem;font-weight:750;margin-top:1.1rem}
+.kc-guide p,.kc-guide li{line-height:1.65}.kc-guide .kc-muted{color:var(--kc-muted)}.kc-guide .kc-card{background:white;border:1px solid var(--kc-line);border-radius:13px;padding:1.35rem;height:100%;box-shadow:0 3px 14px #183b5b07}
+.kc-guide .kc-tag{display:inline-block;padding:.26rem .6rem;border-radius:999px;background:#e1edff;color:#0653c7;font-weight:750;font-size:.76rem;margin:.12rem}
+.kc-guide .kc-section{margin-top:2.1rem;scroll-margin-top:95px}.kc-guide .kc-toc{background:white;border:1px solid var(--kc-line);border-radius:12px;padding:.9rem 1.15rem;display:flex;gap:.6rem 1.15rem;flex-wrap:wrap}.kc-guide .kc-toc a{font-weight:650;font-size:.85rem;text-decoration:none}
+.kc-guide pre{background:#10233e;color:#e6f2ff;padding:1rem 1.15rem;border-radius:10px;overflow-x:auto;line-height:1.56;font-size:.85rem;white-space:pre}.kc-guide code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.kc-guide :not(pre)>code{background:#edf3ff;color:#17457a;padding:.13rem .3rem;border-radius:4px}
+.kc-guide .kc-callout{padding:.85rem 1rem;background:#eef5ff;border-left:4px solid #1770e4;border-radius:0 8px 8px 0;margin:1rem 0}.kc-guide .kc-warning{background:#fff6e8;border-left-color:#bd830f}.kc-guide .kc-danger{background:#fff0f0;border-left-color:#c63d50}
+.kc-guide table{width:100%;border-collapse:collapse;background:white}.kc-guide th,.kc-guide td{border-bottom:1px solid var(--kc-line);padding:.75rem .85rem;vertical-align:top}.kc-guide th{background:#ecf3ff;color:#183b6c}.kc-guide .kc-check label{display:block;padding:.75rem .95rem;margin:.45rem 0;border:1px solid var(--kc-line);border-radius:9px;background:#fbfdff}.kc-guide .kc-check input{margin-right:.6rem}.kc-guide a{overflow-wrap:anywhere}
+@media(max-width:680px){.kc-guide .kc-hero{padding:1.35rem}.kc-guide .kc-card{padding:1rem}}
+</style>
+<a th:href="@{/internships/tool-installation}" class="kc-back d-inline-block mb-3">← Back to Tool Installation</a>
+<header class="kc-hero">
+<p class="kc-eyebrow mb-2">Internships · Tool Installation · Hands-on Lab 07</p>
+<h1>Install and Configure Keycloak 26+ on macOS, Windows &amp; Linux</h1>
+<p class="kc-muted fs-5">Build a local identity provider, understand realms and clients, configure OIDC authentication, test token issuance, and connect a Spring Boot application securely.</p>
+<span class="kc-tag">Keycloak 26+</span><span class="kc-tag">OpenID Connect</span><span class="kc-tag">Docker / Podman</span><span class="kc-tag">macOS · Windows · Linux</span><span class="kc-tag">Spring Boot</span>
+</header>
+<div class="row g-3 mt-1">
+ <div class="col-md-4"><div class="kc-card"><strong>Outcome 1 · Install</strong><p class="kc-muted small mb-0">Run a supported Keycloak distribution and reach the administrator console.</p></div></div>
+ <div class="col-md-4"><div class="kc-card"><strong>Outcome 2 · Configure</strong><p class="kc-muted small mb-0">Create a realm, an OIDC client, a user, roles, and redirect URIs.</p></div></div>
+ <div class="col-md-4"><div class="kc-card"><strong>Outcome 3 · Validate</strong><p class="kc-muted small mb-0">Verify discovery, authorization code + PKCE, JWT claims, and Spring Boot integration.</p></div></div>
+</div>
+<nav class="kc-toc mt-3" aria-label="Lesson contents"><a href="#kc-architecture">Architecture</a><a href="#kc-prep">Prerequisites</a><a href="#kc-docker">Docker</a><a href="#kc-macos">macOS</a><a href="#kc-windows">Windows</a><a href="#kc-linux">Linux</a><a href="#kc-admin">Admin setup</a><a href="#kc-oidc">OIDC lab</a><a href="#kc-spring">Spring Boot</a><a href="#kc-security">Production</a><a href="#kc-troubleshoot">Troubleshooting</a><a href="#kc-checklist">Checklist</a></nav>
+
+<section id="kc-architecture" class="kc-section"><h2>1. Keycloak architecture and core terminology</h2>
+<div class="kc-card"><p><strong>Keycloak</strong> is an identity and access management (IAM) server that can act as an OpenID Connect (OIDC) Provider, OAuth 2.0 Authorization Server, and SAML 2.0 Identity Provider. Applications redirect users to Keycloak for authentication rather than collecting credentials themselves.</p>
+<table><thead><tr><th>Term</th><th>What it does</th></tr></thead><tbody>
+<tr><td><strong>Realm</strong></td><td>Logical security boundary containing users, clients, roles, identity providers, and policies. The built-in <code>master</code> realm is primarily for administration.</td></tr>
+<tr><td><strong>Client</strong></td><td>Application registered with Keycloak; public browser/mobile clients use PKCE, while confidential server applications authenticate with credentials when appropriate.</td></tr>
+<tr><td><strong>User &amp; role</strong></td><td>User identity and role-based privileges; realm roles and client roles have different scopes.</td></tr>
+<tr><td><strong>Authentication flow</strong></td><td>Defines how users authenticate, such as username/password, MFA, federation, or social login.</td></tr>
+<tr><td><strong>OIDC discovery</strong></td><td>Publishes endpoints and signing-key references at <code>/.well-known/openid-configuration</code>.</td></tr>
+<tr><td><strong>Tokens</strong></td><td>ID token represents an authentication event; access token authorizes API calls; refresh token supports token renewal when issued.</td></tr>
+</tbody></table><div class="kc-callout">Typical flow: Browser → Spring Boot / SPA → Keycloak login → authorization code → token endpoint → validated identity / access token → protected application or API.</div></div></section>
+
+<section id="kc-prep" class="kc-section"><h2>2. Prerequisites and version selection</h2>
+<div class="kc-card"><ul><li>macOS (Apple Silicon or Intel), Windows 10/11, or modern Linux; a terminal and a current browser.</li><li>For a native ZIP/TAR installation, install a Keycloak-supported JDK and check <code>java -version</code>. Keycloak 26 release requirements evolve; consult the version's official documentation before choosing the Java runtime.</li><li>For the container route, install Docker Desktop, Docker Engine, or Podman; the container includes its own Java runtime.</li><li>Reserve <code>localhost:8080</code> for Keycloak. Your Bootcamp Spring Boot application uses <code>8081</code>, so they can run simultaneously.</li><li>Use a recent <strong>26.x or later stable</strong> release; match the server download and container tag to the same selected release.</li></ul>
+<p class="mb-0">Official resources: <a href="https://www.keycloak.org/downloads.html" target="_blank" rel="noopener noreferrer">Keycloak downloads</a> · <a href="https://www.keycloak.org/getting-started/getting-started-zip" target="_blank" rel="noopener noreferrer">Native server quickstart</a> · <a href="https://www.keycloak.org/server/supported-configurations" target="_blank" rel="noopener noreferrer">Supported configurations</a>.</p>
+<div class="kc-callout kc-warning">Java 21 is supported by Keycloak 26, but the current native quickstart can recommend a newer JDK. Always check the requirements of the exact Keycloak build you download. This lesson does not assume all future Keycloak versions have identical requirements.</div></div></section>
+
+<section id="kc-docker" class="kc-section"><h2>3. Recommended local lab: Docker or Podman</h2>
+<div class="kc-card"><p>The easiest consistent setup across all three operating systems is an official Keycloak container. Pin a release tag rather than using <code>latest</code> for repeatable labs. The example below uses a representative 26.x tag; update it to the release selected from the official downloads page.</p>
+<pre><code># Run in a terminal with Docker installed.
+# Substitute a current supported release tag if needed.
+docker run --name bootcamp-keycloak \
+  -p 127.0.0.1:8080:8080 \
+  -e KC_BOOTSTRAP_ADMIN_USERNAME=admin \
+  -e KC_BOOTSTRAP_ADMIN_PASSWORD=ChangeThisLocalLabPassword \
+  quay.io/keycloak/keycloak:26.8.0 start-dev
+
+# In a second terminal:
+docker ps
+docker logs bootcamp-keycloak
+
+# Stop and start the existing container later:
+docker stop bootcamp-keycloak
+docker start bootcamp-keycloak</code></pre>
+<p>Open <a href="http://localhost:8080/admin/" target="_blank" rel="noopener noreferrer">http://localhost:8080/admin/</a> and sign in with the bootstrap administrator. Podman uses the same flags with <code>podman</code> in place of <code>docker</code>.</p>
+<div class="kc-callout kc-warning">This is <strong>development mode only</strong> and uses an ephemeral container filesystem unless you attach durable storage. Do not place real passwords in shell history for production, and never expose this development listener to the public internet.</div></div></section>
+
+<section id="kc-macos" class="kc-section"><h2>4. Native installation on macOS</h2>
+<div class="kc-card"><ol><li>Verify the supported JDK is active: <code>java -version</code>. On macOS, <code>/usr/libexec/java_home -V</code> lists detected JVM installations.</li><li>Download the Keycloak ZIP distribution from the official downloads site and extract it in <code>~/Development/Tools/</code> or another directory you control.</li><li>Open Terminal and change into the extracted <code>keycloak-&lt;version&gt;</code> directory.</li><li>Run the development server on loopback, then create the initial admin at the welcome page or use the bootstrap variables from the Docker example.</li></ol>
+<pre><code>java -version
+/usr/libexec/java_home -V
+cd ~/Development/Tools/keycloak-&lt;version&gt;
+./bin/kc.sh start-dev --http-host=127.0.0.1
+
+# Check in another terminal:
+curl -fsS http://localhost:8080/realms/master/.well-known/openid-configuration</code></pre>
+<p>On macOS, use <code>zsh</code> or <code>bash</code>; do not execute the Windows <code>.bat</code> launcher. If necessary, grant execute permission with <code>chmod +x bin/kc.sh</code>.</p></div></section>
+
+<section id="kc-windows" class="kc-section"><h2>5. Native installation on Windows 10 / 11</h2>
+<div class="kc-card"><ol><li>Install a supported JDK and confirm <code>java -version</code> in a new PowerShell session.</li><li>Download the official Keycloak ZIP and extract it, for example to <code>C:\dev\keycloak-&lt;version&gt;</code>.</li><li>Open PowerShell inside the extracted installation directory.</li><li>Start Keycloak with <code>kc.bat</code> and visit <code>http://localhost:8080</code> to create the local administrator.</li></ol>
+<pre><code>java -version
+cd 'C:\dev\keycloak-&lt;version&gt;'
+.\bin\kc.bat start-dev --http-host=127.0.0.1
+
+# In a second PowerShell terminal:
+Invoke-RestMethod 'http://localhost:8080/realms/master/.well-known/openid-configuration'</code></pre>
+<p>Windows ZIP installation does not require installing Keycloak as a Windows Service. Closing the terminal stops the development server.</p></div></section>
+
+<section id="kc-linux" class="kc-section"><h2>6. Native installation on Linux</h2>
+<div class="kc-card"><p>Use your distribution's package manager to install a supported JDK, then unpack the official Keycloak TAR.GZ or ZIP file. The commands below assume you have extracted a distribution into <code>~/tools/</code>.</p>
+<pre><code># Ubuntu / Debian: use the appropriate supported JDK package
+sudo apt update
+sudo apt install openjdk-21-jdk
+java -version
+
+# Fedora example:
+# sudo dnf install java-21-openjdk-devel
+
+cd ~/tools/keycloak-&lt;version&gt;
+./bin/kc.sh start-dev --http-host=127.0.0.1
+
+# Verify discovery document:
+curl -fsS http://localhost:8080/realms/master/.well-known/openid-configuration</code></pre>
+<div class="kc-callout">If the selected Keycloak release requires a newer Java runtime, install that supported JDK instead of relying on the version used in this example.</div></div></section>
+
+<section id="kc-admin" class="kc-section"><h2>7. First admin login and create a training realm</h2>
+<div class="kc-card"><ol><li>Open <code>http://localhost:8080/admin/</code> and authenticate with the bootstrap admin account or the admin created from localhost.</li><li>From the realm selector, choose <strong>Create realm</strong>; use <code>bootcamp-lab</code>. Leave the built-in <code>master</code> realm for administration.</li><li>Under <strong>Realm settings</strong>, inspect the issuer URLs and login/session configuration.</li><li>Go to <strong>Users → Add user</strong>; create <code>intern1</code>, set a test password under Credentials, and turn off temporary password only for this isolated lab.</li><li>Go to <strong>Realm roles → Create role</strong> and add <code>INTERN</code>; assign it to <code>intern1</code> through Role mapping.</li></ol>
+<div class="kc-callout kc-warning">For a real deployment, enforce strong password policies, MFA where appropriate, least-privilege administrators, and controlled user provisioning. Lab user credentials are not production credentials.</div></div></section>
+
+<section id="kc-oidc" class="kc-section"><h2>8. OIDC hands-on lab: create a client and validate endpoints</h2>
+<div class="kc-card"><h3>8.1 Register a browser-based public client</h3><ol><li>In <code>bootcamp-lab</code>, navigate to <strong>Clients → Create client</strong> and select <strong>OpenID Connect</strong>.</li><li>Set Client ID to <code>bootcamp-spa</code>. Use a <strong>public client</strong> (Client authentication OFF) with Standard flow enabled.</li><li>Under login settings, configure Valid redirect URIs for the exact origin and callback used by your local test application, e.g. <code>http://localhost:4200/*</code>. Set Web origins to the exact origin <code>http://localhost:4200</code>.</li><li>Enable or require <strong>PKCE S256</strong> for authorization code flow. Do not use Implicit flow or Resource Owner Password Credentials grant for new browser applications.</li></ol>
+<h3>8.2 Inspect the discovery document</h3><pre><code>curl -fsS \
+  http://localhost:8080/realms/bootcamp-lab/.well-known/openid-configuration</code></pre>
+<p>Check <code>issuer</code>, <code>authorization_endpoint</code>, <code>token_endpoint</code>, <code>jwks_uri</code>, and <code>end_session_endpoint</code>. The issuer should be <code>http://localhost:8080/realms/bootcamp-lab</code> for this local lab.</p>
+<h3>8.3 Understand token verification</h3><p>OIDC tokens are not accepted because they merely decode into JSON. A Resource Server must validate the signature against the issuer's JWKS, the expected issuer, expiration, and relevant audience / authorization constraints.</p>
+<table><thead><tr><th>Test</th><th>Expected result</th></tr></thead><tbody><tr><td>Discovery URL</td><td>JSON metadata with correct issuer and endpoint URLs</td></tr><tr><td>JWKS URL from discovery</td><td>Published signing keys suitable for verification</td></tr><tr><td>Browser authorization code + S256</td><td>Successful login, code redemption and tokens for a correctly registered client</td></tr><tr><td>Wrong redirect URI</td><td>Request rejected rather than sent to an unregistered callback</td></tr></tbody></table></div></section>
+
+<section id="kc-spring" class="kc-section"><h2>9. Spring Boot 4 / Spring Security: Resource Server integration</h2>
+<div class="kc-card"><p>For a REST API secured by Keycloak, the simplest integration is a Spring Security OAuth2 Resource Server that validates incoming JWTs. The following snippet assumes the appropriate Spring Boot starter dependencies are installed.</p>
+<pre><code># application.yml (resource server example)
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/bootcamp-lab</code></pre>
+<pre><code>// Example: adapt imports and authorization policies to your project.
+@Bean
+SecurityFilterChain apiSecurity(HttpSecurity http) throws Exception {
+    return http
+        .securityMatcher("/api/**")
+        .authorizeHttpRequests(auth -> auth
+            .anyRequest().authenticated())
+        .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()))
+        .build();
+}</code></pre>
+<p>For a server-rendered Spring MVC login, configure a separate <strong>OAuth2 Client / OIDC Login</strong> registration and an appropriate confidential client in Keycloak. Don't assume the browser public client and the server-side confidential client share the same security properties.</p>
+<div class="kc-callout kc-warning">The default JWT resource-server configuration validates token cryptography and issuer, but <strong>application-specific role extraction, audience verification, and fine-grained authorization</strong> must be configured deliberately. In Keycloak, roles often appear in <code>realm_access.roles</code> or <code>resource_access</code>, not automatically as Spring <code>ROLE_*</code> authorities.</div></div></section>
+
+<section id="kc-security" class="kc-section"><h2>10. Development versus production: critical boundaries</h2>
+<div class="kc-card"><table><thead><tr><th>Concern</th><th>Development lab</th><th>Production requirement</th></tr></thead><tbody>
+<tr><td>Startup</td><td><code>start-dev</code></td><td><code>start</code> and tuned/optimized build, validated configuration</td></tr>
+<tr><td>Transport</td><td>HTTP on loopback</td><td>HTTPS/TLS, hostname and trusted proxy configuration</td></tr>
+<tr><td>Database</td><td>Local development database</td><td>Supported external persistent database, migrations, backups and recovery</td></tr>
+<tr><td>Credentials</td><td>Disposable bootstrap password</td><td>Secret management, privileged-account controls, auditing and rotation</td></tr>
+<tr><td>Availability</td><td>Single process</td><td>Appropriate HA, monitoring, health probes and capacity planning</td></tr>
+<tr><td>Tokens / clients</td><td>Local test redirect origins</td><td>Strict redirects, PKCE, client authentication, scoped permissions and logging</td></tr></tbody></table>
+<p class="mt-3 mb-0">Read the official <a href="https://www.keycloak.org/server/configuration" target="_blank" rel="noopener noreferrer">server configuration</a> and <a href="https://www.keycloak.org/server/containers" target="_blank" rel="noopener noreferrer">container deployment</a> guides before production deployment.</p></div></section>
+
+<section id="kc-troubleshoot" class="kc-section"><h2>11. Troubleshooting matrix</h2>
+<div class="kc-card"><table><thead><tr><th>Symptom</th><th>Checks</th></tr></thead><tbody>
+<tr><td><code>Address already in use: 8080</code></td><td>Check existing Keycloak/containers; switch to another mapped host port and update redirect/issuer configuration consistently.</td></tr>
+<tr><td>Admin console unavailable</td><td>Read terminal or container logs; check process and <code>http://localhost:8080</code>; verify loopback port binding.</td></tr>
+<tr><td>Invalid redirect URI</td><td>Check exact scheme, host, port, and callback path in Client → Valid redirect URIs.</td></tr>
+<tr><td>Token issuer mismatch</td><td>Compare <code>iss</code> and configured <code>issuer-uri</code>; don't mix <code>localhost</code> and another DNS/host alias.</td></tr>
+<tr><td>401 versus 403</td><td>401 indicates missing/invalid authentication; 403 generally means authenticated request lacks required authorization.</td></tr>
+<tr><td>Java runtime mismatch</td><td>Run <code>java -version</code> and compare with the exact installed Keycloak release's supported JDK versions.</td></tr>
+<tr><td>Docker data disappears</td><td>Use a durable data store/volume for anything intended to survive deletion; ephemeral dev databases are not backups.</td></tr></tbody></table></div></section>
+
+<section id="kc-checklist" class="kc-section mb-5"><h2>12. Hands-on assessment and completion checklist</h2>
+<div class="kc-card"><p>Complete these tasks yourself, recording the exact commands and a screenshot or terminal transcript for your internship evidence:</p>
+<div class="kc-check"><label><input type="checkbox"> Keycloak 26+ starts locally and the admin console is accessible.</label><label><input type="checkbox"> Created a separate <code>bootcamp-lab</code> realm instead of modifying <code>master</code>.</label><label><input type="checkbox"> Added user <code>intern1</code>, role <code>INTERN</code>, and assigned the role.</label><label><input type="checkbox"> Registered an OIDC public client with restricted redirects and PKCE S256.</label><label><input type="checkbox"> Retrieved the discovery document and identified its issuer and JWKS URL.</label><label><input type="checkbox"> Explained why a Resource Server validates JWT signatures, issuer, lifetime and audience.</label><label><input type="checkbox"> Demonstrated a Spring Boot API accepting a valid token and rejecting an invalid one.</label><label><input type="checkbox"> Explained why <code>start-dev</code> must never be your production configuration.</label></div>
+<div class="kc-callout mt-3"><strong>Extension challenge:</strong> Create a second Keycloak client for a confidential Spring MVC application; compare authorization code + PKCE with browser-only public-client registration. Document client-secret management and the differences in trust boundaries.</div>
+<p class="small kc-muted mb-0">Official references: <a href="https://www.keycloak.org/downloads.html" target="_blank" rel="noopener noreferrer">Downloads</a> · <a href="https://www.keycloak.org/getting-started/getting-started-zip" target="_blank" rel="noopener noreferrer">Native startup</a> · <a href="https://www.keycloak.org/server/containers" target="_blank" rel="noopener noreferrer">Containers</a> · <a href="https://www.keycloak.org/server/supported-configurations" target="_blank" rel="noopener noreferrer">Supported JDKs</a>.</p>
+</div></section>
+</section>
+</body></html>

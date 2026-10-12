@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<section th:fragment="lesson" class="lesson-guide container-fluid px-0">
+<style>
+.lesson-guide{--lesson-ink:#152138;--lesson-muted:#58677e;--lesson-line:#d9e5f7;max-width:1320px;margin:auto;color:var(--lesson-ink)}
+.lesson-guide .lesson-hero{border:1px solid var(--lesson-line);border-radius:18px;background:linear-gradient(120deg,#fff,#eaf3ff);padding:2rem 2.2rem}
+.lesson-guide .eyebrow{font-size:.75rem;text-transform:uppercase;letter-spacing:.12em;color:#065be7;font-weight:800}
+.lesson-guide h1{font-size:clamp(2rem,3vw,3rem);font-weight:800;letter-spacing:-.03em}
+.lesson-guide h2{font-size:1.5rem;font-weight:800;margin-bottom:1rem}.lesson-guide h3{font-size:1.12rem;font-weight:750;margin:1.15rem 0 .7rem}
+.lesson-guide p,.lesson-guide li{line-height:1.65}.lesson-guide .muted{color:var(--lesson-muted)}
+.lesson-guide .lesson-card{background:#fff;border:1px solid var(--lesson-line);border-radius:14px;padding:1.4rem;height:100%;box-shadow:0 3px 13px rgba(27,73,126,.035)}
+.lesson-guide .lesson-chip{display:inline-block;border-radius:20px;background:#e3efff;color:#0753be;padding:.28rem .7rem;margin:.1rem;font-size:.76rem;font-weight:700}
+.lesson-guide .lesson-toc{border:1px solid var(--lesson-line);border-radius:12px;background:#fff;padding:1rem;display:flex;gap:.5rem 1.25rem;flex-wrap:wrap}
+.lesson-guide .lesson-toc a{text-decoration:none;font-weight:600;font-size:.88rem}.lesson-guide .lesson-section{margin-top:2rem;scroll-margin-top:100px}
+.lesson-guide pre{background:#10213d;color:#edf6ff;padding:1rem 1.2rem;border-radius:10px;overflow-x:auto;line-height:1.55;font-size:.88rem}
+.lesson-guide code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.lesson-guide :not(pre)>code{background:#edf3fe;padding:.12rem .35rem;border-radius:4px;color:#15467a}
+.lesson-guide .lesson-note{padding:.8rem 1rem;border-left:4px solid #1972e8;background:#eff5ff;border-radius:0 9px 9px 0;margin:1rem 0}.lesson-guide .lesson-warn{border-left-color:#c88713;background:#fff8e6}
+.lesson-guide table{width:100%;border-collapse:collapse}.lesson-guide th,.lesson-guide td{border-bottom:1px solid var(--lesson-line);padding:.75rem .85rem;text-align:left;vertical-align:top}.lesson-guide th{background:#f0f5ff;color:#193e74}
+.lesson-guide .lesson-check label{display:block;margin:.5rem 0;padding:.7rem .9rem;border:1px solid var(--lesson-line);background:#f7faff;border-radius:9px}.lesson-guide .lesson-check input{margin-right:.6rem}
+@media(max-width:700px){.lesson-guide .lesson-hero{padding:1.3rem}.lesson-guide .lesson-card{padding:1.1rem}}
+</style>
+<a th:href="@{/internships/tool-installation}" class="text-decoration-none fw-semibold">← Back to Tool Installation</a>
+<header class="lesson-hero mt-3"><p class="eyebrow">Internships · Tool installation · Hands-on lab 05</p>
+<h1>Install &amp; Use MySQL Workbench on macOS, Windows &amp; Linux</h1>
+<p class="lead muted">Install MySQL Workbench Community, connect securely to your local MySQL 8 server, explore schemas, execute SQL, build an ER diagram, and practice backups and SQL administration.</p>
+<div><span class="lesson-chip">MySQL Workbench 8.0</span><span class="lesson-chip">macOS</span><span class="lesson-chip">Windows</span><span class="lesson-chip">Linux</span><span class="lesson-chip">MySQL Server 8.x</span></div></header>
+<div class="row g-3 mt-2"><div class="col-md-4"><div class="lesson-card"><strong>Outcome 1 · Install</strong><p class="muted small mt-2">Install the right client for your operating system.</p></div></div><div class="col-md-4"><div class="lesson-card"><strong>Outcome 2 · Connect</strong><p class="muted small mt-2">Create a least-privilege local development connection.</p></div></div><div class="col-md-4"><div class="lesson-card"><strong>Outcome 3 · Model and query</strong><p class="muted small mt-2">Explore SQL Editor, schema inspector, ER diagrams and export options.</p></div></div></div>
+<nav class="lesson-toc mt-4" aria-label="Lesson sections"><a href="#wb-fundamentals">Architecture</a><a href="#wb-versions">Compatibility</a><a href="#wb-mac">macOS</a><a href="#wb-win">Windows</a><a href="#wb-linux">Linux</a><a href="#wb-connect">Connect</a><a href="#wb-sql">SQL lab</a><a href="#wb-erd">ER diagrams</a><a href="#wb-backup">Export &amp; security</a><a href="#wb-help">Troubleshoot</a><a href="#wb-check">Assessment</a></nav>
+<section id="wb-fundamentals" class="lesson-section"><h2>1. Understand MySQL Workbench architecture</h2><div class="lesson-card"><p>MySQL Workbench is a <strong>graphical database client</strong> and modeling/administration tool. <strong>It is not a MySQL database server.</strong> Your earlier MySQL 8 lesson supplies the database service.</p>
+<table><thead><tr><th>Component</th><th>Responsibility</th></tr></thead><tbody><tr><td>Workbench</td><td>SQL editor, database navigator, query results, data modeling and administration UI.</td></tr><tr><td>MySQL Server</td><td>Stores data, authenticates users, executes transactions and listens on configured network/socket endpoints.</td></tr><tr><td>TCP/IP</td><td>Local connection commonly uses <code>127.0.0.1:3306</code> when MySQL is configured for the default port.</td></tr><tr><td>Application JDBC client</td><td>Spring Boot connects independently of Workbench using MySQL Connector/J.</td></tr></tbody></table>
+<div class="lesson-note">Workbench needs a compatible running server to browse/query data. Installing Workbench alone will not create <code>mysqld</code> or start port 3306.</div></div></section>
+<section id="wb-versions" class="lesson-section"><h2>2. Choose the correct version and platform</h2><div class="lesson-card"><p>Download the current MySQL Workbench Community build offered for your supported OS at <a href="https://dev.mysql.com/downloads/workbench/" target="_blank" rel="noopener noreferrer">Oracle's official Workbench downloads</a>.</p>
+<div class="lesson-note lesson-warn"><strong>Compatibility note:</strong> Oracle documents Workbench 8.0 as developed and tested with MySQL Server 8.0. It can connect to MySQL 8.4 and later servers, but some features may not work. Check the <a href="https://dev.mysql.com/doc/workbench/en/" target="_blank" rel="noopener noreferrer">official manual</a> and <a href="https://www.mysql.com/support/supportedplatforms/workbench.html" target="_blank" rel="noopener noreferrer">supported platforms</a> for your exact OS/server combination.</div>
+<p>Choose the appropriate architecture and installer. Some Linux distributions and newer operating-system versions may not have a matching official binary: do not force an unsupported package. Prefer a supported host or compatible client.</p></div></section>
+<section id="wb-mac" class="lesson-section"><h2>3. Install on macOS (Apple Silicon / Intel)</h2><div class="lesson-card"><ol><li>Visit <a href="https://dev.mysql.com/downloads/workbench/" target="_blank" rel="noopener noreferrer">MySQL Workbench Downloads</a>.</li><li>Select the macOS build supported for your OS version and architecture; check the release's platform compatibility.</li><li>Download the official DMG, open it and drag MySQL Workbench into <strong>Applications</strong> (follow installer prompts if supplied).</li><li>Launch Workbench from Applications and grant permissions required by macOS.</li><li>Verify that your <strong>MySQL Server</strong> is running separately before creating a connection.</li></ol>
+<pre><code>uname -m
+# arm64 (Apple Silicon) or x86_64 (Intel)
+mysql --version
+# CLI availability is optional for Workbench, but useful for troubleshooting.
+lsof -nP -iTCP:3306 -sTCP:LISTEN</code></pre>
+<div class="lesson-note">If macOS blocks opening an app, confirm it came from Oracle's official download site and use the approved macOS Privacy &amp; Security workflow. Do not disable system protections globally.</div></div></section>
+<section id="wb-win" class="lesson-section"><h2>4. Install on Windows 10/11</h2><div class="lesson-card"><ol><li>Download MySQL Workbench from <a href="https://dev.mysql.com/downloads/workbench/" target="_blank" rel="noopener noreferrer">Oracle</a>, selecting the supported Windows package.</li><li>Run the installer and follow its prerequisites and setup prompts. The <strong>MySQL Installer</strong> may also offer Workbench alongside Server depending on the chosen MySQL distribution.</li><li>Open MySQL Workbench from the Start menu.</li><li>Check that the MySQL Server Windows service is running; Workbench does not start a missing server installation.</li></ol>
+<pre><code># PowerShell
+Get-Service *mysql*
+Test-NetConnection -ComputerName 127.0.0.1 -Port 3306</code></pre>
+<p>For an absent service, return to the MySQL Server lesson and install/configure Server separately.</p></div></section>
+<section id="wb-linux" class="lesson-section"><h2>5. Install on Linux (Ubuntu / Debian / Fedora)</h2><div class="lesson-card"><ol><li>Check Oracle's <a href="https://www.mysql.com/support/supportedplatforms/workbench.html" target="_blank" rel="noopener noreferrer">support matrix</a> for your exact distribution release and architecture.</li><li>Download an appropriate official DEB/RPM package or configure Oracle's supported MySQL software repository.</li><li>Install using your package manager, letting it resolve required libraries. Package names and availability vary by release.</li><li>Launch via the desktop menu or <code>mysql-workbench</code> where that executable is installed.</li></ol>
+<pre><code># Ubuntu / Debian: inspect available package metadata
+apt-cache policy mysql-workbench-community
+# Fedora / RHEL-family: inspect repository availability
+dnf info mysql-workbench-community
+# Install only after confirming an appropriate supported package.</code></pre>
+<div class="lesson-note lesson-warn">Do not assume <code>apt install mysql-workbench</code> works on all distributions. If Oracle offers no compatible package for your Linux release, choose a supported environment rather than mixing incompatible repositories.</div></div></section>
+<section id="wb-connect" class="lesson-section"><h2>6. Create and test a local database connection</h2><div class="lesson-card"><ol><li>Launch Workbench and select the <strong>+</strong> button next to MySQL Connections.</li><li>Connection name: <code>Bootcamp Local MySQL 8</code>.</li><li>Connection method: <strong>Standard (TCP/IP)</strong>.</li><li>Hostname: <code>127.0.0.1</code>; Port: <code>3306</code> unless configured otherwise.</li><li>Username: use an existing development user with least-required privileges, rather than the root account for daily work.</li><li>Choose <strong>Test Connection</strong>; provide the password through the prompt. Save credentials only if allowed by your workstation policy.</li><li>Open the connection and inspect the <strong>Schemas</strong> navigator.</li></ol>
+<div class="lesson-note lesson-warn"><strong>Security:</strong> Never put a real password into lesson material, screenshots, README files, Git repositories, connection URLs, or shared training outputs. Never expose MySQL port 3306 publicly for this local lab.</div>
+<pre><code>-- Run in a Workbench SQL tab after connecting.
+SELECT VERSION() AS mysql_version,
+       CURRENT_USER() AS authenticated_account,
+       DATABASE() AS selected_schema;</code></pre></div></section>
+<section id="wb-sql" class="lesson-section"><h2>7. Hands-on SQL Editor lab</h2><div class="lesson-card"><p>Run these statements in the SQL Editor. The account needs <code>CREATE</code> rights for the practice schema; ask the lab administrator for a scoped account if necessary.</p>
+<pre><code>CREATE DATABASE IF NOT EXISTS internship_lab;
+USE internship_lab;
+
+CREATE TABLE IF NOT EXISTS departments (
+    department_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    department_name VARCHAR(80) NOT NULL UNIQUE
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS interns (
+    intern_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    intern_name VARCHAR(100) NOT NULL,
+    department_id BIGINT NOT NULL,
+    CONSTRAINT fk_intern_department FOREIGN KEY (department_id)
+        REFERENCES departments(department_id)
+) ENGINE=InnoDB;
+
+INSERT INTO departments (department_name) VALUES ('Engineering');
+INSERT INTO interns (intern_name, department_id)
+SELECT 'Alex', department_id FROM departments
+WHERE department_name = 'Engineering';
+
+SELECT i.intern_id, i.intern_name, d.department_name
+FROM interns i JOIN departments d
+  ON i.department_id = d.department_id;
+
+START TRANSACTION;
+UPDATE interns SET intern_name = 'Alex Morgan'
+WHERE intern_name = 'Alex';
+ROLLBACK;
+
+SELECT * FROM interns;</code></pre>
+<p>The final query should still show <code>Alex</code> after rollback. This demonstrates transactional behavior, an InnoDB relationship and a join. Re-running the INSERT statements duplicates the sample data; use a fresh schema or clean up when repeating the lab.</p></div></section>
+<section id="wb-erd" class="lesson-section"><h2>8. Inspect schemas and create an ER diagram</h2><div class="lesson-card"><ol><li>Refresh the <strong>Schemas</strong> sidebar and expand <code>internship_lab</code>.</li><li>Inspect <strong>Tables → interns / departments</strong>, columns, primary keys, indexes and foreign-key details.</li><li>Open <strong>Database → Reverse Engineer</strong> (menu availability may vary by release).</li><li>Select the connection and practice schema, then follow the wizard to produce a model.</li><li>Inspect the relationship between <code>interns.department_id</code> and <code>departments.department_id</code>.</li><li>Save the model and export a diagram if supported by your installed version.</li></ol>
+<p>Explain the entities, cardinality, primary key, foreign key and why the database—not the UI—enforces referential integrity.</p></div></section>
+<section id="wb-backup" class="lesson-section"><h2>9. Data export, import and safe operations</h2><div class="lesson-card"><p>Use <strong>Server → Data Export</strong> (where supported) to export the <code>internship_lab</code> schema; select appropriate structure and data options. Test import into a disposable schema rather than overwriting the source.</p>
+<pre><code># Alternative: command-line logical export
+mysqldump -u lab_user -p internship_lab &gt; internship_lab.sql
+
+# Restore only into a separate empty practice schema after review.
+# Never import an untrusted SQL dump into a sensitive database.</code></pre>
+<div class="lesson-note">The export UI and server administration capabilities depend on platform/version/privileges. Workbench is not a replacement for a tested production backup and recovery policy.</div>
+<p>Production principle: use separate read-only and administration credentials; avoid <code>root</code> for routine development; confirm the target host/schema before any DDL or DELETE action.</p></div></section>
+<section id="wb-help" class="lesson-section"><h2>10. Troubleshooting</h2><div class="lesson-card"><table><thead><tr><th>Error</th><th>What to verify</th></tr></thead><tbody>
+<tr><td>Can't connect to MySQL server on 127.0.0.1:3306</td><td>Server running? Correct port? TCP enabled? OS firewall? Container port published?</td></tr>
+<tr><td>Access denied for user</td><td>Username, password, user@host permissions, account lock and authentication plugin compatibility.</td></tr>
+<tr><td>Workbench starts but no schemas appear</td><td>Refresh navigator; verify <code>SHOW DATABASES</code> and schema privileges.</td></tr>
+<tr><td>Workbench install unavailable on Linux</td><td>Check distribution release/architecture support and Oracle package availability.</td></tr>
+<tr><td>Feature missing with newer server version</td><td>Workbench 8.0 is tested mainly with Server 8.0; consult compatibility notes for Server 8.4+.</td></tr>
+<tr><td>Workbench shows no rows / transaction mismatch</td><td>Verify selected connection and schema; inspect autocommit and explicit transaction state.</td></tr></tbody></table>
+<p class="small muted mt-3 mb-0">Docs: <a href="https://dev.mysql.com/doc/workbench/en/" target="_blank" rel="noopener noreferrer">MySQL Workbench Manual</a> · <a href="https://dev.mysql.com/doc/workbench/en/wb-installing.html" target="_blank" rel="noopener noreferrer">Workbench installation</a>.</p></div></section>
+<section id="wb-check" class="lesson-section"><h2>11. Practical assessment and completion checklist</h2><div class="lesson-card"><p>Submission: screenshot of a successful Workbench connection (redact accounts/hosts where needed), SQL script, query output, exported ER diagram and brief write-up of the rollback test.</p>
+<div class="lesson-check"><label><input type="checkbox">Workbench installed from an official, compatible download</label><label><input type="checkbox">Local MySQL 8 connection tested with scoped credentials</label><label><input type="checkbox">Practice schema and two related tables created</label><label><input type="checkbox">JOIN query executed successfully</label><label><input type="checkbox">Transaction rollback demonstrated</label><label><input type="checkbox">ER relationship inspected and explained</label><label><input type="checkbox">Sensitive credentials excluded from all submissions</label></div>
+<h3>Knowledge check</h3><ol><li>Why does Workbench not replace MySQL Server?</li><li>What is the difference between a foreign key and a join?</li><li>Why is testing a backup restore necessary?</li><li>Why should applications not connect as database root?</li></ol></div></section>
+</section>
+</body>
+</html>
