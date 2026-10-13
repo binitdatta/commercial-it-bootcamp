@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:fragment="layout(pageTitle, pageDescription, content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" th:content="${pageDescription}">
+    <title th:text="${pageTitle + ' | Commercial IT Bootcamp'}">Commercial IT Bootcamp</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.8/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/bootcamp.css}">
+    <link rel="stylesheet" th:href="@{/css/internships.css}">
+    <!-- Explicit click-to-expand Azure accordion; avoids unsupported third-level Bootstrap flyouts. -->
+    <style>
+        .internship-dropdown .azure-parent-button { width: 100%; border: 0; background: transparent; text-align: left; cursor: pointer; }
+        .internship-dropdown .azure-parent-button:focus-visible { outline: 2px solid #0d6efd; outline-offset: -2px; }
+        .internship-dropdown .azure-parent-button[aria-expanded="true"] { color: #0a58ca; background: #e9f2ff; font-weight: 600; }
+        .internship-dropdown .azure-chevron { font-size: 1.2rem; line-height: 1; transition: transform .12s ease; }
+        .internship-dropdown .azure-parent-button[aria-expanded="true"] .azure-chevron { transform: rotate(90deg); }
+        .internship-dropdown .azure-lessons-list[hidden] { display: none !important; }
+        .internship-dropdown .azure-lessons-list:not([hidden]) { display: block !important; margin: .2rem .3rem .45rem .7rem; padding: .25rem 0 .25rem .45rem; border-left: 3px solid #93c5fd; background: #f6faff; border-radius: 0 .35rem .35rem 0; max-height: 50vh; overflow-y: auto; }
+        .internship-dropdown .azure-lessons-list .dropdown-item { white-space: normal; padding: .55rem .6rem; }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark boot-navbar sticky-top">
+    <div class="container-fluid px-lg-4">
+        <a class="navbar-brand" th:href="@{/}">Commercial IT Bootcamp</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Training</a>
+                    <ul class="dropdown-menu shadow-lg border-0 p-2">
+                        <li><a class="dropdown-item fw-bold text-primary" th:href="@{/training}">Course Overview</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li class="dropdown-submenu" th:each="section : ${trainingSections}">
+                            <a class="dropdown-item" href="#" th:text="${section.title}">Section</a>
+                            <ul class="dropdown-menu shadow-lg border-0 p-2">
+                                <li th:each="lesson : ${section.lessons}">
+                                    <a class="dropdown-item small" th:href="${lesson.path}">
+                                        <span class="text-primary fw-bold me-1" th:text="${lesson.number + '.'}">1.</span>
+                                        <span th:text="${lesson.title}">Lesson</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">E-Commerce Reference</a>
+                    <ul class="dropdown-menu shadow-lg border-0 p-2">
+                        <li><a class="dropdown-item" th:href="@{/ecommerce}">Reference App Home</a></li>
+                        <li><a class="dropdown-item" th:href="@{/ecommerce/products}">Products</a></li>
+                        <li><a class="dropdown-item" th:href="@{/ecommerce/customers}">Customers</a></li>
+                        <li><a class="dropdown-item" th:href="@{/ecommerce/orders}">Orders</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" th:href="@{/ecommerce/architecture}">Architecture Guide</a></li>
+                        <li><a class="dropdown-item" th:href="@{/ecommerce/api-guide}">REST API Guide</a></li>
+                    </ul>
+                </li>
+
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Internships</a>
+        <ul class="dropdown-menu internship-dropdown">
+          <li><a class="dropdown-item fw-bold text-primary" th:href="@{/internships}">Internship Overview</a></li><li><hr class="dropdown-divider"></li>
+          <li class="dropdown-submenu"><div class="d-flex align-items-center"><a class="dropdown-item flex-grow-1" th:href="@{/internships/tool-installation}">Tool Installation</a><button class="submenu-toggle" type="button" aria-expanded="false" aria-label="Expand Tool Installation">›</button></div><ul class="dropdown-menu">
+            <li><a class="dropdown-item" th:href="@{/internships/tool-installation/jdk-21}">JDK 21</a></li>
+            <li><a class="dropdown-item" th:href="@{/internships/tool-installation/mysql-8}">MySQL 8</a></li>
+            <li><a class="dropdown-item" th:href="@{/internships/tool-installation/vscode}">Visual Studio Code</a></li>
+            <li><a class="dropdown-item" th:href="@{/internships/tool-installation/intellij-community}">IntelliJ IDEA Community Edition</a></li>
+            <li><a class="dropdown-item" th:href="@{/internships/tool-installation/mysql-workbench}">MySQL Workbench</a></li>
+            <li><a class="dropdown-item" th:href="@{/internships/tool-installation/git-scm}">Git SCM</a></li>
+            <li><a class="dropdown-item" th:href="@{/internships/tool-installation/keycloak-26}">Keycloak 26+</a></li>
+          </ul></li>
+          <li><a class="dropdown-item" th:href="@{/internships/agile-scrum-kanban}">Agile / Scrum / Kanban</a></li>
+          <li class="dropdown-submenu"><div class="d-flex align-items-center"><a class="dropdown-item flex-grow-1" th:href="@{/internships/java-crash-course}">Java Crash Course</a><button class="submenu-toggle" type="button" aria-expanded="false" aria-label="Expand Java Crash Course">›</button></div><ul class="dropdown-menu">
+            <li><a class="dropdown-item" th:href="@{/internships/java-crash-course/data-types}">Data Types</a></li>
+            <li><a class="dropdown-item" th:href="@{/internships/java-crash-course/generics}">Generics</a></li>
+            <li><a class="dropdown-item" th:href="@{/internships/java-crash-course/logical-decisions}">Logical Decision Making</a></li>
+            <li><a class="dropdown-item" th:href="@{/internships/java-crash-course/loops}">Loops</a></li>
+            <li><a class="dropdown-item" th:href="@{/internships/java-crash-course/math}">Math</a></li>
+            <li><a class="dropdown-item" th:href="@{/internships/java-crash-course/dates}">Dates</a></li>
+            <li><a class="dropdown-item" th:href="@{/internships/java-crash-course/functional-programming}">Functional Programming</a></li>
+          </ul></li>
+          <li><a class="dropdown-item" th:href="@{/internships/angular-crash-course}">Angular Crash Course</a></li>
+          <li><a class="dropdown-item" th:href="@{/internships/react-crash-course}">React Crash Course</a></li>
+          <li><a class="dropdown-item" th:href="@{/internships/python-3-crash-course}">Python 3 Crash Course</a></li>
+          <li class="dropdown-submenu"><div class="d-flex align-items-center"><a class="dropdown-item flex-grow-1" th:href="@{/internships/cloud-computing}">Cloud Computing</a><button class="submenu-toggle" type="button" aria-expanded="false" aria-label="Expand Cloud Computing">›</button></div><ul class="dropdown-menu">
+            <li><a class="dropdown-item" th:href="@{/internships/cloud-computing/aws}">AWS</a></li>
+            <li><a class="dropdown-item" th:href="@{/internships/cloud-computing/google-cloud}">Google Cloud</a></li>
+            <li class="azure-lesson-group">
+              <button id="azure-lessons-toggle" class="dropdown-item azure-parent-button d-flex justify-content-between align-items-center" type="button" aria-controls="azure-lessons-list" aria-expanded="false">
+                <span>Microsoft Azure</span><span class="azure-chevron" aria-hidden="true">&#8250;</span>
+              </button>
+              <ul id="azure-lessons-list" class="azure-lessons-list list-unstyled" hidden>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure}">Azure Foundations &amp; Enterprise Lab</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/global-cloud-architecture}">Azure Global Cloud Architecture</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/virtual-network-isolation}">Azure Virtual Networks &amp; Tenant Isolation</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/key-vault}">Azure Key Vault</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/event-hubs}">Azure Event Hubs — Real-Time Streaming</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/aks-kubernetes}">Kubernetes Architecture &amp; Azure AKS</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/front-door-ddos}">Azure Front Door — WAF &amp; DDoS Protection</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/data-factory}">Azure Data Factory — ETL &amp; Data Pipelines</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/iam-network-security}">Azure IAM &amp; Network Security</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/databricks}">Azure Databricks — Retail Lakehouse &amp; AI</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/app-service-high-availability}">Azure App Service — Multi-Region High Availability</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/api-management}">Azure API Management — Enterprise API Gateway</a></li>
+                <!-- Append future Azure lessons here, using links to their mapped controllers. -->
+              </ul>
+            </li>
+            <li><a class="dropdown-item" th:href="@{/internships/cloud-computing/virtual-machines}">Virtual Machines Explained</a></li>
+          </ul></li>
+          <li><a class="dropdown-item" th:href="@{/internships/git-deep-dive}">Git Deep Dive Workflow</a></li>
+        </ul></li>
+
+                <li class="nav-item"><a class="nav-link" th:href="@{/about}">About</a></li>
+            </ul>
+
+            <div class="d-flex align-items-center gap-2" th:if="${authenticated}">
+                <div class="text-white small d-none d-xl-block">
+                    <div class="fw-semibold" th:text="${displayName}">User</div>
+                    <div>
+                        <span class="badge rounded-pill bg-light text-primary me-1" th:each="role : ${userRoles}" th:text="${role}">STUDENT</span>
+                    </div>
+                </div>
+                <form th:action="@{/logout}" method="post" class="m-0">
+                    <button class="btn btn-outline-light btn-sm" type="submit">Sign out</button>
+                </form>
+            </div>
+            <a th:unless="${authenticated}" class="btn btn-light btn-sm fw-semibold text-primary" th:href="@{/login}">Sign in</a>
+        </div>
+    </div>
+</nav>
+
+<main class="container-fluid px-3 px-lg-4 py-4 py-lg-5">
+    <div th:replace="${content}"></div>
+</main>
+
+<footer class="boot-footer mt-auto py-4">
+    <div class="container-fluid px-lg-4 d-flex flex-column flex-md-row justify-content-between gap-2 small">
+        <span>Commercial IT Bootcamp — Spring Boot 4 reference platform</span>
+        <span>Training and E-Commerce navigation intentionally kept separate.</span>
+    </div>
+</footer>
+
+<script th:src="@{/webjars/bootstrap/5.3.8/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/bootcamp.js}"></script>
+<script th:src="@{/js/internships.js}"></script>
+<script>
+  // Azure is an in-place accordion, not a Bootstrap dropdown-submenu.
+  // Stop bubbling so Bootstrap's parent dropdown remains open while expanding it.
+  document.addEventListener('DOMContentLoaded', function () {
+    const toggle = document.getElementById('azure-lessons-toggle');
+    const lessons = document.getElementById('azure-lessons-list');
+    if (!toggle || !lessons) return;
+    toggle.addEventListener('click', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      const opening = lessons.hidden;
+      lessons.hidden = !opening;
+      toggle.setAttribute('aria-expanded', String(opening));
+    });
+    // Don't collapse the surrounding dropdown when moving focus within the Azure list.
+    lessons.addEventListener('click', function (event) { event.stopPropagation(); });
+  });
+</script>
+</body>
+</html>

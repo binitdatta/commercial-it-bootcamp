@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout(${cloudLessonTitle}, 'Future cloud computing lesson', ~{::main})}">
+<main>
+  <section class="container-fluid px-0" style="max-width:980px;margin:auto">
+    <a class="d-inline-block text-decoration-none fw-semibold mb-3" th:href="@{/internships/cloud-computing}">← Cloud Computing</a>
+    <div class="p-4 p-lg-5 rounded-4 border" style="background:linear-gradient(120deg,#fff,#e8f3ff);border-color:#d5e5fa!important">
+      <div class="text-uppercase fw-bold small text-primary mb-2" th:text="${cloudProvider} + ' · ' + ${cloudCategory}">Cloud Provider · Foundation</div>
+      <h1 class="display-6 fw-bold mb-3" th:text="${cloudLessonTitle}">Upcoming Lesson</h1>
+      <p class="lead text-secondary mb-3">This training topic is registered in the course navigation. Its full architecture diagram, explanatory page, and hands-on exercises will be added in a future module.</p>
+      <div class="rounded-3 bg-white border p-3">
+        <strong>Curriculum status:</strong> Planned lesson — route and navigation are ready.
+      </div>
+    </div>
+  </section>
+</main>
+</html>

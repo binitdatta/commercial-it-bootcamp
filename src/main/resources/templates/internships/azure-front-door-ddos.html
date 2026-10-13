@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('Azure Front Door — WAF and DDoS Protection', 'How Azure Front Door protects applications with edge routing, WAF, DDoS mitigation, TLS and origin protection', ~{::main})}">
+<main>
+<article class="afd-lesson container-fluid px-0">
+<style>
+.afd-lesson{max-width:1240px;margin:auto;color:#1a2b45}.afd-lesson h1{font-size:clamp(2rem,3.3vw,3rem);font-weight:800;letter-spacing:-.025em}.afd-lesson h2{font-size:1.5rem;font-weight:800;margin-bottom:1rem}.afd-lesson h3{font-size:1.13rem;font-weight:750;margin:1rem 0 .7rem}.afd-lesson p,.afd-lesson li{line-height:1.7}.afd-lesson .hero{background:linear-gradient(112deg,#fff,#e8f2ff);border:1px solid #d1e1f8;border-radius:18px;padding:2rem}.afd-lesson .eyebrow{font-size:.76rem;color:#075ac6;font-weight:800;text-transform:uppercase;letter-spacing:.12em}.afd-lesson .lead{color:#4b5f7d}.afd-lesson .pill{background:#e3eeff;color:#1155b1;font-size:.79rem;font-weight:750;border-radius:40px;padding:.24rem .65rem;display:inline-block;margin:.1rem .25rem .1rem 0}.afd-lesson .block{margin-top:2rem;scroll-margin-top:90px}.afd-lesson .panel{background:#fff;border:1px solid #d3e2f5;border-radius:12px;padding:1.25rem;margin:.8rem 0}.afd-lesson .light{background:#f6faff}.afd-lesson .toc{display:flex;flex-wrap:wrap;gap:.6rem 1rem;padding:1rem;border:1px solid #d3e2f5;border-radius:10px;margin-top:1rem;background:#fff}.afd-lesson .toc a{font-weight:650;font-size:.88rem;text-decoration:none}.afd-lesson table{width:100%;border-collapse:collapse}.afd-lesson th,.afd-lesson td{padding:.78rem!important;vertical-align:top;border:1px solid #d9e5f4}.afd-lesson th{background:#eaf2ff!important;color:#0b427e}.afd-lesson .diagram{width:100%;height:auto;display:block;border:1px solid #ccdcf1;border-radius:12px}.afd-lesson .note{padding:.9rem 1.1rem;border-left:4px solid #2473d1;background:#eaf4ff;border-radius:4px;margin:1rem 0}.afd-lesson .warning{border-left-color:#db8b21;background:#fff7e8}.afd-lesson .flowcard{background:#eef6ff;border:1px solid #d0e2f9;border-radius:10px;padding:1rem;text-align:center;height:100%}.afd-lesson pre{background:#152e4b;color:#eef7ff;border-radius:10px;padding:1.2rem;overflow-x:auto;line-height:1.6;font-size:.86rem}.afd-lesson :not(pre)>code{background:#edf3fc;color:#164f8c;border-radius:4px;padding:.1rem .3rem}.afd-lesson .check{display:block;border:1px solid #d3e2f5;border-radius:8px;padding:.65rem .9rem;margin:.45rem 0}.afd-lesson .smallprint{font-size:.85rem;color:#54677d}@media(max-width:767px){.afd-lesson .hero{padding:1.2rem}.afd-lesson .panel{padding:1rem}}
+</style>
+<a class="fw-semibold text-decoration-none d-inline-block mb-3" th:href="@{/internships/cloud-computing/azure}">← Azure Foundations &amp; Enterprise Lab</a>
+<header class="hero">
+<div class="eyebrow mb-2">Internships · Microsoft Azure · Networking &amp; Security</div>
+<h1>How Azure Front Door Protects Applications from DDoS Attacks</h1>
+<p class="lead mb-3">Learn how Azure Front Door combines global edge entry points, routing, TLS, Web Application Firewall (WAF), bot/rate-limiting rules and origin protection to help keep public Spring Boot APIs and websites available.</p>
+<div><span class="pill">Global edge</span><span class="pill">WAF</span><span class="pill">DDoS mitigation</span><span class="pill">TLS / HTTPS</span><span class="pill">Origin groups</span><span class="pill">Health probes</span><span class="pill">Security-in-depth</span></div>
+</header>
+<nav class="toc" aria-label="Lesson contents">
+<a href="#diagram">Architecture image</a><a href="#intro">Simple analogy</a><a href="#threats">Threats</a><a href="#components">Edge components</a><a href="#request">Request flow</a><a href="#waf">WAF</a><a href="#routing">Routing / failover</a><a href="#origin">Origin protection</a><a href="#tls">TLS</a><a href="#spring">Spring Boot example</a><a href="#operations">Monitoring</a><a href="#comparison">Service comparison</a><a href="#lab">Classroom exercise</a>
+</nav>
+
+<section class="block" id="diagram"><h2>1. Start with your Azure architecture diagram</h2><div class="panel light">
+<p>The infographic organizes the architecture into <strong>Internet &amp; Clients → Azure Front Door global edge → Optional origin-protection layer → Backend origins</strong>. The lower row covers security capabilities, reasons for edge protection, and application use cases.</p>
+<img class="diagram" th:src="@{/images/afd.png}" alt="Azure Front Door DDoS and WAF protection infographic, showing traffic entering global edge points, security filtering, TLS, routing, origin protection and regional backends" loading="lazy">
+<div class="note"><strong>Accuracy note:</strong> The infographic is a conceptual teaching illustration. Features such as Private Link, specific WAF capabilities and caching depend on the Front Door SKU and configuration. The purple “Origin Shield” represents an origin-protection/caching design concept; do not assume it is a separately provisioned Azure Front Door service with that exact product name.</div>
+</div></section>
+
+<section class="block" id="intro"><h2>2. Azure Front Door in simple English</h2><div class="panel">
+<p>Imagine a large office complex with many entrances. The building places <strong>security staff and visitor screening stations outside the offices</strong>, then directs legitimate visitors to the correct office. Suspicious visitors are blocked before they reach the employees. Front Door performs a similar function for public HTTP and HTTPS traffic: it provides a global edge entry point, applies configured controls and routes requests to healthy application origins.</p>
+<div class="table-responsive"><table><thead><tr><th>Office-complex analogy</th><th>Azure architecture</th></tr></thead><tbody>
+<tr><td>Visitors arriving at a public entrance</td><td>Web browsers, mobile apps and API clients</td></tr>
+<tr><td>Worldwide security checkpoints</td><td>Microsoft global edge points of presence</td></tr>
+<tr><td>Visitors screened for suspicious behavior</td><td>WAF managed/custom rules, bot protection and rate limiting</td></tr>
+<tr><td>Reception directs visitors to available offices</td><td>Origin groups, health probes, and routing rules</td></tr>
+<tr><td>Office doors remain locked behind reception</td><td>Origin hardening and restricted direct access</td></tr>
+</tbody></table></div>
+<p class="mb-0"><strong>Key message:</strong> Front Door is not your application server. It sits in front of application origins and is part of a defense-in-depth design.</p>
+</div></section>
+
+<section class="block" id="threats"><h2>3. What is a DDoS attack, and what does Front Door stop?</h2><div class="panel">
+<p>A <strong>Distributed Denial of Service (DDoS)</strong> attack floods a service with malicious traffic from many sources, trying to exhaust network capacity, connections or application resources. Attackers may also send carefully crafted HTTP requests that target expensive application endpoints or known vulnerabilities.</p>
+<div class="table-responsive"><table><thead><tr><th>Threat</th><th>Typical symptom</th><th>Relevant defense</th></tr></thead><tbody>
+<tr><td>Volumetric floods</td><td>Extremely high traffic aimed at overwhelming network paths</td><td>Microsoft's large global edge/network mitigations; origin exposure reduction</td></tr>
+<tr><td>Layer 7 HTTP request floods</td><td>Excessive requests to login, search or API endpoints</td><td>WAF custom rules, rate limits, bot controls and application-level protections</td></tr>
+<tr><td>SQL injection / XSS probes</td><td>Malicious payload patterns in HTTP requests</td><td>WAF managed rules plus secure application coding</td></tr>
+<tr><td>Direct-to-origin attacks</td><td>Requests bypass Front Door and hit a backend directly</td><td>Private Link where supported, access restrictions and origin verification</td></tr>
+</tbody></table></div><div class="note warning"><strong>Not a magic firewall:</strong> edge protection reduces risk but cannot guarantee that every malicious request is blocked. Strong authentication, server-side authorization, secure coding, capacity planning and incident response still matter.</div>
+</div></section>
+
+<section class="block" id="components"><h2>4. Understand the five main Front Door edge functions</h2><div class="panel">
+<div class="table-responsive"><table><thead><tr><th>Component in diagram</th><th>Responsibility</th><th>How it helps</th></tr></thead><tbody>
+<tr><td>2.1 DDoS protection</td><td>Global edge absorbs and mitigates large-scale malicious traffic</td><td>Reduces impact before requests reach the origin infrastructure</td></tr>
+<tr><td>2.2 Web Application Firewall (WAF)</td><td>Evaluates HTTP(S) traffic against managed and custom rules</td><td>Blocks or challenges defined web attacks and bots</td></tr>
+<tr><td>2.3 Layer 7 filtering and rate limiting</td><td>Applies application-layer request criteria and thresholds</td><td>Limits abusive endpoints and suspicious traffic patterns</td></tr>
+<tr><td>2.4 TLS termination and acceleration</td><td>Accepts HTTPS at the edge and forwards requests securely</td><td>Provides certificate management and modern protocol handling</td></tr>
+<tr><td>2.5 Global routing and load balancing</td><td>Chooses eligible origins using routing and health configuration</td><td>Supports resilient multi-region applications</td></tr>
+</tbody></table></div></div></section>
+
+<section class="block" id="request"><h2>5. End-to-end request flow</h2><div class="panel">
+<div class="row g-2 mb-3"><div class="col-6 col-lg"><div class="flowcard"><strong>1. Browser / App</strong><br><small>HTTPS request</small></div></div><div class="col-6 col-lg"><div class="flowcard"><strong>2. Global Edge</strong><br><small>Front Door entry</small></div></div><div class="col-6 col-lg"><div class="flowcard"><strong>3. WAF</strong><br><small>Inspect / limit</small></div></div><div class="col-6 col-lg"><div class="flowcard"><strong>4. Routing</strong><br><small>Healthy origin</small></div></div><div class="col-12 col-lg"><div class="flowcard"><strong>5. Spring Boot API</strong><br><small>Business logic</small></div></div></div>
+<ol><li>A customer opens <code>https://api.example.com/orders</code>.</li><li>DNS directs the customer toward the Front Door endpoint through its configured custom-domain routing.</li><li>The client connects to an appropriate Microsoft edge location using HTTPS.</li><li>A WAF policy, when associated with the request's domain/path, evaluates it. Rules may allow, block, log, or otherwise act according to configuration.</li><li>Front Door selects an origin from an origin group based on route settings, origin priority/weight and health information.</li><li>The healthy backend handles the request and Front Door returns the HTTP response to the client.</li></ol>
+<p class="mb-0">Request behavior depends on whether caching is enabled and eligible for the resource. Dynamic API responses are normally handled differently from cacheable static content.</p>
+</div></section>
+
+<section class="block" id="waf"><h2>6. WAF, OWASP rules, bot protection and rate limits</h2><div class="panel">
+<h3>Managed rule sets</h3><p>Managed WAF rules detect classes of common web attacks, such as injection attempts and cross-site scripting probes. They are a mitigation layer, not a substitute for validating data inside Spring Boot.</p>
+<h3>Custom rules</h3><p>Security teams can add rules for selected IP ranges, countries/regions, request paths, headers and other supported conditions. Rate-limit rules help protect expensive endpoints like authentication, checkout and search.</p>
+<div class="table-responsive"><table><thead><tr><th>Request</th><th>Example evaluation</th><th>Possible action</th></tr></thead><tbody>
+<tr><td>Legitimate customer requesting product list</td><td>No rule match</td><td>Allow and route</td></tr>
+<tr><td>Automated malicious SQL injection string</td><td>Managed rule detection</td><td>Block or log, depending on policy mode</td></tr>
+<tr><td>Thousands of login requests from a source</td><td>Rate limit threshold reached</td><td>Block or other configured handling</td></tr>
+<tr><td>Expected search-engine crawler</td><td>Bot rules and custom policy</td><td>Evaluate using selected rules and configuration</td></tr>
+</tbody></table></div><div class="note"><strong>Production practice:</strong> deploy WAF rules in detection mode first where practical, evaluate false positives, tune exclusions narrowly, then enable prevention mode with alerts and a rollback plan.</div>
+</div></section>
+
+<section class="block" id="routing"><h2>7. Origin groups, health probes and failover</h2><div class="panel">
+<p>The diagram shows two backend groups: a <strong>primary region</strong> and one or more <strong>failover regions</strong>. Front Door can route requests to appropriate origins using configured routes, origin priorities, weights, latency-related behavior and health probes.</p>
+<div class="table-responsive"><table><thead><tr><th>Origin</th><th>Purpose</th><th>Example</th></tr></thead><tbody>
+<tr><td>Primary region</td><td>Normally handles active application traffic</td><td>Azure App Service / AKS / API Management in Region A</td></tr>
+<tr><td>Failover region</td><td>Serves traffic if preferred origins become unavailable</td><td>Separate regional deployment in Region B</td></tr>
+<tr><td>Health probe endpoint</td><td>Indicates origin responsiveness</td><td><code>/actuator/health/readiness</code> when safely configured</td></tr>
+</tbody></table></div>
+<p>Healthy routing requires a viable regional architecture. Front Door cannot replicate databases, synchronize sessions or make a broken application automatically stateless. Those responsibilities belong to your workload design.</p>
+</div></section>
+
+<section class="block" id="origin"><h2>8. Origin Shield concept and preventing bypass attacks</h2><div class="panel">
+<p>The purple <strong>Origin Shield</strong> box in the infographic conveys a design goal: keep backends insulated from unnecessary or hostile public traffic, and reduce repeated origin requests using appropriate edge caching. This is an architectural concept in the illustration, not necessarily a separate Azure product that you must deploy.</p>
+<p>The more important security question is: <strong>can an attacker reach the origin directly without going through Front Door?</strong> If yes, the attacker may evade your WAF policy entirely.</p>
+<div class="table-responsive"><table><thead><tr><th>Origin hardening option</th><th>What it achieves</th><th>Caution</th></tr></thead><tbody>
+<tr><td>Azure Front Door Premium Private Link (supported origins)</td><td>Private connectivity from Front Door to approved origins</td><td>Support depends on the origin type and configuration</td></tr>
+<tr><td>Origin access restrictions / network controls</td><td>Reduces routes that bypass Front Door</td><td>Do not rely on easily spoofed headers by themselves</td></tr>
+<tr><td>Origin request verification / host settings</td><td>Helps ensure requests are routed and authenticated as expected</td><td>Maintain correct DNS, host-header and TLS settings</td></tr>
+<tr><td>Cache static resources when appropriate</td><td>Offloads repeat requests from the backend</td><td>Never publicly cache user-specific responses containing private data</td></tr>
+</tbody></table></div>
+</div></section>
+
+<section class="block" id="tls"><h2>9. HTTPS, TLS termination and certificates</h2><div class="panel"><p>Front Door can terminate the client-side TLS connection at the global edge. It can then establish another secured connection to the backend origin using HTTPS. That means TLS is managed on <strong>two distinct network hops</strong>.</p>
+<div class="table-responsive"><table><thead><tr><th>Connection</th><th>Participants</th><th>Important controls</th></tr></thead><tbody>
+<tr><td>Client → Front Door</td><td>Browser/mobile/API client and Microsoft edge</td><td>Custom-domain certificate, HTTPS enforcement, supported TLS versions</td></tr>
+<tr><td>Front Door → Origin</td><td>Azure edge and origin backend</td><td>HTTPS origin protocol, valid certificate/hostname, correct origin host</td></tr>
+</tbody></table></div><p class="mb-0">TLS termination does not perform user authentication for your business APIs. Spring Security/Keycloak or Microsoft Entra ID remains responsible for validating application access tokens and authorization.</p>
+</div></section>
+
+<section class="block" id="spring"><h2>10. Commercial IT Bootcamp example: Spring Boot REST API behind Front Door</h2><div class="panel">
+<p>Suppose your Bootcamp e-commerce reference application hosts two copies of its Spring Boot Orders API in separate Azure regions, with a shared or replicated data strategy.</p>
+<div class="table-responsive"><table><thead><tr><th>Layer</th><th>Service</th><th>Responsibility</th></tr></thead><tbody>
+<tr><td>Public endpoint</td><td>Azure Front Door custom domain</td><td>Receives global HTTPS requests</td></tr>
+<tr><td>Edge filtering</td><td>Front Door WAF policy</td><td>Applies managed rules and rate limits</td></tr>
+<tr><td>Backends</td><td>App Service or AKS in two regions</td><td>Runs the Spring Boot 4 API</td></tr>
+<tr><td>Identity</td><td>Keycloak / Entra ID + Spring Security</td><td>Authenticates users and authorizes API calls</td></tr>
+<tr><td>Data layer</td><td>Managed SQL database</td><td>Stores orders and transactions; replication planned separately</td></tr>
+<tr><td>Observability</td><td>Azure Monitor / Log Analytics / Application Insights</td><td>Collects ingress, WAF, and app telemetry</td></tr>
+</tbody></table></div>
+<h3>Sample application health endpoint</h3>
+<pre>management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true</pre>
+<p class="smallprint">A production health endpoint must be reachable as required by the configured origin probes while avoiding exposure of sensitive actuator details.</p>
+<h3>Expected request path</h3>
+<pre>Customer Browser
+    → https://api.example.com/orders
+    → Azure Front Door edge
+    → WAF policy evaluation
+    → Origin group / healthy region
+    → Spring Boot REST API
+    → Spring Security authorization
+    → Order service + database</pre>
+</div></section>
+
+<section class="block" id="operations"><h2>11. Observability, operations and troubleshooting</h2><div class="panel">
+<div class="table-responsive"><table><thead><tr><th>Question</th><th>Signals to inspect</th><th>Likely team</th></tr></thead><tbody>
+<tr><td>Why is a request blocked?</td><td>WAF logs, policy mode, rule ID, request identifiers</td><td>Security + App team</td></tr>
+<tr><td>Why are requests returning 502/503?</td><td>Origin health, routing policy, backend availability, TLS configuration</td><td>Platform + SRE</td></tr>
+<tr><td>Why is latency high?</td><td>Edge metrics, cache ratio, origin latency, App Insights traces</td><td>SRE + App team</td></tr>
+<tr><td>Is this a DDoS event?</td><td>Traffic anomalies, rate limits, WAF telemetry, availability symptoms</td><td>SOC / Security</td></tr>
+<tr><td>Are users bypassing Front Door?</td><td>Origin ingress telemetry and access restriction rules</td><td>Network / Security</td></tr>
+</tbody></table></div>
+<div class="note"><strong>Operational principle:</strong> use consistent trace/request IDs across the edge and Spring Boot logs where possible. Correlating edge diagnostics with origin telemetry is essential to incident response.</div>
+</div></section>
+
+<section class="block" id="comparison"><h2>12. Front Door vs Azure Application Gateway vs Azure DDoS Protection</h2><div class="panel"><div class="table-responsive"><table><thead><tr><th>Service</th><th>Primary scope</th><th>Typical role</th></tr></thead><tbody>
+<tr><td><strong>Azure Front Door</strong></td><td>Global HTTP/HTTPS edge</td><td>Global application acceleration, WAF, origin routing and availability</td></tr>
+<tr><td><strong>Azure Application Gateway</strong></td><td>Regional application delivery</td><td>Regional Layer 7 load balancing and optional WAF</td></tr>
+<tr><td><strong>Azure DDoS Protection</strong></td><td>Network-layer protection for eligible public IPs/VNets</td><td>Protects supported network resources against volumetric/network attacks</td></tr>
+<tr><td><strong>Azure Firewall</strong></td><td>Network traffic control</td><td>Centralized network filtering across cloud network environments</td></tr>
+</tbody></table></div>
+<p>These products solve related but not identical problems. A well-designed system may combine Front Door with regional services and network security controls depending on its deployment requirements.</p>
+<p class="mb-0"><strong>Official reference:</strong> <a href="https://learn.microsoft.com/azure/frontdoor/front-door-overview" target="_blank" rel="noopener noreferrer">Azure Front Door overview (Microsoft Learn)</a>.</p>
+</div></section>
+
+<section class="block" id="lab"><h2>13. Hands-on design exercise and knowledge check</h2><div class="panel">
+<h3>Architecture assignment</h3><p>Design a multi-region retail checkout API using Azure Front Door, a WAF policy, health probes, two Spring Boot origins, Entra ID or Keycloak tokens, a managed database, and operational alerts. Identify exactly what happens when the primary origin fails and which controls stop clients from calling the origins directly.</p>
+<h3>Questions to answer</h3><ol>
+<li>What is the difference between network-layer DDoS mitigation and Layer 7 WAF filtering?</li>
+<li>Why should you restrict direct access to a backend origin?</li>
+<li>How do Front Door health probes affect routing decisions?</li>
+<li>Does HTTPS termination replace OAuth2 token validation?</li>
+<li>Why might caching help a static website but be dangerous for private order data?</li>
+</ol>
+<h3>Completion checklist</h3>
+<label class="check"><input type="checkbox"> I can identify every major component in <code>afd.png</code>.</label>
+<label class="check"><input type="checkbox"> I can describe the path from browser to Spring Boot API.</label>
+<label class="check"><input type="checkbox"> I can distinguish WAF, Front Door, Application Gateway and DDoS Protection.</label>
+<label class="check"><input type="checkbox"> I can explain origin hardening and regional failover.</label>
+<label class="check"><input type="checkbox"> I can explain what application security controls remain my responsibility.</label>
+</div></section>
+</article>
+</main>
+</html>

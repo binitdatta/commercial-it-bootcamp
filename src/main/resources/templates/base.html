@@ -9,6 +9,42 @@
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.8/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/bootcamp.css}">
     <link rel="stylesheet" th:href="@{/css/internships.css}">
+    <!-- Explicit click-to-expand Azure accordion; avoids unsupported third-level Bootstrap flyouts. -->
+    <style>
+        .internship-dropdown .azure-parent-button { width: 100%; border: 0; background: transparent; text-align: left; cursor: pointer; }
+        .internship-dropdown .azure-parent-button:focus-visible { outline: 2px solid #0d6efd; outline-offset: -2px; }
+        .internship-dropdown .azure-parent-button[aria-expanded="true"] { color: #0a58ca; background: #e9f2ff; font-weight: 600; }
+        .internship-dropdown .azure-chevron { font-size: 1.2rem; line-height: 1; transition: transform .12s ease; }
+        .internship-dropdown .azure-parent-button[aria-expanded="true"] .azure-chevron { transform: rotate(90deg); }
+        .internship-dropdown .azure-lessons-list[hidden] { display: none !important; }
+        .internship-dropdown .azure-lessons-list:not([hidden]) { display: block !important; margin: .2rem .3rem .45rem .7rem; padding: .25rem 0 .25rem .45rem; border-left: 3px solid #93c5fd; background: #f6faff; border-radius: 0 .35rem .35rem 0; max-height: 50vh; overflow-y: auto; }
+        .internship-dropdown .azure-lessons-list .dropdown-item { white-space: normal; padding: .55rem .6rem; }
+    </style>
+
+    <!-- AWS/GCP use nested, in-place accordions; do not change the working Azure implementation. -->
+    <style>
+      .internship-dropdown .cloud-course-toggle,.internship-dropdown .cloud-category-toggle {
+        border:0;background:transparent;width:100%;text-align:left;cursor:pointer;
+        white-space:normal;gap:.65rem;
+      }
+      .internship-dropdown [data-cloud-toggle]:focus-visible { outline:2px solid #0d6efd;outline-offset:-2px; }
+      .internship-dropdown [data-cloud-toggle][aria-expanded="true"]{background:#eaf3ff;color:#074aaf;font-weight:650;}
+      .internship-dropdown .cloud-menu-chevron{font-size:1.2rem;line-height:1;transition:transform .15s ease;flex:none;}
+      .internship-dropdown [data-cloud-toggle][aria-expanded="true"] .cloud-menu-chevron{transform:rotate(90deg);}
+      .internship-dropdown .cloud-course-list[hidden],.internship-dropdown .cloud-category-list[hidden]{display:none!important;}
+      .internship-dropdown .cloud-course-list:not([hidden]) {
+        display:block!important;margin:.15rem .3rem .45rem .65rem;padding:.28rem .2rem .35rem .42rem;
+        border-left:3px solid #79b6fa;background:#f7fbff;border-radius:0 .4rem .4rem 0;
+        max-height:min(64vh,550px);overflow-y:auto;overscroll-behavior:contain;
+      }
+      .internship-dropdown .cloud-category-list:not([hidden]){
+        display:block!important;margin:.1rem .15rem .35rem .6rem;padding:.2rem .1rem .25rem .35rem;
+        border-left:2px solid #b3d4fa;background:#fff;
+      }
+      .internship-dropdown .cloud-course-list .dropdown-item{white-space:normal;padding:.49rem .6rem;font-size:.85rem;}
+      .internship-dropdown .cloud-category-toggle{font-weight:600;font-size:.83rem;}
+      .internship-dropdown .cloud-category-list .dropdown-item{font-weight:400;font-size:.8rem;padding:.45rem .55rem;}
+    </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark boot-navbar sticky-top">
@@ -81,9 +117,209 @@
           <li><a class="dropdown-item" th:href="@{/internships/react-crash-course}">React Crash Course</a></li>
           <li><a class="dropdown-item" th:href="@{/internships/python-3-crash-course}">Python 3 Crash Course</a></li>
           <li class="dropdown-submenu"><div class="d-flex align-items-center"><a class="dropdown-item flex-grow-1" th:href="@{/internships/cloud-computing}">Cloud Computing</a><button class="submenu-toggle" type="button" aria-expanded="false" aria-label="Expand Cloud Computing">›</button></div><ul class="dropdown-menu">
-            <li><a class="dropdown-item" th:href="@{/internships/cloud-computing/aws}">AWS</a></li>
-            <li><a class="dropdown-item" th:href="@{/internships/cloud-computing/google-cloud}">Google Cloud</a></li>
-            <li><a class="dropdown-item" th:href="@{/internships/cloud-computing/azure}">Microsoft Azure</a></li>
+            <li class="cloud-course-group" data-provider="aws">
+              <button class="dropdown-item cloud-course-toggle d-flex justify-content-between align-items-center" type="button" data-cloud-toggle aria-controls="aws-lessons" aria-expanded="false"><span>Amazon Web Services (AWS)</span><span class="cloud-menu-chevron" aria-hidden="true">&#8250;</span></button>
+              <ul id="aws-lessons" class="cloud-course-list list-unstyled" hidden>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws}">Amazon Web Services (AWS) Foundations &amp; Overview</a></li>
+                <li class="cloud-category">
+                  <button class="dropdown-item cloud-category-toggle d-flex justify-content-between align-items-center" type="button" data-cloud-toggle aria-controls="aws-category-1" aria-expanded="false"><span>01 · Cloud Foundations &amp; IAM</span><span class="cloud-menu-chevron" aria-hidden="true">&#8250;</span></button>
+                  <ul id="aws-category-1" class="cloud-category-list list-unstyled" hidden>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/global-infrastructure}">Regions, AZs &amp; Global Infrastructure</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/accounts-organizations}">AWS Accounts &amp; Organizations</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/iam-identity-center}">IAM &amp; IAM Identity Center</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/iam-policies-roles}">IAM Policies, Roles &amp; STS</a></li>
+                  </ul>
+                </li>
+                <li class="cloud-category">
+                  <button class="dropdown-item cloud-category-toggle d-flex justify-content-between align-items-center" type="button" data-cloud-toggle aria-controls="aws-category-2" aria-expanded="false"><span>02 · VPC, Networking &amp; Connectivity</span><span class="cloud-menu-chevron" aria-hidden="true">&#8250;</span></button>
+                  <ul id="aws-category-2" class="cloud-category-list list-unstyled" hidden>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/vpc-foundations}">Amazon VPC &amp; CIDR</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/subnets-route-tables}">Subnets &amp; Route Tables</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/security-groups-nacls}">Security Groups &amp; Network ACLs</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/internet-nat-gateways}">Internet &amp; NAT Gateways</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/elastic-load-balancing}">Elastic Load Balancing (ALB/NLB)</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/route-53}">Amazon Route 53 (DNS)</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/transit-gateway-peering}">Transit Gateway &amp; VPC Peering</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/site-to-site-vpn-direct-connect}">Site-to-Site VPN &amp; Direct Connect</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/cloudfront-waf}">CloudFront &amp; AWS WAF</a></li>
+                  </ul>
+                </li>
+                <li class="cloud-category">
+                  <button class="dropdown-item cloud-category-toggle d-flex justify-content-between align-items-center" type="button" data-cloud-toggle aria-controls="aws-category-3" aria-expanded="false"><span>03 · Virtual Machines &amp; Compute</span><span class="cloud-menu-chevron" aria-hidden="true">&#8250;</span></button>
+                  <ul id="aws-category-3" class="cloud-category-list list-unstyled" hidden>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/ec2}">Amazon EC2 Virtual Machines</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/ebs}">Amazon EBS Volumes</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/auto-scaling}">EC2 Auto Scaling</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/elastic-beanstalk}">AWS Elastic Beanstalk</a></li>
+                  </ul>
+                </li>
+                <li class="cloud-category">
+                  <button class="dropdown-item cloud-category-toggle d-flex justify-content-between align-items-center" type="button" data-cloud-toggle aria-controls="aws-category-4" aria-expanded="false"><span>04 · Containers &amp; Serverless</span><span class="cloud-menu-chevron" aria-hidden="true">&#8250;</span></button>
+                  <ul id="aws-category-4" class="cloud-category-list list-unstyled" hidden>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/ecs-fargate}">Amazon ECS &amp; Fargate</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/eks}">Amazon EKS (Kubernetes)</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/ecr}">Amazon ECR</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/lambda}">AWS Lambda</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/api-gateway}">Amazon API Gateway</a></li>
+                  </ul>
+                </li>
+                <li class="cloud-category">
+                  <button class="dropdown-item cloud-category-toggle d-flex justify-content-between align-items-center" type="button" data-cloud-toggle aria-controls="aws-category-5" aria-expanded="false"><span>05 · Storage, Databases &amp; Caching</span><span class="cloud-menu-chevron" aria-hidden="true">&#8250;</span></button>
+                  <ul id="aws-category-5" class="cloud-category-list list-unstyled" hidden>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/s3}">Amazon S3</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/rds-aurora}">Amazon RDS &amp; Aurora</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/dynamodb}">Amazon DynamoDB</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/elasticache}">Amazon ElastiCache</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/efs}">Amazon EFS</a></li>
+                  </ul>
+                </li>
+                <li class="cloud-category">
+                  <button class="dropdown-item cloud-category-toggle d-flex justify-content-between align-items-center" type="button" data-cloud-toggle aria-controls="aws-category-6" aria-expanded="false"><span>06 · Integration &amp; Messaging</span><span class="cloud-menu-chevron" aria-hidden="true">&#8250;</span></button>
+                  <ul id="aws-category-6" class="cloud-category-list list-unstyled" hidden>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/sqs}">Amazon SQS</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/sns}">Amazon SNS</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/eventbridge}">Amazon EventBridge</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/step-functions}">AWS Step Functions</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/kinesis}">Amazon Kinesis</a></li>
+                  </ul>
+                </li>
+                <li class="cloud-category">
+                  <button class="dropdown-item cloud-category-toggle d-flex justify-content-between align-items-center" type="button" data-cloud-toggle aria-controls="aws-category-7" aria-expanded="false"><span>07 · Data Engineering &amp; AI</span><span class="cloud-menu-chevron" aria-hidden="true">&#8250;</span></button>
+                  <ul id="aws-category-7" class="cloud-category-list list-unstyled" hidden>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/glue}">AWS Glue</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/athena-redshift}">Athena &amp; Redshift</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/emr}">Amazon EMR</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/bedrock}">Amazon Bedrock</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/opensearch}">Amazon OpenSearch Service</a></li>
+                  </ul>
+                </li>
+                <li class="cloud-category">
+                  <button class="dropdown-item cloud-category-toggle d-flex justify-content-between align-items-center" type="button" data-cloud-toggle aria-controls="aws-category-8" aria-expanded="false"><span>08 · Security, DevOps &amp; Operations</span><span class="cloud-menu-chevron" aria-hidden="true">&#8250;</span></button>
+                  <ul id="aws-category-8" class="cloud-category-list list-unstyled" hidden>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/kms-secrets-manager}">AWS KMS &amp; Secrets Manager</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/cloudwatch-cloudtrail}">CloudWatch &amp; CloudTrail</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/config-security-hub}">AWS Config &amp; Security Hub</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/cloudformation-cdk}">CloudFormation &amp; AWS CDK</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/codepipeline}">AWS CodePipeline</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/aws/backup-disaster-recovery}">AWS Backup &amp; Disaster Recovery</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li class="cloud-course-group" data-provider="google-cloud">
+              <button class="dropdown-item cloud-course-toggle d-flex justify-content-between align-items-center" type="button" data-cloud-toggle aria-controls="google-cloud-lessons" aria-expanded="false"><span>Google Cloud (GCP)</span><span class="cloud-menu-chevron" aria-hidden="true">&#8250;</span></button>
+              <ul id="google-cloud-lessons" class="cloud-course-list list-unstyled" hidden>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud}">Google Cloud (GCP) Foundations &amp; Overview</a></li>
+                <li class="cloud-category">
+                  <button class="dropdown-item cloud-category-toggle d-flex justify-content-between align-items-center" type="button" data-cloud-toggle aria-controls="google-cloud-category-1" aria-expanded="false"><span>01 · Cloud Foundations &amp; IAM</span><span class="cloud-menu-chevron" aria-hidden="true">&#8250;</span></button>
+                  <ul id="google-cloud-category-1" class="cloud-category-list list-unstyled" hidden>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/global-infrastructure}">Regions, Zones &amp; Global Infrastructure</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/resource-hierarchy}">Organizations, Folders &amp; Projects</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/iam-service-accounts}">Cloud IAM &amp; Service Accounts</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/org-policy}">Organization Policy &amp; Resource Governance</a></li>
+                  </ul>
+                </li>
+                <li class="cloud-category">
+                  <button class="dropdown-item cloud-category-toggle d-flex justify-content-between align-items-center" type="button" data-cloud-toggle aria-controls="google-cloud-category-2" aria-expanded="false"><span>02 · VPC, Networking &amp; Connectivity</span><span class="cloud-menu-chevron" aria-hidden="true">&#8250;</span></button>
+                  <ul id="google-cloud-category-2" class="cloud-category-list list-unstyled" hidden>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/vpc-foundations}">VPC Networks &amp; IP Ranges</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/subnets-firewall}">Subnets &amp; VPC Firewall Rules</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/routes-cloud-nat}">Routes, Cloud Router &amp; Cloud NAT</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/cloud-load-balancing}">Cloud Load Balancing (L4/L7)</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/cloud-dns}">Cloud DNS</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/vpc-peering-ncc}">VPC Peering &amp; Network Connectivity Center</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/cloud-vpn-interconnect}">Cloud VPN &amp; Cloud Interconnect</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/cloud-armor-cdn}">Cloud Armor &amp; Cloud CDN</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/private-service-connect}">Private Service Connect</a></li>
+                  </ul>
+                </li>
+                <li class="cloud-category">
+                  <button class="dropdown-item cloud-category-toggle d-flex justify-content-between align-items-center" type="button" data-cloud-toggle aria-controls="google-cloud-category-3" aria-expanded="false"><span>03 · Virtual Machines &amp; Compute</span><span class="cloud-menu-chevron" aria-hidden="true">&#8250;</span></button>
+                  <ul id="google-cloud-category-3" class="cloud-category-list list-unstyled" hidden>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/compute-engine}">Compute Engine VMs</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/persistent-disk}">Persistent Disk &amp; Hyperdisk</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/managed-instance-groups}">Managed Instance Groups &amp; Autoscaling</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/app-engine}">App Engine</a></li>
+                  </ul>
+                </li>
+                <li class="cloud-category">
+                  <button class="dropdown-item cloud-category-toggle d-flex justify-content-between align-items-center" type="button" data-cloud-toggle aria-controls="google-cloud-category-4" aria-expanded="false"><span>04 · Containers &amp; Serverless</span><span class="cloud-menu-chevron" aria-hidden="true">&#8250;</span></button>
+                  <ul id="google-cloud-category-4" class="cloud-category-list list-unstyled" hidden>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/gke}">Google Kubernetes Engine (GKE)</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/cloud-run}">Cloud Run</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/artifact-registry}">Artifact Registry</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/cloud-functions}">Cloud Run Functions</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/api-gateway-apigee}">API Gateway &amp; Apigee</a></li>
+                  </ul>
+                </li>
+                <li class="cloud-category">
+                  <button class="dropdown-item cloud-category-toggle d-flex justify-content-between align-items-center" type="button" data-cloud-toggle aria-controls="google-cloud-category-5" aria-expanded="false"><span>05 · Storage, Databases &amp; Caching</span><span class="cloud-menu-chevron" aria-hidden="true">&#8250;</span></button>
+                  <ul id="google-cloud-category-5" class="cloud-category-list list-unstyled" hidden>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/cloud-storage}">Cloud Storage</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/cloud-sql}">Cloud SQL</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/alloydb}">AlloyDB for PostgreSQL</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/firestore}">Firestore</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/spanner}">Spanner</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/memorystore}">Memorystore</a></li>
+                  </ul>
+                </li>
+                <li class="cloud-category">
+                  <button class="dropdown-item cloud-category-toggle d-flex justify-content-between align-items-center" type="button" data-cloud-toggle aria-controls="google-cloud-category-6" aria-expanded="false"><span>06 · Integration &amp; Messaging</span><span class="cloud-menu-chevron" aria-hidden="true">&#8250;</span></button>
+                  <ul id="google-cloud-category-6" class="cloud-category-list list-unstyled" hidden>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/pub-sub}">Pub/Sub</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/eventarc}">Eventarc</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/workflows}">Workflows</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/cloud-tasks-scheduler}">Cloud Tasks &amp; Cloud Scheduler</a></li>
+                  </ul>
+                </li>
+                <li class="cloud-category">
+                  <button class="dropdown-item cloud-category-toggle d-flex justify-content-between align-items-center" type="button" data-cloud-toggle aria-controls="google-cloud-category-7" aria-expanded="false"><span>07 · Data Engineering &amp; AI</span><span class="cloud-menu-chevron" aria-hidden="true">&#8250;</span></button>
+                  <ul id="google-cloud-category-7" class="cloud-category-list list-unstyled" hidden>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/dataflow}">Dataflow</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/dataproc}">Dataproc</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/bigquery}">BigQuery</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/data-fusion}">Cloud Data Fusion</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/vertex-ai}">Vertex AI</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/vertex-ai-search}">Vertex AI Search</a></li>
+                  </ul>
+                </li>
+                <li class="cloud-category">
+                  <button class="dropdown-item cloud-category-toggle d-flex justify-content-between align-items-center" type="button" data-cloud-toggle aria-controls="google-cloud-category-8" aria-expanded="false"><span>08 · Security, DevOps &amp; Operations</span><span class="cloud-menu-chevron" aria-hidden="true">&#8250;</span></button>
+                  <ul id="google-cloud-category-8" class="cloud-category-list list-unstyled" hidden>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/secret-manager-kms}">Secret Manager &amp; Cloud KMS</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/cloud-monitoring-logging}">Cloud Monitoring &amp; Logging</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/security-command-center}">Security Command Center</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/cloud-build-deploy}">Cloud Build &amp; Cloud Deploy</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/terraform-infrastructure}">Infrastructure as Code &amp; Terraform</a></li>
+                    <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/google-cloud/backup-disaster-recovery}">Backup and DR Service</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li class="azure-lesson-group">
+              <button id="azure-lessons-toggle" class="dropdown-item azure-parent-button d-flex justify-content-between align-items-center" type="button" aria-controls="azure-lessons-list" aria-expanded="false">
+                <span>Microsoft Azure</span><span class="azure-chevron" aria-hidden="true">&#8250;</span>
+              </button>
+              <ul id="azure-lessons-list" class="azure-lessons-list list-unstyled" hidden>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure}">Azure Foundations &amp; Enterprise Lab</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/global-cloud-architecture}">Azure Global Cloud Architecture</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/virtual-network-isolation}">Azure Virtual Networks &amp; Tenant Isolation</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/key-vault}">Azure Key Vault</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/event-hubs}">Azure Event Hubs — Real-Time Streaming</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/aks-kubernetes}">Kubernetes Architecture &amp; Azure AKS</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/front-door-ddos}">Azure Front Door — WAF &amp; DDoS Protection</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/data-factory}">Azure Data Factory — ETL &amp; Data Pipelines</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/iam-network-security}">Azure IAM &amp; Network Security</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/databricks}">Azure Databricks — Retail Lakehouse &amp; AI</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/app-service-high-availability}">Azure App Service — Multi-Region High Availability</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/api-management}">Azure API Management — Enterprise API Gateway</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/infrastructure-networking}">Azure Infrastructure &amp; Networking — VMs, Gateways &amp; DNS</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/ai-chatbot-foundry-rag}">Azure AI Chatbot — Foundry, OpenAI &amp; AI Search</a></li>
+                <li><a class="dropdown-item small" th:href="@{/internships/cloud-computing/azure/logic-apps-event-grid}">Azure Logic Apps &amp; Event Grid — AI Chatbot Integration</a></li>
+                <!-- Append future Azure lessons here, using links to their mapped controllers. -->
+              </ul>
+            </li>
+            <li><a class="dropdown-item" th:href="@{/internships/cloud-computing/virtual-machines}">Virtual Machines Explained</a></li>
           </ul></li>
           <li><a class="dropdown-item" th:href="@{/internships/git-deep-dive}">Git Deep Dive Workflow</a></li>
         </ul></li>
@@ -121,5 +357,47 @@
 <script th:src="@{/webjars/bootstrap/5.3.8/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/bootcamp.js}"></script>
 <script th:src="@{/js/internships.js}"></script>
+<script>
+  // Azure is an in-place accordion, not a Bootstrap dropdown-submenu.
+  // Stop bubbling so Bootstrap's parent dropdown remains open while expanding it.
+  document.addEventListener('DOMContentLoaded', function () {
+    const toggle = document.getElementById('azure-lessons-toggle');
+    const lessons = document.getElementById('azure-lessons-list');
+    if (!toggle || !lessons) return;
+    toggle.addEventListener('click', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      const opening = lessons.hidden;
+      lessons.hidden = !opening;
+      toggle.setAttribute('aria-expanded', String(opening));
+    });
+    // Don't collapse the surrounding dropdown when moving focus within the Azure list.
+    lessons.addEventListener('click', function (event) { event.stopPropagation(); });
+  });
+</script>
+
+<script>
+  // In-place accordion for AWS/GCP. Event delegation works at both category levels.
+  // Stop the click from reaching Bootstrap so the parent Internships dropdown stays open.
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.internship-dropdown .cloud-course-group').forEach(function(group) {
+      group.addEventListener('click', function(event) {
+        const button = event.target.closest('[data-cloud-toggle]');
+        if (button && group.contains(button)) {
+          event.preventDefault();
+          event.stopPropagation();
+          const list = document.getElementById(button.getAttribute('aria-controls'));
+          if (!list) return;
+          const opening = list.hidden;
+          list.hidden = !opening;
+          button.setAttribute('aria-expanded', String(opening));
+          return;
+        }
+        // Links continue to navigate normally, without prematurely dismissing an accordion.
+        event.stopPropagation();
+      });
+    });
+  });
+</script>
 </body>
 </html>

@@ -42,7 +42,8 @@ public class InternshipController {
         TOPICS.put("cloud-computing", Map.ofEntries(
             Map.entry("aws", "AWS"),
             Map.entry("google-cloud", "Google Cloud"),
-            Map.entry("azure", "Microsoft Azure")
+            Map.entry("azure", "Microsoft Azure"),
+            Map.entry("virtual-machines", "Virtual Machines Explained")
         ));
         SECTIONS.put("git-deep-dive", "Git Deep Dive Workflow");
     }
@@ -91,6 +92,7 @@ public class InternshipController {
         if ("cloud-computing".equals(section) && "aws".equals(topic)) return "internships/lesson-aws";
         if ("cloud-computing".equals(section) && "google-cloud".equals(topic)) return "internships/lesson-google-cloud";
         if ("cloud-computing".equals(section) && "azure".equals(topic)) return "internships/lesson-azure";
+        if ("cloud-computing".equals(section) && "virtual-machines".equals(topic)) return "internships/virtual-machines-explained";
         return "internships/topic";
     }
 }

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('Azure Event Hubs — Real-Time Streaming', 'Deep-dive teaching lesson on event producers, Event Hubs partitions, consumer groups, checkpoints, replay, capture, streaming integrations and enterprise use cases', ~{::main})}">
+<main>
+  <article class="eh-lesson container-fluid px-0">
+    <style>
+      .eh-lesson{max-width:1220px;margin:0 auto;color:#172941}
+      .eh-lesson h1{font-weight:800;letter-spacing:-.025em;font-size:clamp(2rem,3.4vw,3rem)}
+      .eh-lesson h2{font-size:1.45rem;font-weight:800;letter-spacing:-.015em}
+      .eh-lesson h3{font-size:1.07rem;font-weight:750}
+      .eh-lesson p,.eh-lesson li{line-height:1.7}
+      .eh-lesson .hero{background:linear-gradient(115deg,#fdfefe,#e7f2ff);border:1px solid #cfe0fa;border-radius:20px;padding:2rem}
+      .eh-lesson .eyebrow{font-size:.77rem;font-weight:800;color:#075bd3;letter-spacing:.12em;text-transform:uppercase}
+      .eh-lesson .panel{border:1px solid #d7e4f4;border-radius:14px;background:#fff;padding:1.35rem;margin:.85rem 0;box-shadow:0 3px 12px rgba(13,48,91,.035)}
+      .eh-lesson .section{margin-top:2rem;scroll-margin-top:95px}
+      .eh-lesson .tint{background:#f3f8ff}
+      .eh-lesson .toc{display:flex;flex-wrap:wrap;gap:.65rem 1rem;padding:1rem;background:#fff;border:1px solid #d7e4f4;border-radius:12px;margin-top:1.15rem}
+      .eh-lesson .toc a{font-size:.86rem;text-decoration:none;font-weight:650}
+      .eh-lesson .chip{background:#e7f0ff;border-radius:25px;padding:.25rem .7rem;font-size:.79rem;font-weight:700;color:#1351a6;display:inline-block;margin:.22rem .25rem 0 0}
+      .eh-lesson .diagram{display:block;width:100%;height:auto;border:1px solid #d7e4f4;border-radius:13px;background:#fff}
+      .eh-lesson th{background:#eaf2fd!important;color:#123e78;font-weight:750}
+      .eh-lesson td,.eh-lesson th{padding:.78rem .85rem!important;vertical-align:top}
+      .eh-lesson table{border-color:#d8e4f1}
+      .eh-lesson pre{background:#112b48;color:#f5fbff;border-radius:12px;padding:1.3rem;overflow-x:auto;font-size:.85rem;line-height:1.65}
+      .eh-lesson :not(pre)>code{background:#eaf2fd;color:#14529b;padding:.12rem .3rem;border-radius:4px}
+      .eh-lesson .note{border-left:4px solid #2376df;background:#eff6ff;padding:1rem 1.15rem;border-radius:4px}
+      .eh-lesson .check{background:#fff;border:1px solid #d9e5f2;padding:.67rem 1rem;border-radius:9px;display:block;margin:.5rem 0}
+      .eh-lesson .step{font-size:1rem;color:#0c58c2;font-weight:800}
+      @media(max-width:767px){.eh-lesson .hero{padding:1.25rem}.eh-lesson .panel{padding:1rem}}
+    </style>
+
+    <a class="d-inline-block fw-semibold text-decoration-none mb-3" th:href="@{/internships/cloud-computing/azure}">← Azure Foundations &amp; Enterprise Lab</a>
+    <header class="hero">
+      <div class="eyebrow mb-2">Internships · Cloud Computing · Microsoft Azure · Data Engineering</div>
+      <h1>How Azure Event Hubs Works</h1>
+      <p class="lead text-secondary mb-3">From millions of incoming events to real-time analytics: understand producers, namespaces, partitions, consumers, retention, replay, Capture, and integration with Azure services.</p>
+      <div><span class="chip">Event streaming</span><span class="chip">Partitions</span><span class="chip">Consumer groups</span><span class="chip">AMQP / HTTPS</span><span class="chip">Event retention</span><span class="chip">Azure Functions</span><span class="chip">Data Lake</span></div>
+    </header>
+
+    <nav class="toc" aria-label="Lesson section navigation">
+      <a href="#architecture">Diagram</a><a href="#simple">Simple explanation</a><a href="#components">Architecture components</a>
+      <a href="#partitions">Partitions &amp; ordering</a><a href="#consumer-groups">Consumer groups</a>
+      <a href="#retention">Retention &amp; replay</a><a href="#security">Security</a><a href="#walkthrough">End-to-end flow</a>
+      <a href="#java">Spring Boot integration</a><a href="#comparison">Event Hubs vs messaging</a><a href="#operations">Operations</a><a href="#exercise">Exercise</a>
+    </nav>
+
+    <section class="section" id="architecture">
+      <h2>1. Read the architecture image from left to right</h2>
+      <div class="panel tint">
+        <p>The left column shows <strong>event producers</strong>; the center is the managed <strong>Azure Event Hubs</strong> platform; and the right column contains <strong>event consumers</strong> that analyze, transform, alert on, or archive the stream. The lower portion illustrates data retention, Capture, replay, and an end-to-end example.</p>
+        <img class="diagram img-fluid" th:src="@{/images/azure-event-hub.png}" alt="Azure Event Hubs architecture showing event producers, namespace, partitioned append-only event hub, consumers, event retention, capture, replay and a real-time flow"/>
+        <p class="small text-secondary mt-3 mb-0"><strong>Teaching note:</strong> The illustration is conceptual. Specific retention limits, throughput, replication, security options, and features depend on the Azure Event Hubs tier and configuration.</p>
+      </div>
+    </section>
+
+    <section class="section" id="simple">
+      <h2>2. What is Azure Event Hubs? A simple analogy</h2>
+      <div class="panel">
+        <p>Imagine a huge <strong>railway station</strong> receiving streams of information instead of passengers. Thousands of stores, websites, vehicles and sensors continuously send events into the station. The platform accepts the arriving events, stores them temporarily in ordered tracks called <strong>partitions</strong>, and lets different teams read the same incoming stream independently.</p>
+        <p>One team tracks sales trends; another detects fraud; another archives data. They do not need each producer to communicate separately with every downstream system.</p>
+        <div class="table-responsive"><table class="table table-bordered table-striped mb-0">
+          <thead><tr><th>Railway analogy</th><th>Event Hubs concept</th><th>Why it matters</th></tr></thead>
+          <tbody><tr><td>Trains arriving continuously</td><td>Producers publishing events</td><td>Ingestion at high volume</td></tr>
+          <tr><td>Multiple tracks</td><td>Partitions</td><td>Parallel storage and processing</td></tr>
+          <tr><td>Timetabled arrival log</td><td>Append-only event sequence</td><td>Consumers can read events in sequence</td></tr>
+          <tr><td>Different departments inspecting arrivals</td><td>Consumer groups</td><td>Independent reader positions</td></tr>
+          <tr><td>Reviewing yesterday's recorded arrivals</td><td>Replay within retention</td><td>Recovery and reprocessing</td></tr></tbody></table></div>
+      </div>
+    </section>
+
+    <section class="section" id="components">
+      <h2>3. Key architecture components</h2>
+      <div class="panel">
+        <div class="table-responsive"><table class="table table-bordered table-striped">
+          <thead><tr><th>Component</th><th>What it does</th><th>Enterprise example</th></tr></thead>
+          <tbody>
+          <tr><td><strong>Event producer</strong></td><td>Publishes records/events.</td><td>A POS system sends a completed-sale event.</td></tr>
+          <tr><td><strong>Namespace</strong></td><td>Administrative container and endpoint for Event Hubs resources.</td><td><code>retail-streaming-prod</code></td></tr>
+          <tr><td><strong>Event hub</strong></td><td>Named ingestion stream containing partitions.</td><td><code>sales-events</code></td></tr>
+          <tr><td><strong>Partition</strong></td><td>Append-only ordered sequence of events with offsets.</td><td>Store 108's events follow one ordered sequence when consistently keyed.</td></tr>
+          <tr><td><strong>Consumer group</strong></td><td>Independent view of a stream for a reading application.</td><td>Fraud analytics and BI read independently.</td></tr>
+          <tr><td><strong>Checkpoint</strong></td><td>Application-maintained record of how far a consumer processed.</td><td>Resume after an application restart.</td></tr>
+          <tr><td><strong>Event Hubs Capture</strong></td><td>Optionally writes batches of stream data to Azure Storage or Azure Data Lake Storage.</td><td>Long-term data-lake ingestion.</td></tr>
+          </tbody></table></div>
+        <div class="note"><strong>Important:</strong> An event hub is not a relational database. It is designed for high-volume event ingestion and sequential consumption, not ad hoc SQL queries or transactional updates.</div>
+      </div>
+    </section>
+
+    <section class="section" id="partitions">
+      <h2>4. How partitions, partition keys, and ordering work</h2>
+      <div class="panel">
+        <p>Azure Event Hubs distributes events across partitions to allow ingestion and consumption in parallel. A producer may supply a <strong>partition key</strong> to consistently direct related events to the same partition. An event's <strong>offset</strong> identifies its location in that partition's append-only sequence.</p>
+        <div class="table-responsive"><table class="table table-bordered">
+          <thead><tr><th>Example</th><th>Partition</th><th>Processing implication</th></tr></thead>
+          <tbody><tr><td>Store ID <code>108</code> → sale #1001, #1002, #1003</td><td>Consistent partition chosen from key 108</td><td>The store's events preserve their order <em>within that partition</em>.</td></tr>
+          <tr><td>Store ID <code>205</code> → sale #4001, #4002</td><td>May map to another partition</td><td>Can be processed in parallel with store 108.</td></tr></tbody></table></div>
+        <p><strong>Ordering guarantee:</strong> ordering is per partition, not globally across every partition. Partition count and capacity configuration should be planned before production deployment.</p>
+      </div>
+    </section>
+
+    <section class="section" id="consumer-groups">
+      <h2>5. How independent consumer groups work</h2>
+      <div class="panel">
+        <p>One event can be processed by multiple applications without being removed when the first application reads it. Each application uses its own <strong>consumer group</strong> and maintains its own checkpoints.</p>
+        <div class="table-responsive"><table class="table table-bordered table-striped mb-0">
+          <thead><tr><th>Consumer group</th><th>Reads</th><th>Action</th></tr></thead>
+          <tbody><tr><td><code>fraud-detector</code></td><td>Sales and refund events</td><td>Flags suspicious transaction patterns.</td></tr>
+          <tr><td><code>inventory-analytics</code></td><td>Sales events</td><td>Updates stock forecasts.</td></tr>
+          <tr><td><code>lake-archiver</code></td><td>Sales events</td><td>Writes records for historical reporting.</td></tr></tbody></table></div>
+        <p class="mt-3 mb-0">Inside a processing application, consumers coordinate partition ownership so that one consumer in the group normally processes a given partition at a time. Checkpointing helps processing resume after a failure. Applications should still be designed to handle repeated delivery safely.</p>
+      </div>
+    </section>
+
+    <section class="section" id="retention">
+      <h2>6. Retention, replay and long-term archiving</h2>
+      <div class="panel">
+        <p>Event Hubs keeps ingested events for a <strong>configurable retention period</strong>. During that period, consumers can start reading from an earlier offset or timestamp to replay data. After events age out, the Event Hubs stream no longer provides them.</p>
+        <div class="table-responsive"><table class="table table-bordered table-striped">
+          <thead><tr><th>Capability</th><th>Purpose</th><th>Limitation</th></tr></thead>
+          <tbody><tr><td>Retention</td><td>Temporary durable event stream</td><td>Duration varies with tier/configuration.</td></tr>
+          <tr><td>Replay</td><td>Reprocess previously ingested events</td><td>Only possible for still-retained events.</td></tr>
+          <tr><td>Capture</td><td>Automatically archive batches to Blob Storage or ADLS</td><td>Requires configuration and additional storage.</td></tr>
+          <tr><td>Checkpointing</td><td>Remember consumer progress</td><td>Managed by consumer application/framework, not an acknowledgement-based queue.</td></tr></tbody></table></div>
+        <div class="note">The diagram shows an example of one to seven days by default and up to 90 days. Do not treat these as universal limits: verify the supported retention range for your chosen Event Hubs tier before planning recovery or compliance requirements.</div>
+      </div>
+    </section>
+
+    <section class="section" id="security">
+      <h2>7. Authentication and network security</h2>
+      <div class="panel">
+        <p>The infographic lists Microsoft Entra ID, Shared Access Signatures (SAS), and managed identities. For Azure-hosted applications, <strong>managed identity + Azure RBAC</strong> is commonly preferred because it avoids storing a long-lived shared access key in application configuration.</p>
+        <div class="table-responsive"><table class="table table-bordered">
+          <thead><tr><th>Security control</th><th>Responsibility</th></tr></thead>
+          <tbody><tr><td>Entra ID and RBAC</td><td>Authorizes data senders, receivers and management operations using least privilege.</td></tr>
+          <tr><td>Managed identity</td><td>Allows supported Azure workloads to obtain access tokens without embedding credentials.</td></tr>
+          <tr><td>SAS policies</td><td>Shared-key-based authorization when required; protect keys carefully.</td></tr>
+          <tr><td>TLS and private endpoints</td><td>Protect in-transit communication and restrict network exposure where applicable.</td></tr>
+          <tr><td>Monitoring and diagnostics</td><td>Provide insight into errors, throttling, throughput and suspicious access.</td></tr></tbody></table></div>
+      </div>
+    </section>
+
+    <section class="section" id="walkthrough">
+      <h2>8. End-to-end retail event-streaming example</h2>
+      <div class="panel">
+        <ol class="mb-0">
+          <li><span class="step">Produce:</span> a retail store records a purchase in its POS application.</li>
+          <li><span class="step">Publish:</span> the POS backend sends a <code>SaleCompleted</code> event to an Azure Event Hub using an authenticated SDK or supported protocol.</li>
+          <li><span class="step">Partition:</span> Event Hubs appends the event to a partition, using the store ID as a partition key where appropriate.</li>
+          <li><span class="step">Consume:</span> Azure Functions, Stream Analytics, Databricks or a Spring Boot consumer application reads the event.</li>
+          <li><span class="step">Process:</span> the consumer validates/enriches data and updates the dashboard, alerts or downstream services.</li>
+          <li><span class="step">Archive:</span> Capture or a downstream archiving consumer stores events in Azure Blob Storage / ADLS for later analytics.</li>
+          <li><span class="step">Recover:</span> after a failure, a consumer restarts from its checkpoint or replays from an earlier retained offset when needed.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="java">
+      <h2>9. Practical Spring Boot and Java integration concepts</h2>
+      <div class="panel">
+        <p>Spring Boot services can publish to Event Hubs using the Azure Event Hubs Java SDK. A receiving application can use a processor client with checkpoint storage, or a supported Spring Cloud Azure integration.</p>
+        <h3>Illustrative event payload</h3>
+        <pre>{
+  "eventType": "SaleCompleted",
+  "eventId": "sale-1001",
+  "storeId": "108",
+  "orderId": "ORD-90210",
+  "amount": 129.95,
+  "currency": "USD",
+  "occurredAt": "2026-10-13T14:20:00Z"
+}</pre>
+        <h3>Conceptual integration design</h3>
+        <div class="table-responsive"><table class="table table-bordered table-striped">
+          <thead><tr><th>Application component</th><th>Responsibility</th></tr></thead>
+          <tbody><tr><td>Spring Boot REST API</td><td>Accepts/validates the incoming order; stores the transaction reliably.</td></tr>
+          <tr><td>Event publisher</td><td>Emits a <code>SaleCompleted</code> event (ideally through an outbox or equivalent reliability pattern).</td></tr>
+          <tr><td>Azure Event Hub</td><td>Ingests and retains the event stream across partitions.</td></tr>
+          <tr><td>Fraud consumer</td><td>Processes sale data and triggers high-risk alerts.</td></tr>
+          <tr><td>Analytics consumer</td><td>Aggregates KPIs and updates dashboards.</td></tr></tbody></table></div>
+        <div class="note"><strong>Architecture principle:</strong> publishing an event is not the same as committing a database transaction. Consider the transactional outbox pattern where consistency between committed business data and emitted events is critical.</div>
+      </div>
+    </section>
+
+    <section class="section" id="comparison">
+      <h2>10. When to choose Event Hubs, Service Bus or Event Grid</h2>
+      <div class="panel">
+        <div class="table-responsive"><table class="table table-bordered table-striped mb-0">
+          <thead><tr><th>Azure service</th><th>Designed primarily for</th><th>Use it for</th></tr></thead>
+          <tbody><tr><td><strong>Event Hubs</strong></td><td>High-throughput event streaming and telemetry ingestion</td><td>Clickstreams, IoT telemetry, POS analytics, application logs.</td></tr>
+          <tr><td><strong>Service Bus</strong></td><td>Enterprise messaging with queues and topics</td><td>Reliable commands, workflow coordination, dead-letter handling.</td></tr>
+          <tr><td><strong>Event Grid</strong></td><td>Event routing and reactive event distribution</td><td>Trigger actions when a file arrives or a resource changes.</td></tr></tbody></table></div>
+        <p class="mt-3 mb-0">The infographic includes Service Bus / Queues among ecosystem consumers. These technologies complement Event Hubs, but they have different delivery, acknowledgement and processing semantics.</p>
+      </div>
+    </section>
+
+    <section class="section" id="operations">
+      <h2>11. Production considerations and monitoring</h2>
+      <div class="panel">
+        <div class="table-responsive"><table class="table table-bordered table-striped">
+          <thead><tr><th>Concern</th><th>What a production team plans</th></tr></thead>
+          <tbody><tr><td>Throughput and capacity</td><td>Tier, throughput/processing units, partitions, and ingress/egress limits.</td></tr>
+          <tr><td>Consumer lag</td><td>How far processing falls behind producers and how to alert.</td></tr>
+          <tr><td>Checkpoint storage</td><td>Highly available and appropriately secured storage for consumer progress.</td></tr>
+          <tr><td>Duplicate processing</td><td>Idempotent handlers, business event IDs and safe retries.</td></tr>
+          <tr><td>Retention and DR</td><td>Recovery objectives, replay window, Capture strategy and regional resilience.</td></tr>
+          <tr><td>Cost</td><td>Provisioned capacity, retained data, Capture/storage and processing cost.</td></tr></tbody></table></div>
+        <p class="mb-0"><strong>Official reference:</strong> <a href="https://learn.microsoft.com/azure/event-hubs/event-hubs-about" target="_blank" rel="noopener noreferrer">Azure Event Hubs overview (Microsoft Learn)</a>.</p>
+      </div>
+    </section>
+
+    <section class="section" id="exercise">
+      <h2>12. Knowledge check and capstone exercise</h2>
+      <div class="panel">
+        <h3>Explain in your own words</h3>
+        <ol><li>Why is Event Hubs called an append-only log?</li>
+          <li>Can a fraud consumer and BI consumer read the same event independently?</li>
+          <li>Is event ordering guaranteed across all partitions?</li>
+          <li>What do consumer checkpoints do?</li>
+          <li>How is Event Hubs different from Service Bus?</li></ol>
+        <h3>Capstone exercise</h3>
+        <p>Design a retail architecture in which <strong>500 stores</strong> send POS sales to Azure Event Hubs. Use separate consumer groups for fraud, inventory and analytics. Specify a partition-key strategy, event schema, managed-identity permissions, checkpoint storage, observability, data-lake archiving and a replay procedure.</p>
+        <h3>Completion checklist</h3>
+        <label class="check"><input type="checkbox"> I can identify producers, namespace, hub, partitions and consumers.</label>
+        <label class="check"><input type="checkbox"> I can distinguish partitions from consumer groups.</label>
+        <label class="check"><input type="checkbox"> I can explain retention, replay, Capture and checkpointing.</label>
+        <label class="check"><input type="checkbox"> I can describe an Azure-to-Spring Boot event integration.</label>
+        <label class="check"><input type="checkbox"> I can explain when Service Bus is a better fit.</label>
+      </div>
+    </section>
+  </article>
+</main>
+</html>

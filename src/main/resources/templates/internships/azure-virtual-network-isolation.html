@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('Azure Virtual Networks and Tenant Isolation', 'Understanding Azure VNets, subnets, NSGs, routing and multi-tenant isolation on shared hardware', ~{::main})}">
+<main>
+<style>
+.avni{max-width:1380px;margin:auto;color:#1b2b42;line-height:1.7;--ab:#0864c8;--an:#082e68;--line:#d5e3f4;--pale:#eff6ff}
+.avni .hero{background:linear-gradient(115deg,#e8f3ff,#fff 73%);border:1px solid #d0e1f7;border-radius:17px;padding:2rem 2.2rem;margin-bottom:1.4rem}
+.avni .eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:.77rem;font-weight:800;color:var(--ab)}
+.avni h1{font-size:clamp(2rem,3.4vw,3rem);font-weight:800;letter-spacing:-.035em;color:var(--an)}
+.avni h2{font-size:1.5rem;color:var(--an);font-weight:800;margin-bottom:1rem}.avni h3{font-size:1.13rem;color:#0757a4;font-weight:750}
+.avni .chapter{scroll-margin-top:95px;margin:1.75rem 0}.avni .paper{background:#fff;border:1px solid var(--line);border-radius:14px;padding:1.5rem;margin-top:.9rem;box-shadow:0 3px 14px rgba(13,50,100,.045)}
+.avni .paper.soft{background:#f5f9ff}.avni .pill{display:inline-block;padding:.25rem .7rem;margin:.15rem;background:#e3efff;color:#0754b8;border-radius:99px;font-weight:700;font-size:.8rem}
+.avni .num{display:inline-grid;place-items:center;background:#0864c8;color:#fff;border-radius:50%;width:2.1rem;height:2.1rem;margin-right:.6rem;font-size:1rem;vertical-align:middle}
+.avni .toc{display:flex;flex-wrap:wrap;gap:.65rem;background:#fff;border:1px solid var(--line);border-radius:12px;padding:1rem;margin-bottom:1.4rem}.avni .toc a{text-decoration:none;font-weight:650;font-size:.86rem}
+.avni .diagram{background:white;border:1px solid var(--line);border-radius:14px;padding:1rem}.avni .diagram img{display:block;width:100%;height:auto}
+.avni table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid #d2e0f1;border-radius:10px;overflow:hidden;margin:.5rem 0 0}.avni th{background:#e5f0ff;color:#113d7a;font-weight:800}.avni td,.avni th{padding:.78rem .9rem;border-bottom:1px solid #dbe7f6;vertical-align:top}.avni tr:nth-child(even) td{background:#f6faff}.avni tbody tr:last-child td{border-bottom:0}
+.avni .accent{border-left:4px solid #1673d6;background:#eff6ff;padding:1rem 1.2rem;border-radius:0 9px 9px 0;margin:.9rem 0}.avni .warning{border-left:4px solid #c28b19;background:#fff8e7;padding:1rem 1.2rem;border-radius:0 9px 9px 0;margin:.9rem 0}
+.avni .mini{background:#eaf4ff;border:1px solid #cadff9;border-radius:11px;padding:1rem;height:100%}.avni .mini.green{background:#effaf2;border-color:#c9e9d0}.avni .mini h3{margin:.1rem 0 .5rem}.avni code{background:#edf4ff;color:#173f7d;border-radius:4px;padding:.13rem .32rem}.avni .question{padding:.85rem 1rem;border:1px solid #d9e6f4;border-radius:9px;margin:.6rem 0}.avni details summary{font-weight:700;cursor:pointer;color:#105ab1}.avni details p{margin:.6rem 0 0}.avni .compact li{margin-bottom:.4rem}
+@media(max-width:700px){.avni .hero{padding:1.25rem}.avni .paper{padding:1rem}.avni table{font-size:.86rem}}
+</style>
+<div class="avni">
+  <a class="d-inline-block fw-semibold text-decoration-none mb-3" th:href="@{/internships/cloud-computing/azure}">← Azure Foundations &amp; Enterprise Lab</a>
+  <header class="hero">
+    <div class="eyebrow mb-2">Internships / Cloud Computing / Microsoft Azure / Networking</div>
+    <h1>Azure Virtual Networks: Two Customers, One Physical Infrastructure</h1>
+    <p class="lead text-secondary mb-2">Learn how two companies can safely operate separate networks and workloads even when the cloud provider uses shared physical servers.</p>
+    <span class="pill">Azure VNet</span><span class="pill">Subnets</span><span class="pill">Network Security Groups</span><span class="pill">Routing</span><span class="pill">Hypervisor Isolation</span>
+  </header>
+  <nav class="toc" aria-label="Lesson contents"><a href="#diagram">Architecture infographic</a><a href="#terminology">VNet versus VPC</a><a href="#analogy">Apartment analogy</a><a href="#components">Every component</a><a href="#isolation">How isolation works</a><a href="#flows">Traffic scenarios</a><a href="#design">Production design</a><a href="#mistakes">Common misconceptions</a><a href="#quiz">Knowledge check</a></nav>
+
+  <section id="diagram" class="chapter"><h2><span class="num">1</span> Study the architecture</h2>
+    <div class="diagram"><img th:src="@{/images/azure-vpc.png}" src="/images/azure-vpc.png" alt="Azure cloud architecture showing Customer A and Customer B isolated through separate networks, subnets, NSGs, routing, Azure networking fabric and shared physical server infrastructure." loading="eager"></div>
+    <div class="accent"><strong>Read it top to bottom:</strong> Two companies each get a logically separate private network with dedicated address plans and security policies. Those networks run on Azure's shared, software-defined networking and physical compute infrastructure. The same physical hardware does <em>not</em> mean the companies share operating systems, disks or network permissions.</div>
+    <p class="text-secondary small">The diagram is conceptual, not a representation of a specific Azure customer's hardware placement or a guarantee that both customers occupy the same individual host.</p>
+  </section>
+
+  <section id="terminology" class="chapter"><h2><span class="num">2</span> First, understand the name: Azure VNet versus VPC</h2>
+    <div class="paper"><p>The illustration uses the generic label <strong>Virtual Private Cloud (VPC)</strong>. In <strong>Microsoft Azure</strong>, the actual networking resource is called an <strong>Azure Virtual Network (VNet)</strong>. <strong>Amazon Web Services</strong> calls its analogous networking resource an <strong>Amazon VPC</strong>. This lesson uses Azure's correct product names.</p>
+      <div class="table-responsive"><table><thead><tr><th>General concept</th><th>Azure terminology</th><th>AWS terminology</th></tr></thead><tbody><tr><td>Customer-defined private cloud network</td><td>Virtual Network (VNet)</td><td>Virtual Private Cloud (VPC)</td></tr><tr><td>Network segment</td><td>Subnet</td><td>Subnet</td></tr><tr><td>Instance/subnet traffic policy</td><td>Network Security Group (NSG)</td><td>Security Group / Network ACL (different semantics)</td></tr><tr><td>Custom routing</td><td>Route table / user-defined route</td><td>Route table</td></tr></tbody></table></div>
+      <p class="mt-3 mb-0"><strong>Key idea:</strong> This is a logical networking boundary, not an individually owned physical datacenter or a reserved physical switch.</p>
+    </div>
+  </section>
+
+  <section id="analogy" class="chapter"><h2><span class="num">3</span> Think of two businesses renting offices in a shared building</h2>
+    <div class="paper"><p>Imagine a business complex where <strong>Company A</strong> and <strong>Company B</strong> lease different secured office suites. They share the building foundation, electrical utility, cooling system and parking structure, but each has its own locked doors, internal rooms and access rules.</p>
+      <div class="table-responsive"><table><thead><tr><th>Shared office building</th><th>Azure cloud equivalent</th><th>Why it matters</th></tr></thead><tbody><tr><td>Building structure, electricity and cooling</td><td>Azure physical hosts, datacenters, power and cooling</td><td>Microsoft operates costly common infrastructure.</td></tr><tr><td>Company A's leased suite</td><td>Customer A's VNet, such as <code>10.0.0.0/16</code></td><td>A has a privately addressed network and its own policies.</td></tr><tr><td>Company B's separate suite</td><td>Customer B's VNet, such as <code>10.1.0.0/16</code></td><td>B has a distinct private network and policies.</td></tr><tr><td>Rooms within a suite</td><td>Subnets for applications, databases and management</td><td>Separate systems by function and apply traffic rules.</td></tr><tr><td>Security desk and electronic door locks</td><td>NSGs, firewalls, identity and authorization</td><td>Control permitted communication and access.</td></tr><tr><td>Hallways and designated access paths</td><td>Routing, VPN gateways and the network fabric</td><td>Control where traffic travels.</td></tr><tr><td>Property manager operating the building</td><td>Azure control plane and host/hypervisor infrastructure</td><td>Microsoft manages the underlying resources.</td></tr></tbody></table></div>
+      <div class="warning"><strong>Limit of the analogy:</strong> Office doors represent multiple technical controls, not a single lock. Azure tenant isolation depends on cloud platform isolation, network configuration and application/data authorization working together.</div>
+    </div>
+  </section>
+
+  <section id="components" class="chapter"><h2><span class="num">4</span> Walk through every component in the diagram</h2>
+    <div class="row g-3"><div class="col-lg-6"><div class="mini"><h3>Customer A — Contoso Ltd.</h3><p class="mb-2">Example VNet: <code>10.0.0.0/16</code></p><p class="mb-1"><strong>Subnet A1:</strong> <code>10.0.1.0/24</code> hosting VM-A1 and SQL-A1.</p><p class="mb-0"><strong>Subnet A2:</strong> <code>10.0.2.0/24</code> hosting VM-A2 and Web-A.</p></div></div><div class="col-lg-6"><div class="mini green"><h3>Customer B — Fabrikam Inc.</h3><p class="mb-2">Example VNet: <code>10.1.0.0/16</code></p><p class="mb-1"><strong>Subnet B1:</strong> <code>10.1.1.0/24</code> hosting VM-B1 and SQL-B1.</p><p class="mb-0"><strong>Subnet B2:</strong> <code>10.1.2.0/24</code> hosting VM-B2 and Web-B.</p></div></div></div>
+    <div class="paper"><div class="table-responsive"><table><thead><tr><th>Azure component</th><th>In plain English</th><th>Role in isolation and connectivity</th></tr></thead><tbody>
+      <tr><td><strong>VNet &amp; address space</strong></td><td>A customer-controlled, privately addressed virtual network.</td><td>Provides a logical network boundary; other VNets are not automatically connected.</td></tr>
+      <tr><td><strong>Subnet</strong></td><td>A smaller address range within a VNet.</td><td>Organizes workloads; does not by itself guarantee blocked traffic between subnets.</td></tr>
+      <tr><td><strong>VM</strong></td><td>A computer defined in software running an independent guest operating system.</td><td>Receives virtual compute, memory, disk and network interfaces.</td></tr>
+      <tr><td><strong>SQL database</strong></td><td>The application's database workload.</td><td>Should accept connections only from approved applications; database accounts still require authorization.</td></tr>
+      <tr><td><strong>NSG</strong></td><td>A stateful layer-3/layer-4 traffic rule set attached to a subnet or NIC.</td><td>Allows/denies inbound and outbound network flows by addresses, ports and protocols.</td></tr>
+      <tr><td><strong>Route table (UDR)</strong></td><td>Traffic directions, like road signs.</td><td>Can steer traffic to a firewall or other next hop; routing is not a substitute for security policy.</td></tr>
+      <tr><td><strong>VPN gateway</strong></td><td>An encrypted connection endpoint for supported VPN connections.</td><td>Can extend connectivity to approved on-premises networks.</td></tr>
+      <tr><td><strong>Azure Firewall</strong></td><td>A managed network security inspection service.</td><td>Can enforce centrally defined network/application rules when traffic is routed through it.</td></tr>
+      <tr><td><strong>Azure network fabric</strong></td><td>The software-defined virtual networking implementation running across Azure infrastructure.</td><td>Separates and forwards tenant traffic over shared physical networking resources.</td></tr>
+      <tr><td><strong>Physical hosts / hypervisor</strong></td><td>Servers and virtualization software underneath customer VMs.</td><td>Provide compute-resource isolation; customers do not manage the physical host.</td></tr>
+    </tbody></table></div></div>
+  </section>
+
+  <section id="isolation" class="chapter"><h2><span class="num">5</span> How can the same physical hardware remain private?</h2>
+    <div class="paper"><p>Two independent boundaries work together: <strong>compute isolation</strong> and <strong>network isolation</strong>. They are related, but not interchangeable.</p>
+      <div class="row g-3"><div class="col-lg-6"><div class="mini"><h3>Compute and data isolation</h3><ul class="compact mb-0"><li>Each VM operates with its own guest OS and virtualized resources.</li><li>The hypervisor enforces separation between VM execution environments.</li><li>Disks and data access are governed by storage and identity controls.</li><li>Sharing a host does not grant one customer's VM access to another's memory or data.</li></ul></div></div><div class="col-lg-6"><div class="mini green"><h3>Network isolation</h3><ul class="compact mb-0"><li>Each VNet has its own routing context and chosen private address space.</li><li>No direct cross-VNet connection exists by default.</li><li>NSGs and firewalls further restrict allowed communication.</li><li>VNet peering, VPNs or other configured paths can introduce connectivity intentionally.</li></ul></div></div></div>
+      <div class="accent"><strong>Crucial distinction:</strong> Different customer subscriptions, Microsoft Entra tenants, VNets, VM boundaries and database permissions are different controls. Never assume one automatically replaces another.</div>
+    </div>
+  </section>
+
+  <section id="flows" class="chapter"><h2><span class="num">6</span> Follow actual traffic flows</h2>
+    <div class="paper"><div class="table-responsive"><table><thead><tr><th>Scenario</th><th>What should happen?</th><th>What determines the result?</th></tr></thead><tbody>
+      <tr><td>User visits Customer A's public web application</td><td>Reach approved web ingress, but not the SQL backend directly.</td><td>Public ingress design, routing, NSGs, firewalls and application authentication.</td></tr>
+      <tr><td>Web-A connects to SQL-A1</td><td>Allowed only on approved database ports to the correct endpoint.</td><td>Subnet/NIC NSGs, network routes and SQL authentication/authorization.</td></tr>
+      <tr><td>Customer A VM attempts to connect to Customer B VM</td><td>No private route by default between separate VNets.</td><td>No peering/VPN/routing path; intentionally configured interconnects can change this.</td></tr>
+      <tr><td>Customer A worker connects to on-premises network</td><td>Can connect when VPN and routing are configured and permitted.</td><td>VPN gateway, address planning, route propagation and security policies.</td></tr>
+      <tr><td>Public internet attempts direct access to private SQL</td><td>Keep SQL inaccessible from the public internet in a secure design.</td><td>Private IP/endpoint, public-access configuration, NSGs, firewall and database policy.</td></tr>
+    </tbody></table></div>
+    <div class="warning"><strong>Internet access is not implied by a VNet:</strong> the diagram's user traffic arrows are conceptual. A real deployment needs an explicit ingress mechanism, such as a public IP, application gateway, load balancer or other supported entry point.</div></div>
+  </section>
+
+  <section id="design" class="chapter"><h2><span class="num">7</span> Example: build a secure Spring Boot application on Azure</h2>
+    <div class="paper"><p>Suppose an e-commerce company runs a Spring Boot Orders API and a relational database. A practical starting architecture is:</p>
+      <div class="table-responsive"><table><thead><tr><th>Layer</th><th>Example design decision</th><th>Security outcome</th></tr></thead><tbody><tr><td>Network</td><td>Dedicated VNet with distinct application and data subnets.</td><td>Predictable segmentation and policies.</td></tr><tr><td>Ingress</td><td>Application Gateway / WAF or another appropriate managed entry point.</td><td>Controlled HTTPS entry to the service.</td></tr><tr><td>Application compute</td><td>VMs or a suitable managed hosting service.</td><td>Runs the Spring Boot API inside a controlled environment.</td></tr><tr><td>Data</td><td>Azure Database for MySQL with private connectivity where supported.</td><td>Removes unnecessary public database exposure.</td></tr><tr><td>Network policy</td><td>NSGs plus firewall/UDRs as architecture requires.</td><td>Limits allowed sources, destinations and ports.</td></tr><tr><td>Identity</td><td>Microsoft Entra ID, managed identities and app-specific authorization.</td><td>Limits who and what can access services and data.</td></tr><tr><td>Operations</td><td>Azure Monitor, flow logs/diagnostics where supported, alerts and backups.</td><td>Makes activity and failures observable and recoverable.</td></tr></tbody></table></div>
+      <h3 class="mt-4">Hands-on architecture exercise</h3><ol class="compact"><li>Draw two separate customer VNets with distinct CIDR blocks, each with application and database subnets.</li><li>Mark the only approved application-to-database flow, including destination port and identity checks.</li><li>Define what will expose the application to end users and what must remain private.</li><li>Explain whether cross-customer access is impossible by design or possible with explicit connectivity and permission.</li><li>Identify what Azure manages versus what the customer must configure, patch and monitor.</li></ol>
+    </div>
+  </section>
+
+  <section id="mistakes" class="chapter"><h2><span class="num">8</span> Five common misconceptions</h2>
+    <div class="paper"><div class="table-responsive"><table><thead><tr><th>Misconception</th><th>Correct explanation</th></tr></thead><tbody><tr><td>"An Azure VPC is the standard resource name."</td><td>Azure uses <strong>Virtual Network (VNet)</strong>; AWS uses <strong>VPC</strong>.</td></tr><tr><td>"One subnet cannot talk to another subnet."</td><td>Subnet separation alone is not a deny rule; Azure provides default intra-VNet connectivity subject to policies and routes.</td></tr><tr><td>"All tenants must have globally unique private IP addresses."</td><td>Private address ranges may overlap across isolated VNets; overlap becomes relevant when connecting networks.</td></tr><tr><td>"An NSG encrypts all traffic."</td><td>NSGs filter network flows; encryption requires TLS, VPN or other applicable mechanisms.</td></tr><tr><td>"Sharing a physical server means sharing data."</td><td>Host virtualization, storage access controls and identity boundaries are designed to isolate customer workloads and data.</td></tr></tbody></table></div></div>
+  </section>
+
+  <section id="quiz" class="chapter"><h2><span class="num">9</span> Knowledge check</h2>
+    <div class="paper"><div class="question"><details><summary>1. What is the Azure equivalent of an AWS VPC?</summary><p>Azure Virtual Network (VNet).</p></details></div><div class="question"><details><summary>2. Is a subnet automatically isolated from other subnets in its VNet?</summary><p>No. Routing and traffic filtering policies determine whether traffic can flow between subnets.</p></details></div><div class="question"><details><summary>3. What is the difference between an NSG and a route table?</summary><p>The NSG controls allowed/denied flows; a route table determines where packets are forwarded.</p></details></div><div class="question"><details><summary>4. Can customers use overlapping IP ranges?</summary><p>Yes, when their networks are isolated. Direct connectivity between overlapping networks requires additional design because ambiguous routing is a problem.</p></details></div><div class="question"><details><summary>5. Does a VM hypervisor replace database authorization?</summary><p>No. Compute isolation and database authentication/authorization address different security boundaries.</p></details></div></div>
+  </section>
+
+  <section class="chapter"><h2><span class="num">10</span> Further reading</h2><div class="paper"><p class="mb-2">Official Microsoft documentation:</p><ul class="mb-0"><li><a href="https://learn.microsoft.com/azure/virtual-network/virtual-networks-overview" target="_blank" rel="noopener noreferrer">Azure Virtual Network overview</a></li><li><a href="https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview" target="_blank" rel="noopener noreferrer">Network Security Groups</a></li><li><a href="https://learn.microsoft.com/azure/virtual-network/virtual-networks-udr-overview" target="_blank" rel="noopener noreferrer">Virtual network traffic routing</a></li><li><a href="https://learn.microsoft.com/azure/virtual-network/virtual-network-peering-overview" target="_blank" rel="noopener noreferrer">Virtual network peering</a></li></ul></div></section>
+  <div class="text-center small text-secondary pb-4">Commercial IT Bootcamp · Azure Networking Fundamentals · Architecture is educational and simplified</div>
+</div>
+</main>
+</html>

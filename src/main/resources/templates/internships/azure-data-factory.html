@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('Azure Data Factory — ETL and Data Pipelines', 'Azure Data Factory architecture, integration runtimes, pipelines, activities, triggers, mapping data flows, ADLS Gen2, security and operations', ~{::main})}">
+<main>
+  <article class="adf-lesson container-fluid px-0">
+    <style>
+      .adf-lesson{max-width:1250px;margin:0 auto;color:#182942}
+      .adf-lesson h1{font-size:clamp(2rem,3.4vw,3rem);font-weight:800;letter-spacing:-.03em}
+      .adf-lesson h2{font-size:1.5rem;font-weight:800;letter-spacing:-.015em;margin-bottom:.9rem}
+      .adf-lesson h3{font-size:1.12rem;font-weight:750;margin:1rem 0 .6rem}
+      .adf-lesson p,.adf-lesson li{line-height:1.68}
+      .adf-lesson .hero{border:1px solid #cbdff9;background:linear-gradient(115deg,#fff,#eaf3ff);border-radius:20px;padding:2rem}
+      .adf-lesson .eyebrow{font-size:.75rem;font-weight:800;letter-spacing:.1em;color:#0a61db;text-transform:uppercase}
+      .adf-lesson .panel{background:#fff;border:1px solid #d6e4f6;border-radius:14px;padding:1.3rem;margin:.8rem 0}
+      .adf-lesson .soft{background:#f3f8ff}
+      .adf-lesson .section{margin-top:2rem;scroll-margin-top:95px}
+      .adf-lesson .toc{display:flex;flex-wrap:wrap;gap:.65rem 1.1rem;padding:1rem;border:1px solid #d6e4f6;border-radius:12px;background:#fff;margin-top:1.1rem}
+      .adf-lesson .toc a{font-size:.87rem;font-weight:650;text-decoration:none}
+      .adf-lesson .chip{display:inline-block;background:#e3efff;color:#1358be;border-radius:30px;font-weight:750;font-size:.78rem;padding:.25rem .7rem;margin:.2rem .25rem .15rem 0}
+      .adf-lesson th{background:#e9f2ff!important;color:#163f77;font-weight:750}
+      .adf-lesson td,.adf-lesson th{padding:.82rem .9rem!important;vertical-align:top}
+      .adf-lesson pre{background:#132b49;color:#f5f9ff;border-radius:12px;padding:1.2rem;overflow-x:auto;font-size:.87rem;line-height:1.6}
+      .adf-lesson :not(pre)>code{background:#e9f3ff;border-radius:4px;color:#155196;padding:.15rem .3rem}
+      .adf-lesson .note{background:#eef6ff;border-left:4px solid #1774df;padding:1rem 1.15rem;margin:1rem 0}
+      .adf-lesson .warning{background:#fffbef;border-left:4px solid #e1a900;padding:1rem 1.15rem;margin:1rem 0}
+      .adf-lesson .diagram{display:block;width:100%;height:auto;border:1px solid #d6e4f6;border-radius:13px;background:#fff}
+      .adf-lesson .step{display:inline-flex;justify-content:center;align-items:center;background:#0b63df;color:white;width:2rem;height:2rem;border-radius:50%;font-weight:800;margin-right:.5rem}
+      .adf-lesson .check{display:block;background:#fff;border:1px solid #d6e4f6;border-radius:10px;padding:.68rem 1rem;margin:.55rem 0}
+      .adf-lesson .muted{color:#546780}
+      @media(max-width:767px){.adf-lesson .hero{padding:1.25rem}.adf-lesson .panel{padding:1rem}}
+    </style>
+
+    <a class="d-inline-block mb-3 fw-semibold text-decoration-none" th:href="@{/internships/cloud-computing/azure}">← Azure Foundations &amp; Enterprise Lab</a>
+    <header class="hero">
+      <p class="eyebrow mb-2">Internships · Cloud Computing · Microsoft Azure · Data Engineering</p>
+      <h1>How Azure Data Factory Works</h1>
+      <p class="lead muted mb-3">A complete introduction to cloud data integration: ingest information from databases, files, SaaS applications and external APIs; orchestrate processing; transform the results; and store clean CSV data in Azure Data Lake Storage Gen2.</p>
+      <div><span class="chip">ETL / ELT</span><span class="chip">Pipelines</span><span class="chip">Copy Activity</span><span class="chip">Mapping Data Flows</span><span class="chip">Integration Runtime</span><span class="chip">Azure Functions</span><span class="chip">ADLS Gen2</span><span class="chip">Managed Identity</span></div>
+    </header>
+
+    <nav class="toc" aria-label="Lesson section navigation">
+      <a href="#diagram">Diagram</a><a href="#simple">ADF explained simply</a><a href="#architecture">Architecture layers</a><a href="#building-blocks">Building blocks</a><a href="#runtime">Integration Runtime</a><a href="#copy">Ingestion</a><a href="#transform">Transformations</a><a href="#functions">External APIs</a><a href="#lake">ADLS Gen2</a><a href="#triggers">Scheduling</a><a href="#example">Retail walkthrough</a><a href="#security">Security</a><a href="#operations">Operations</a><a href="#comparison">ADF vs alternatives</a><a href="#exercise">Exercise</a>
+    </nav>
+
+    <section class="section" id="diagram">
+      <h2>1. Understand the complete architecture image</h2>
+      <div class="panel soft">
+        <p>The illustration is organized into <strong>three horizontal stages</strong>: data sources on the left, Azure Data Factory orchestration in the center, and storage/analytics destinations on the right. The numbered center pipeline shows ingestion, transformation, storage and monitoring. The panels at the bottom summarize supported formats, security, integration runtimes and common business uses.</p>
+        <img class="diagram img-fluid" th:src="@{/images/azure-adf.png}" alt="Azure Data Factory infographic: on-premises SQL databases, Azure SQL, SaaS, REST APIs and files flow through Copy and Function activities, transformations and CSV output to ADLS Gen2, monitoring and downstream analytics"/>
+        <p class="small muted mt-3 mb-0">The diagram is a teaching reference. Real implementations may use different connector capabilities, data formats, transformations and Integration Runtime types. ADF does not automatically convert every arbitrary source into CSV without a configured activity or transformation.</p>
+      </div>
+    </section>
+
+    <section class="section" id="simple">
+      <h2>2. Azure Data Factory in simple English</h2>
+      <div class="panel">
+        <p>Imagine a large retail business with hundreds of stores. Its information is scattered across cash registers, an accounting database, Salesforce, Excel spreadsheets and external supplier websites. Analysts want one reliable, regularly updated dataset for sales and inventory decisions.</p>
+        <p><strong>Azure Data Factory (ADF) is the conductor</strong> that coordinates how information moves from those sources into a central destination. Just as a logistics coordinator arranges pickup, inspection, packaging, delivery and tracking, ADF can schedule extraction, execute transformations, call supporting services, load data and record the results.</p>
+        <div class="table-responsive"><table class="table table-bordered table-striped mb-0"><thead><tr><th>Warehouse / logistics activity</th><th>Azure Data Factory equivalent</th></tr></thead><tbody>
+          <tr><td>Identify which suppliers and warehouses hold goods</td><td>Connections to data sources (linked services)</td></tr>
+          <tr><td>Arrange the pickup vehicle and route</td><td>Integration Runtime and copy activities</td></tr>
+          <tr><td>Inspect, clean and repackage shipments</td><td>Mapping Data Flows or another compute engine</td></tr>
+          <tr><td>Deliver labeled boxes to a central warehouse</td><td>Write datasets to ADLS Gen2, Blob Storage or databases</td></tr>
+          <tr><td>Choose pickup times and monitor exceptions</td><td>Triggers, pipeline orchestration, monitoring and alerts</td></tr>
+        </tbody></table></div>
+        <div class="note"><strong>Fundamental distinction:</strong> ADF is primarily a managed data-integration and orchestration service. It can execute transformation activities, but the heavy compute work runs on engines such as Mapping Data Flow Spark clusters, SQL, Databricks, Azure Functions or other integrated services.</div>
+      </div>
+    </section>
+
+    <section class="section" id="architecture">
+      <h2>3. The four architectural layers in the infographic</h2>
+      <div class="panel">
+        <div class="table-responsive"><table class="table table-bordered table-striped"><thead><tr><th>Layer</th><th>Services in the image</th><th>Main purpose</th></tr></thead><tbody>
+          <tr><td><strong>Source systems</strong></td><td>SQL Server, Oracle, MySQL, PostgreSQL, DB2, Azure SQL, Cosmos DB, files, Salesforce, Dynamics, REST APIs</td><td>Provide operational and external information.</td></tr>
+          <tr><td><strong>Control / orchestration</strong></td><td>ADF Studio, pipelines, triggers, monitoring</td><td>Define, schedule and coordinate the end-to-end workflow.</td></tr>
+          <tr><td><strong>Execution / transformation</strong></td><td>Copy Activity, Integration Runtime, Mapping Data Flow, Azure Functions</td><td>Move, transform, validate and enrich records.</td></tr>
+          <tr><td><strong>Destination / consumption</strong></td><td>ADLS Gen2, Azure SQL, Synapse, Power BI, Databricks, ML services</td><td>Store, analyze, visualize and operationalize the data.</td></tr>
+        </tbody></table></div>
+        <p class="mb-0">Data Factory is not a replacement for your source applications, data lake, relational database or reporting solution. It is the orchestration layer that connects those systems into a dependable workflow.</p>
+      </div>
+    </section>
+
+    <section class="section" id="building-blocks">
+      <h2>4. ADF core concepts — the vocabulary every intern must know</h2>
+      <div class="panel">
+        <div class="table-responsive"><table class="table table-bordered table-striped"><thead><tr><th>ADF object</th><th>Explanation</th><th>Example</th></tr></thead><tbody>
+          <tr><td><strong>Linked service</strong></td><td>Connection definition for a source, sink or external compute service.</td><td>Connection to an Azure SQL database or ADLS account.</td></tr>
+          <tr><td><strong>Dataset</strong></td><td>Named representation of the data being read or written.</td><td><code>sales_orders</code> table or <code>sales/2026/10/orders.csv</code> file.</td></tr>
+          <tr><td><strong>Pipeline</strong></td><td>Logical grouping of activities coordinated as one workflow.</td><td>Nightly sales-consolidation pipeline.</td></tr>
+          <tr><td><strong>Activity</strong></td><td>Unit of work executed by the pipeline.</td><td>Copy, Execute Pipeline, Lookup, ForEach, Data Flow, Azure Function.</td></tr>
+          <tr><td><strong>Trigger</strong></td><td>Mechanism for starting a pipeline.</td><td>Daily schedule, tumbling window or storage event trigger.</td></tr>
+          <tr><td><strong>Integration Runtime (IR)</strong></td><td>Execution/connection infrastructure for data movement or dispatch to compute.</td><td>Azure IR or Self-hosted IR.</td></tr>
+          <tr><td><strong>Parameter / variable</strong></td><td>Reusable runtime input and workflow state.</td><td>Business date or target folder.</td></tr>
+          <tr><td><strong>Pipeline run</strong></td><td>One execution instance with its own status and activity runs.</td><td>2026-10-13 scheduled load.</td></tr>
+        </tbody></table></div>
+        <div class="note">A <strong>linked service</strong> tells ADF how to connect; a <strong>dataset</strong> describes what data to read or write; a <strong>pipeline</strong> describes the activities and their dependencies.</div>
+      </div>
+    </section>
+
+    <section class="section" id="runtime">
+      <h2>5. Azure Integration Runtime vs Self-hosted Integration Runtime</h2>
+      <div class="panel">
+        <p>The Integration Runtime is the execution and connectivity infrastructure that helps ADF perform data movement and dispatch selected activities to other compute resources. Selecting the correct IR is essential when integrating cloud data with private corporate networks.</p>
+        <div class="table-responsive"><table class="table table-bordered table-striped"><thead><tr><th>Category</th><th>Azure IR</th><th>Self-hosted IR</th></tr></thead><tbody>
+          <tr><td>Where it runs</td><td>Microsoft-managed infrastructure.</td><td>Your managed Windows host or VM.</td></tr>
+          <tr><td>Common use</td><td>Cloud data movement, activity dispatch; managed execution for mapping data flows.</td><td>Access on-premises or private-network sources/sinks for supported activities.</td></tr>
+          <tr><td>Operations</td><td>Azure manages underlying IR infrastructure.</td><td>You patch, scale and monitor the host and its network connectivity.</td></tr>
+          <tr><td>Example</td><td>Copy Azure SQL to ADLS.</td><td>Read SQL Server inside a corporate datacenter.</td></tr>
+          <tr><td>Considerations</td><td>Regional placement, networking, performance and costs.</td><td>Outbound connectivity, host availability, drivers and credential security.</td></tr>
+        </tbody></table></div>
+        <div class="warning"><strong>Important:</strong> Self-hosted IR is not a full substitute for Azure IR. Mapping Data Flow executions use Azure IR-managed compute; a self-hosted IR is primarily used for source/sink connectivity and supported activities.</div>
+      </div>
+    </section>
+
+    <section class="section" id="copy">
+      <h2>6. Ingest data using Copy Activity</h2>
+      <div class="panel">
+        <p><strong>Copy Activity</strong> reads data from a supported source and writes it to a supported destination. Depending on the connector and format, it can apply basic mappings and type conversions. It is usually the first tool to consider for a straightforward data transfer.</p>
+        <ol><li>Create the source linked service, such as Azure SQL Database.</li><li>Create the destination linked service for ADLS Gen2.</li><li>Define source and sink datasets, including path and format.</li><li>Add Copy Activity to a pipeline and choose both datasets.</li><li>Configure column mappings, fault tolerance, authentication and IR.</li><li>Debug or trigger a run and inspect rows read, written, duration and errors.</li></ol>
+        <div class="table-responsive"><table class="table table-bordered"><thead><tr><th>Source</th><th>Example ADF approach</th><th>Outcome</th></tr></thead><tbody>
+          <tr><td>SQL Server / Azure SQL</td><td>SQL connector and Copy Activity</td><td>Relational records exported to ADLS.</td></tr>
+          <tr><td>Salesforce or supported SaaS</td><td>Native connector where available</td><td>CRM records copied to lake.</td></tr>
+          <tr><td>CSV / Excel / JSON files</td><td>File connector and appropriate format dataset</td><td>Centralized raw files.</td></tr>
+          <tr><td>REST API</td><td>REST connector or external Azure Function depending on scenario</td><td>API responses ingested or transformed.</td></tr>
+        </tbody></table></div>
+      </div>
+    </section>
+
+    <section class="section" id="transform">
+      <h2>7. Processing and transforming data</h2>
+      <div class="panel">
+        <p>ADF's <strong>Mapping Data Flows</strong> provide a visual, Spark-based transformation experience. You can join multiple inputs, filter rows, derive columns, aggregate values, detect data quality issues and write transformed results.</p>
+        <div class="table-responsive"><table class="table table-bordered table-striped"><thead><tr><th>Transformation</th><th>Purpose</th><th>Retail example</th></tr></thead><tbody>
+          <tr><td>Filter</td><td>Exclude irrelevant rows.</td><td>Keep completed transactions only.</td></tr>
+          <tr><td>Derived column</td><td>Create computed fields.</td><td><code>netSales = grossSales - discount</code>.</td></tr>
+          <tr><td>Join</td><td>Combine datasets using keys.</td><td>Join orders with product reference data.</td></tr>
+          <tr><td>Aggregate</td><td>Summarize by dimensions.</td><td>Daily revenue by store.</td></tr>
+          <tr><td>Validation</td><td>Check nulls, schema and business constraints.</td><td>Reject records without order IDs.</td></tr>
+          <tr><td>Sink formatting</td><td>Produce output in a specified format.</td><td>Delimited CSV in ADLS Gen2.</td></tr>
+        </tbody></table></div>
+        <h3>ETL vs ELT</h3>
+        <p><strong>ETL</strong> transforms data before loading the final destination. <strong>ELT</strong> first loads the raw data into a platform such as a data lake or warehouse, then uses its compute engine to transform it. ADF can orchestrate either design.</p>
+      </div>
+    </section>
+
+    <section class="section" id="functions">
+      <h2>8. Integrating external REST APIs with Azure Functions</h2>
+      <div class="panel">
+        <p>Your diagram includes a Function that authenticates to an external API, calls an endpoint, parses JSON or XML, and converts the response to CSV. This is a reasonable architecture when the external API requires custom token handling, pagination, response normalization or other logic unsupported by a direct connector.</p>
+        <ol><li>ADF invokes an Azure Function or HTTP endpoint.</li><li>The Function authenticates to the target API using credentials secured in Key Vault.</li><li>The Function requests and validates the external response.</li><li>The Function writes transformed data to storage or returns a small status/payload.</li><li>ADF continues downstream only after successful completion.</li></ol>
+        <div class="warning"><strong>Production caveat:</strong> Do not return huge datasets as an ADF Azure Function activity output. For large or long-running API ingestions, let the Function write data to storage and return a file reference or status, then let Copy/Data Flow process that output.</div>
+      </div>
+    </section>
+
+    <section class="section" id="lake">
+      <h2>9. ADLS Gen2 — writing and organizing CSV files</h2>
+      <div class="panel">
+        <p>Azure Data Lake Storage Gen2 uses Azure Blob Storage with the <strong>hierarchical namespace</strong> feature to support directory-oriented analytics workloads. An ADF pipeline can write CSV files directly into containers and folders, allowing Power BI, Databricks, Azure Synapse or downstream applications to access curated datasets.</p>
+        <h3>Example lake directory layout</h3>
+        <pre>retail-datalake/
+  raw/
+    sql-sales/business-date=2026-10-13/
+    crm-customers/business-date=2026-10-13/
+    supplier-api/business-date=2026-10-13/
+  curated/
+    sales/business-date=2026-10-13/sales.csv
+    customers/business-date=2026-10-13/customers.csv
+  quarantine/
+    invalid-orders/business-date=2026-10-13/</pre>
+        <p>Delimited files must be configured for appropriate encoding, delimiter, quoting, null handling and header behavior. Consider Parquet rather than CSV for large analytic datasets when columnar compression and query efficiency matter.</p>
+        <div class="note">Security requires planning both <strong>Azure RBAC</strong> and, when the hierarchical namespace is enabled, appropriate filesystem/directory ACLs for the chosen access pattern.</div>
+      </div>
+    </section>
+
+    <section class="section" id="triggers">
+      <h2>10. Triggers, dependencies and operational scheduling</h2>
+      <div class="panel">
+        <div class="table-responsive"><table class="table table-bordered table-striped"><thead><tr><th>Trigger type</th><th>Behavior</th><th>Use case</th></tr></thead><tbody>
+          <tr><td>Schedule</td><td>Starts pipelines at specified times/recurrences.</td><td>Every night at 1 AM.</td></tr>
+          <tr><td>Tumbling window</td><td>Creates fixed, contiguous time windows with tracking and dependency capabilities.</td><td>Hourly partitioned ingestion and backfills.</td></tr>
+          <tr><td>Storage event</td><td>Starts pipelines when configured storage events occur.</td><td>Supplier file uploaded to Blob Storage.</td></tr>
+          <tr><td>Manual / API invocation</td><td>Triggered by a developer, workflow or REST request.</td><td>Ad hoc rerun for an audit.</td></tr>
+        </tbody></table></div>
+        <p>Activities can depend on preceding steps succeeding, failing, being skipped or completing. ADF also provides monitoring of pipeline runs and activity runs, retries and alerts through Azure Monitor integration.</p>
+      </div>
+    </section>
+
+    <section class="section" id="example">
+      <h2>11. Complete example: consolidated retail sales data</h2>
+      <div class="panel">
+        <p><strong>Goal:</strong> create a clean, daily sales CSV in ADLS Gen2 from an Azure SQL order database, Salesforce customer data and a supplier REST API.</p>
+        <div class="table-responsive"><table class="table table-bordered table-striped"><thead><tr><th>Step</th><th>ADF / Azure component</th><th>Result</th></tr></thead><tbody>
+          <tr><td><span class="step">1</span> Start</td><td>Schedule trigger</td><td>Pipeline receives its business date.</td></tr>
+          <tr><td><span class="step">2</span> Extract orders</td><td>Copy Activity from Azure SQL</td><td>Order rows saved to the raw area.</td></tr>
+          <tr><td><span class="step">3</span> Extract customers</td><td>Salesforce connector/Copy Activity</td><td>Customer data saved to the raw area.</td></tr>
+          <tr><td><span class="step">4</span> Supplier enrichment</td><td>Azure Function calls REST API</td><td>Supplier reference data saved to storage.</td></tr>
+          <tr><td><span class="step">5</span> Transform</td><td>Mapping Data Flow</td><td>Validated, joined, deduplicated, aggregated data.</td></tr>
+          <tr><td><span class="step">6</span> Publish</td><td>ADLS Gen2 sink</td><td><code>curated/sales/business-date=.../sales.csv</code>.</td></tr>
+          <tr><td><span class="step">7</span> Observe</td><td>ADF Monitor + Azure Monitor</td><td>Run status, errors, durations and alerts.</td></tr>
+          <tr><td><span class="step">8</span> Analyze</td><td>Databricks / Power BI / Synapse</td><td>Dashboards and reporting from curated data.</td></tr>
+        </tbody></table></div>
+        <h3>Example output schema</h3>
+        <pre>business_date,store_id,order_id,customer_id,net_sales,currency
+2026-10-13,108,ORD-001,CUST-101,124.50,USD
+2026-10-13,205,ORD-002,CUST-202,89.99,USD</pre>
+        <div class="note"><strong>Design lesson:</strong> Use parameterized datasets/pipelines, incremental loads or watermarks, idempotent writes, data quality checks and separate raw/curated zones. These prevent duplicates and expensive full refreshes.</div>
+      </div>
+    </section>
+
+    <section class="section" id="security">
+      <h2>12. Identity, authentication and security</h2>
+      <div class="panel">
+        <div class="table-responsive"><table class="table table-bordered table-striped"><thead><tr><th>Control</th><th>What it protects</th></tr></thead><tbody>
+          <tr><td>ADF managed identity</td><td>Authenticates to supported Azure resources without hardcoding a client secret.</td></tr>
+          <tr><td>Azure Key Vault</td><td>Holds external source credentials, API tokens and secrets when needed.</td></tr>
+          <tr><td>Azure RBAC + ADLS ACLs</td><td>Limits resource and data access to authorized identities.</td></tr>
+          <tr><td>Managed virtual network / private endpoints</td><td>Reduces public network exposure for supported connectivity paths.</td></tr>
+          <tr><td>Self-hosted IR hardening</td><td>Protects corporate network connectivity and the host used for on-premises integration.</td></tr>
+          <tr><td>Diagnostics and audit logs</td><td>Provides traceability for pipeline execution and operational security.</td></tr>
+        </tbody></table></div>
+        <p>For sensitive customer data, design least-privilege access, environmental separation, data minimization and appropriate retention. Avoid exposing credentials or personal information in pipeline parameters and logs.</p>
+      </div>
+    </section>
+
+    <section class="section" id="operations">
+      <h2>13. Debugging, monitoring, cost and failure recovery</h2>
+      <div class="panel">
+        <div class="table-responsive"><table class="table table-bordered table-striped"><thead><tr><th>Issue</th><th>Investigation</th><th>Typical corrective action</th></tr></thead><tbody>
+          <tr><td>Source connection fails</td><td>Linked service test, IR, firewall, DNS, secret expiry.</td><td>Repair network route/permissions or credential.</td></tr>
+          <tr><td>Schema drift</td><td>Source columns vs sink mapping.</td><td>Adjust mapping and add contract validation.</td></tr>
+          <tr><td>Pipeline times out</td><td>Activity duration, data volume, service limits.</td><td>Partition reads, scale compute, improve external API handling.</td></tr>
+          <tr><td>Duplicate output files</td><td>Retries, dynamic paths and reruns.</td><td>Use idempotent writes and deterministic partitions.</td></tr>
+          <tr><td>Unexpected charges</td><td>IR runtimes, data flow cluster time, activity counts, data movement.</td><td>Track costs and avoid unnecessary full loads or always-on compute.</td></tr>
+        </tbody></table></div>
+        <p><strong>Useful metrics:</strong> pipeline success rate, failed activity count, volume of data copied, bytes/rows read and written, run duration, lateness, and source API throttling.</p>
+      </div>
+    </section>
+
+    <section class="section" id="comparison">
+      <h2>14. When to use ADF versus other Azure data services</h2>
+      <div class="panel">
+        <div class="table-responsive"><table class="table table-bordered table-striped mb-0"><thead><tr><th>Service</th><th>Primary role</th><th>Example</th></tr></thead><tbody>
+          <tr><td><strong>Azure Data Factory</strong></td><td>Batch/data-integration orchestration and movement.</td><td>Nightly cross-system data load.</td></tr>
+          <tr><td><strong>Azure Event Hubs</strong></td><td>High-throughput streaming ingestion.</td><td>Continuous IoT or POS telemetry.</td></tr>
+          <tr><td><strong>Azure Databricks</strong></td><td>Large-scale Spark analytics and engineering compute.</td><td>Complex multi-terabyte joins and machine learning pipelines.</td></tr>
+          <tr><td><strong>Azure Functions</strong></td><td>Event-driven custom code.</td><td>API-specific authentication and JSON normalization.</td></tr>
+          <tr><td><strong>ADLS Gen2</strong></td><td>Data lake storage.</td><td>Store raw/curated historical files.</td></tr>
+          <tr><td><strong>Power BI</strong></td><td>Visualization and reporting.</td><td>Executive retail sales dashboards.</td></tr>
+        </tbody></table></div>
+      </div>
+    </section>
+
+    <section class="section" id="exercise">
+      <h2>15. Internship exercise and knowledge check</h2>
+      <div class="panel">
+        <h3>Design assignment</h3>
+        <p>Design an ADF pipeline to consolidate data from a <strong>local MySQL database, an Azure SQL Database and a vendor REST API</strong> into date-partitioned CSV files in ADLS Gen2. Include architecture, identities, source/destination linked services, IR selection, source/sink datasets, activity dependencies, error handling, cost controls and monitoring.</p>
+        <h3>Questions</h3><ol>
+          <li>How is a linked service different from a dataset?</li>
+          <li>When should you use a Self-hosted Integration Runtime?</li>
+          <li>Why is Mapping Data Flow different from Copy Activity?</li>
+          <li>Why are ADF, ADLS Gen2 and Power BI different technologies?</li>
+          <li>How would you avoid hardcoding vendor API credentials?</li>
+          <li>How can an incremental load prevent duplicate or excessive processing?</li>
+        </ol>
+        <h3>Completion checklist</h3>
+        <label class="check"><input type="checkbox"/> I can trace the image's end-to-end source-to-destination data flow.</label>
+        <label class="check"><input type="checkbox"/> I can explain pipelines, linked services, datasets and activities.</label>
+        <label class="check"><input type="checkbox"/> I can choose Azure IR or Self-hosted IR for a given source.</label>
+        <label class="check"><input type="checkbox"/> I can distinguish Copy Activity, Mapping Data Flow and Azure Functions.</label>
+        <label class="check"><input type="checkbox"/> I can design secure CSV delivery into ADLS Gen2.</label>
+      </div>
+    </section>
+    <section class="section">
+      <h2>Official reference documentation</h2>
+      <div class="panel"><p class="mb-2"><a href="https://learn.microsoft.com/azure/data-factory/introduction" target="_blank" rel="noopener noreferrer">Azure Data Factory overview — Microsoft Learn</a></p><p class="mb-2"><a href="https://learn.microsoft.com/azure/data-factory/concepts-integration-runtime" target="_blank" rel="noopener noreferrer">Integration Runtime concepts — Microsoft Learn</a></p><p class="mb-0"><a href="https://learn.microsoft.com/azure/storage/blobs/data-lake-storage-introduction" target="_blank" rel="noopener noreferrer">ADLS Gen2 introduction — Microsoft Learn</a></p></div>
+    </section>
+  </article>
+</main>
+</html>
