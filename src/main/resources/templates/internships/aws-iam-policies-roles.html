@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('AWS IAM Policies, Roles & STS', 'Understand AWS IAM policies, IAM roles, STS temporary credentials, cross-account access and policy evaluation in enterprise AWS.', ~{::section})}">
+<body>
+<section class="bootcamp-page">
+    <div class="container py-4 py-lg-5">
+        <a th:href="@{/internships/cloud-computing}" class="text-decoration-none fw-semibold">← Cloud Computing</a>
+
+        <div class="rounded-4 border p-4 p-lg-5 mt-4" style="background:#f4f8ff;border-color:#cfe0ff !important;">
+            <div class="text-uppercase fw-bold small mb-3" style="letter-spacing:.08em;color:#1762e6;">Amazon Web Services · 01 · Cloud Foundations &amp; IAM</div>
+            <h1 class="display-5 fw-bold mb-3" style="color:#1b2845;">IAM Policies, Roles &amp; STS</h1>
+            <p class="lead mb-0" style="color:#5c6d84;max-width:1000px;">
+                Learn how AWS authenticates identities, evaluates permissions, issues temporary credentials through STS,
+                and enables secure cross-account access using IAM roles in multi-account enterprise environments.
+            </p>
+        </div>
+
+        <div class="row g-3 mt-3">
+            <div class="col-md-4">
+                <div class="rounded-4 border h-100 p-4 bg-white" style="border-color:#d8e4f7 !important;">
+                    <h2 class="h4 fw-bold">Understand</h2>
+                    <p class="mb-0 text-secondary">Identify principals, IAM policies, permission boundaries, roles, trust relationships and STS tokens.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="rounded-4 border h-100 p-4 bg-white" style="border-color:#d8e4f7 !important;">
+                    <h2 class="h4 fw-bold">Build</h2>
+                    <p class="mb-0 text-secondary">Design least-privilege roles, cross-account access patterns and safe human/application authentication flows.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="rounded-4 border h-100 p-4 bg-white" style="border-color:#d8e4f7 !important;">
+                    <h2 class="h4 fw-bold">Validate</h2>
+                    <p class="mb-0 text-secondary">Troubleshoot AccessDenied, inspect CloudTrail and confirm how policy evaluation actually works.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="rounded-4 border bg-white p-3 p-lg-4 mt-4" style="border-color:#d8e4f7 !important;">
+            <div class="d-flex flex-wrap gap-3 fw-semibold small">
+                <a href="#architecture" class="text-decoration-none">Reference architecture</a>
+                <a href="#core-concepts" class="text-decoration-none">Core concepts</a>
+                <a href="#policy-evaluation" class="text-decoration-none">Policy evaluation</a>
+                <a href="#cross-account" class="text-decoration-none">Cross-account access</a>
+                <a href="#labs" class="text-decoration-none">Hands-on labs</a>
+                <a href="#troubleshooting" class="text-decoration-none">Troubleshooting</a>
+                <a href="#checklist" class="text-decoration-none">Checklist</a>
+            </div>
+        </div>
+
+        <div id="architecture" class="mt-5">
+            <h2 class="display-6 fw-bold mb-3">1. Reference architecture</h2>
+            <div class="rounded-4 border bg-white p-3 p-lg-4" style="border-color:#d8e4f7 !important;">
+                <img th:src="@{/images/aws-iam-policies-roles-sts.png}" src="/images/aws-iam-policies-roles-sts.png"
+                     alt="AWS IAM Policies Roles and STS reference architecture"
+                     class="img-fluid rounded-4 border" style="border-color:#dbe7fb !important;">
+                <div class="mt-4">
+                    <p class="mb-2"><strong>How to read this diagram:</strong></p>
+                    <ul class="mb-0 text-secondary">
+                        <li><strong>Principals</strong> on the left are the requesters: workforce users, applications/services and external identities.</li>
+                        <li><strong>Identity &amp; Access Controls</strong> in the middle define who can do what using policies, roles, MFA and permission boundaries.</li>
+                        <li><strong>STS</strong> issues temporary credentials when a role is assumed.</li>
+                        <li><strong>Target AWS resources</strong> on the right are accessed only if all applicable controls allow the request.</li>
+                        <li><strong>Governance controls</strong> at the top, such as Organizations, SCPs and IAM Identity Center, apply enterprise-wide guardrails.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="core-concepts" class="mt-5">
+            <h2 class="display-6 fw-bold mb-3">2. Core concepts interns must master</h2>
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="rounded-4 border bg-white p-4 h-100" style="border-color:#d8e4f7 !important;">
+                        <h3 class="h4 fw-bold">Identity side</h3>
+                        <ul class="mb-0 text-secondary">
+                            <li><strong>Authentication</strong> proves identity: sign-in, federation, MFA, SSO.</li>
+                            <li><strong>Authorization</strong> decides allowed actions after identity is known.</li>
+                            <li><strong>IAM users</strong> are legacy-style named identities inside an account; limit their use.</li>
+                            <li><strong>IAM groups</strong> help manage permissions for IAM users.</li>
+                            <li><strong>IAM roles</strong> are preferred for applications, services and cross-account access.</li>
+                            <li><strong>Trust policies</strong> specify who may assume a role.</li>
+                            <li><strong>Permission policies</strong> specify what the role may do once assumed.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="rounded-4 border bg-white p-4 h-100" style="border-color:#d8e4f7 !important;">
+                        <h3 class="h4 fw-bold">Credential side</h3>
+                        <ul class="mb-0 text-secondary">
+                            <li><strong>STS</strong> = Security Token Service. It issues short-lived credentials.</li>
+                            <li><strong>Temporary credentials</strong> include access key ID, secret access key and session token.</li>
+                            <li><strong>Session duration</strong> is time-bounded and safer than long-lived keys.</li>
+                            <li><strong>AssumeRole</strong> is used for cross-account and application access.</li>
+                            <li><strong>AssumeRoleWithSAML</strong> and <strong>AssumeRoleWithWebIdentity</strong> support federation.</li>
+                            <li><strong>Least privilege</strong> means granting only the permissions needed.</li>
+                            <li><strong>MFA</strong> reduces the risk of stolen credentials for human users.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="policy-evaluation" class="mt-5">
+            <h2 class="display-6 fw-bold mb-3">3. AWS policy evaluation logic</h2>
+            <div class="rounded-4 border bg-white p-4" style="border-color:#d8e4f7 !important;">
+                <p class="text-secondary">Whenever an AWS API call is made, AWS evaluates all relevant controls together. Interns should memorize this order of thinking:</p>
+                <div class="row g-3 mt-1">
+                    <div class="col-lg-3 col-md-6"><div class="rounded-4 p-4 h-100" style="background:#fff6f7;border:1px solid #ffd0d8;"><div class="fw-bold h4">1. Explicit deny wins</div><p class="mb-0 text-secondary">If any applicable policy explicitly denies the request, access is denied immediately.</p></div></div>
+                    <div class="col-lg-3 col-md-6"><div class="rounded-4 p-4 h-100" style="background:#f5fff7;border:1px solid #cdeed5;"><div class="fw-bold h4">2. Allow must exist</div><p class="mb-0 text-secondary">The request must be explicitly allowed somewhere after authentication succeeds.</p></div></div>
+                    <div class="col-lg-3 col-md-6"><div class="rounded-4 p-4 h-100" style="background:#f4f9ff;border:1px solid #d0e2ff;"><div class="fw-bold h4">3. SCPs limit max permissions</div><p class="mb-0 text-secondary">Service Control Policies set outer guardrails for what member accounts can ever do.</p></div></div>
+                    <div class="col-lg-3 col-md-6"><div class="rounded-4 p-4 h-100" style="background:#fff9f2;border:1px solid #ffe1bb;"><div class="fw-bold h4">4. Resource policies matter too</div><p class="mb-0 text-secondary">S3, KMS, Lambda and others may use resource policies to further allow or restrict access.</p></div></div>
+                </div>
+                <div class="mt-4">
+                    <h3 class="h4 fw-bold">Common policy types</h3>
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead><tr><th>Policy / control</th><th>Main purpose</th><th>Intern takeaway</th></tr></thead>
+                            <tbody>
+                                <tr><td>Identity-based policy</td><td>Attached to user, group or role</td><td>Most common way to grant permissions.</td></tr>
+                                <tr><td>Trust policy</td><td>Defines who can assume a role</td><td>Without correct trust, AssumeRole fails.</td></tr>
+                                <tr><td>Permission boundary</td><td>Caps the maximum permissions for a principal</td><td>Useful for delegated administration.</td></tr>
+                                <tr><td>Resource-based policy</td><td>Attached to resource such as S3 bucket or Lambda</td><td>Often required for cross-account access.</td></tr>
+                                <tr><td>SCP</td><td>Organization-level guardrail</td><td>Does not grant permissions; it limits them.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="cross-account" class="mt-5">
+            <h2 class="display-6 fw-bold mb-3">4. Cross-account access pattern</h2>
+            <div class="rounded-4 border bg-white p-4" style="border-color:#d8e4f7 !important;">
+                <ol class="text-secondary mb-0">
+                    <li class="mb-2">A user or application authenticates in a source account or via IAM Identity Center.</li>
+                    <li class="mb-2">The requester calls <code>sts:AssumeRole</code> against a role in the target account.</li>
+                    <li class="mb-2">The target role’s <strong>trust policy</strong> must allow that source principal or source role.</li>
+                    <li class="mb-2">STS returns temporary credentials for the target role session.</li>
+                    <li class="mb-2">The session can now call target AWS services, subject to identity policies, resource policies, SCPs and boundaries.</li>
+                    <li>CloudTrail logs the role assumption and the subsequent actions for auditability.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div id="labs" class="mt-5">
+            <h2 class="display-6 fw-bold mb-3">5. Hands-on labs</h2>
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="rounded-4 border bg-white p-4 h-100" style="border-color:#d8e4f7 !important;">
+                        <h3 class="h4 fw-bold">Lab A — Create a least-privilege S3 read role</h3>
+                        <ul class="mb-0 text-secondary">
+                            <li>Create an IAM policy allowing only <code>s3:GetObject</code> on a chosen bucket path.</li>
+                            <li>Create a role and attach the policy.</li>
+                            <li>Use STS AssumeRole and verify the bucket is readable but not writable.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="rounded-4 border bg-white p-4 h-100" style="border-color:#d8e4f7 !important;">
+                        <h3 class="h4 fw-bold">Lab B — Cross-account RDS / admin visibility role</h3>
+                        <ul class="mb-0 text-secondary">
+                            <li>Source account users assume a monitoring role in a target account.</li>
+                            <li>Trust policy restricts the source account and optional MFA conditions.</li>
+                            <li>Validate CloudTrail logs and session behavior.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="troubleshooting" class="mt-5">
+            <h2 class="display-6 fw-bold mb-3">6. Troubleshooting guide</h2>
+            <div class="rounded-4 border bg-white p-4" style="border-color:#d8e4f7 !important;">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead><tr><th>Symptom</th><th>Probable cause</th><th>What to check</th></tr></thead>
+                        <tbody>
+                            <tr><td>AccessDenied on AssumeRole</td><td>Trust policy, missing permission, or SCP restriction</td><td>Trust policy, caller permissions, CloudTrail, Organizations SCPs</td></tr>
+                            <tr><td>Role assumed but API action denied</td><td>Permission policy missing or boundary too restrictive</td><td>Attached policies, permission boundaries, session policy if any</td></tr>
+                            <tr><td>Federated user cannot sign in</td><td>Identity Center / IdP mapping issue</td><td>SAML/OIDC configuration, group mapping, assignment</td></tr>
+                            <tr><td>Works in one account not another</td><td>Different SCPs or different resource policies</td><td>OU placement, SCP attachments, resource-based policy</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="checklist" class="mt-5">
+            <h2 class="display-6 fw-bold mb-3">7. Internship completion checklist</h2>
+            <div class="rounded-4 border bg-white p-4" style="border-color:#d8e4f7 !important;">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <ul class="mb-0 text-secondary">
+                            <li>Explain the difference between authentication and authorization.</li>
+                            <li>Describe IAM users, groups and roles.</li>
+                            <li>Explain why roles are preferred over long-lived access keys.</li>
+                            <li>Explain what STS returns and why temporary credentials are safer.</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="mb-0 text-secondary">
+                            <li>Read a trust policy and identify who may assume a role.</li>
+                            <li>Explain how SCPs differ from IAM permission policies.</li>
+                            <li>Troubleshoot a simple AccessDenied error.</li>
+                            <li>Demonstrate a safe cross-account role-assumption workflow.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

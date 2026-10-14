@@ -73,6 +73,9 @@ public class AwsTrainingCatalogController {
         model.addAttribute("cloudProvider", PLATFORM);
         model.addAttribute("cloudCategory", lesson.category());
         model.addAttribute("cloudLessonTitle", lesson.title());
+        if ("vpc-foundations".equals(lessonSlug)) {
+            return "internships/cloud-computing/aws/vpc-foundations";
+        }
         return "internships/cloud-lesson-coming-soon";
     }
 

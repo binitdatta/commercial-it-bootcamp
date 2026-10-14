@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('AWS Subnets &amp; Route Tables', 'AWS subnet architecture, route tables, NAT gateways, and practical network design', ~{::main})}">
+<main>
+<style>
+  .awslesson{max-width:1240px;margin:0 auto;color:#172b48}
+  .awslesson .hero{background:linear-gradient(115deg,#102b52,#0755a7);color:#fff;border-radius:22px;padding:2.6rem;box-shadow:0 15px 38px rgba(12,46,92,.13)}
+  .awslesson .eyebrow{color:#b5d9ff;text-transform:uppercase;font-weight:800;letter-spacing:.13em;font-size:.79rem}
+  .awslesson .hero h1{font-weight:800;letter-spacing:-.035em;font-size:clamp(2.15rem,4vw,3.15rem);margin:.9rem 0}
+  .awslesson .hero p{font-size:1.06rem;max-width:940px;line-height:1.65}
+  .awslesson .tag{display:inline-block;border:1px solid #ffffff55;border-radius:9px;padding:8px 12px;margin:6px 7px 0 0;background:#ffffff13;font-size:.88rem}
+  .awslesson .panel{background:#fff;border:1px solid #d7e5f5;border-radius:17px;padding:clamp(1.2rem,3vw,2rem);margin-top:20px;box-shadow:0 6px 22px rgba(15,53,95,.035)}
+  .awslesson .panel h2{font-weight:800;font-size:1.45rem;margin-bottom:1rem;color:#102e53}
+  .awslesson h3{font-weight:750;color:#164c8d;font-size:1.11rem;margin:1.4rem 0 .6rem}
+  .awslesson p,.awslesson li{line-height:1.73}
+  .awslesson .smallcaps{color:#0063bd;font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:.8rem}
+  .awslesson .diagram{width:100%;height:auto;display:block;border-radius:10px;border:1px solid #cfe0f4;background:#fff}
+  .awslesson figure{margin:0}
+  .awslesson figcaption{font-size:.83rem;color:#536781;padding-top:.65rem}
+  .awslesson .note{background:#eef6ff;border-left:4px solid #1478d4;padding:14px 18px;border-radius:8px;margin:14px 0}
+  .awslesson .warning{background:#fff8e9;border-left:4px solid #e5a323;padding:14px 18px;border-radius:8px;margin:14px 0}
+  .awslesson .tablewrap{overflow-x:auto}
+  .awslesson table{width:100%;border-collapse:collapse;font-size:.93rem;margin:12px 0}
+  .awslesson th{background:#eaf3ff;color:#13365f;text-align:left}
+  .awslesson th,.awslesson td{padding:11px 12px;border:1px solid #d7e4f2;vertical-align:top}
+  .awslesson tbody tr:nth-child(even){background:#f8fbff}
+  .awslesson code{font-size:.91em;color:#114b8b;background:#eef5fc;padding:2px 5px;border-radius:4px}
+  .awslesson .cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+  .awslesson .step{padding:12px 0;border-bottom:1px solid #e3ebf5}
+  .awslesson .step:last-child{border-bottom:0}
+  .awslesson .step strong{color:#075aa9}
+  .awslesson .navlinks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+  .awslesson .navlinks a{color:#005bb4;text-decoration:none;font-size:.9rem;font-weight:650;padding:6px 0}
+  .awslesson .navlinks a:hover{text-decoration:underline}
+  .awslesson .pill{display:inline-block;background:#ebf5ff;color:#0756a4;border-radius:22px;padding:5px 11px;font-weight:700;font-size:.8rem}
+  @media(max-width:740px){.awslesson .cols,.awslesson .navlinks{grid-template-columns:1fr}.awslesson .hero{padding:1.4rem}.awslesson .panel{padding:1rem}}
+</style>
+<div class="container py-4 pb-5 awslesson">
+  <a class="d-inline-block mb-3 fw-semibold text-decoration-none" th:href="@{/internships/cloud-computing}">← Cloud Computing</a>
+  <header class="hero">
+    <div class="eyebrow">Amazon Web Services · 02 · VPC, Networking &amp; Connectivity</div>
+    <h1>Subnets &amp; Route Tables</h1>
+    <p class="mb-2">Understand how AWS divides a VPC into Availability Zone-specific IP address ranges and how destination-based routing controls traffic between application tiers, NAT gateways, and the internet.</p>
+    <span class="tag">Subnet CIDR planning</span><span class="tag">Public / private / isolated</span><span class="tag">Route tables</span><span class="tag">Multi-AZ resiliency</span><span class="tag">Hands-on lab</span>
+  </header>
+  <section class="panel" aria-labelledby="lesson-nav"><h2 id="lesson-nav">Learning path</h2>
+    <nav class="navlinks" aria-label="Lesson sections">
+      <a href="#reference">01 · Reference architecture</a><a href="#fundamentals">02 · Networking fundamentals</a><a href="#addressing">03 · Address plan</a>
+      <a href="#routing">04 · Route-table examples</a><a href="#flows">05 · Traffic flow and security</a><a href="#lab">06 · AWS build lab</a>
+      <a href="#validation">07 · Validation &amp; troubleshooting</a><a href="#assessment">08 · Knowledge check</a><a href="#takeaways">09 · Key takeaways</a>
+    </nav>
+  </section>
+  <section class="panel" id="reference"><h2>01 · End-to-end reference architecture</h2>
+    <p>A reference VPC <code>10.0.0.0/16</code> spans two Availability Zones. Each AZ has one public subnet, one private application subnet, and one private database subnet. The Application Load Balancer accepts HTTPS at the public edge and forwards requests to application instances in private subnets.</p>
+    <figure><img class="diagram" loading="eager" th:src="@{/images/architecture/aws-subnets-route-tables-architecture.png}" src="/images/architecture/aws-subnets-route-tables-architecture.png" alt="AWS reference architecture: VPC spanning two Availability Zones, public and private subnets, Internet Gateway, NAT Gateways, Application Load Balancer, EC2, Multi-AZ RDS and sample route tables" /><figcaption>Conceptual reference architecture. Example IPv4 CIDRs and routes are illustrative; choose actual AWS Region, Availability Zones, gateway IDs, and routes for your environment.</figcaption></figure>
+    <div class="note"><strong>Architecture interpretation:</strong> The ALB uses public subnets but application EC2 instances use private subnets. Database subnets normally have no internet default route. NAT gateways serve private outbound connections; they do not accept unsolicited inbound internet traffic.</div>
+  </section>
+  <section class="panel" id="fundamentals"><h2>02 · Subnet and routing fundamentals</h2>
+    <div class="cols"><div><h3>VPC &amp; subnet relationship</h3><p>A VPC is a regional logical network. Each subnet occupies exactly one Availability Zone. Every subnet's IPv4 CIDR must fit inside the VPC IPv4 address range and must not overlap another subnet's range.</p><p>A subnet is <strong>public</strong> when its associated route table has a default route to an Internet Gateway; public IP addressing and security controls are separately required for internet reachability. A <strong>private</strong> subnet has no direct IGW default route.</p></div>
+    <div><h3>Route table behavior</h3><p>Each subnet uses exactly one effective route table: an explicit association or the VPC main route table. A route consists of <strong>destination CIDR + next-hop target</strong>. AWS selects the most-specific matching route; static and propagated-route precedence can also matter.</p><p>New VPC route tables include a local route for each VPC CIDR. Route tables govern next hops, <em>not</em> fine-grained authorization; security groups and NACLs implement traffic filtering.</p></div></div>
+    <div class="warning"><strong>Important:</strong> A default route to an Internet Gateway does not automatically make an EC2 instance internet-reachable. It also needs suitable public addressing and security rules. IPv6 uses separate routes and may use an egress-only Internet Gateway for outbound-only connections.</div>
+  </section>
+  <section class="panel" id="addressing"><h2>03 · IPv4 address and subnet allocation plan</h2>
+    <p>Example allocation for <code>10.0.0.0/16</code> (65,536 total IPv4 addresses). Each <code>/24</code> contains 256 addresses, of which <strong>251 are usable by AWS resources</strong> because AWS reserves five IPv4 addresses per subnet.</p>
+    <div class="tablewrap"><table><thead><tr><th>Tier</th><th>Availability Zone A</th><th>Availability Zone B</th><th>Design purpose</th></tr></thead><tbody>
+    <tr><td>Public</td><td><code>10.0.1.0/24</code></td><td><code>10.0.2.0/24</code></td><td>Internet-facing ALB, NAT Gateway</td></tr>
+    <tr><td>Private application</td><td><code>10.0.3.0/24</code></td><td><code>10.0.4.0/24</code></td><td>EC2 / application compute, no direct internet inbound</td></tr>
+    <tr><td>Private database</td><td><code>10.0.5.0/24</code></td><td><code>10.0.6.0/24</code></td><td>RDS subnet group, no direct internet route</td></tr>
+    </tbody></table></div>
+    <p><strong>Calculation:</strong> A prefix length <code>/24</code> leaves <code>32 − 24 = 8</code> host bits, so <code>2^8 = 256</code> IPv4 addresses. Design address space for future growth and additional subnet tiers.</p>
+  </section>
+  <section class="panel" id="routing"><h2>04 · Route tables: explicit examples</h2>
+    <p>All tables below have a local route. For high availability, each private application subnet uses the NAT Gateway in the same AZ. Each public subnet can associate with the same logical public route table when route requirements are identical.</p>
+    <div class="tablewrap"><table><thead><tr><th>Route table</th><th>Associated subnet(s)</th><th>Destination</th><th>Target</th></tr></thead><tbody>
+    <tr><td rowspan="2"><strong>rtb-public</strong></td><td rowspan="2">Public A + B</td><td><code>10.0.0.0/16</code></td><td><code>local</code></td></tr>
+    <tr><td><code>0.0.0.0/0</code></td><td>Internet Gateway <code>igw-...</code></td></tr>
+    <tr><td rowspan="2"><strong>rtb-app-a</strong></td><td rowspan="2">Private App A</td><td><code>10.0.0.0/16</code></td><td><code>local</code></td></tr>
+    <tr><td><code>0.0.0.0/0</code></td><td>NAT Gateway A <code>nat-a</code></td></tr>
+    <tr><td rowspan="2"><strong>rtb-app-b</strong></td><td rowspan="2">Private App B</td><td><code>10.0.0.0/16</code></td><td><code>local</code></td></tr>
+    <tr><td><code>0.0.0.0/0</code></td><td>NAT Gateway B <code>nat-b</code></td></tr>
+    <tr><td><strong>rtb-db-a / rtb-db-b</strong></td><td>Private DB A / B</td><td><code>10.0.0.0/16</code></td><td><code>local</code> (no internet default route)</td></tr>
+    </tbody></table></div>
+    <div class="note"><strong>Why separate application route tables?</strong> A single route table cannot send the same <code>0.0.0.0/0</code> destination to two different NAT gateways based on which subnet initiated the request. AZ-specific route tables preserve AZ-local NAT routing.</div>
+    <h3>Route-selection examples</h3><ul><li><code>10.0.3.25 → 10.0.5.20</code>: both addresses fall under the VPC local route; security groups still decide permission.</li><li><code>10.0.3.25 → 8.8.8.8</code>: private App A sends to NAT A, which reaches the IGW through its public subnet.</li><li><code>10.0.5.20 → 8.8.8.8</code>: no matching default route in the isolated DB table, so the packet has no internet path.</li></ul>
+  </section>
+  <section class="panel" id="flows"><h2>05 · End-to-end traffic flow and security</h2>
+    <div class="cols"><div><h3>Inbound application request</h3><ol><li>A client resolves the application's DNS hostname.</li><li>HTTPS reaches the internet-facing ALB in public subnets.</li><li>ALB security group permits inbound TCP/443.</li><li>ALB forwards to application targets over the configured backend port.</li><li>The application connects to RDS privately over its database port.</li></ol></div>
+    <div><h3>Outbound software update</h3><ol><li>Application EC2 initiates an HTTPS request to an external endpoint.</li><li>Private App A route table matches <code>0.0.0.0/0</code>.</li><li>NAT Gateway A translates outbound source addressing.</li><li>Public subnet route points to the IGW.</li><li>Response returns through established flow to the private workload.</li></ol></div></div>
+    <h3>Security boundaries</h3><p><strong>Security Groups</strong> are stateful resource-level controls. Permit ALB-to-app traffic from the ALB security group, and app-to-DB traffic from the app security group. <strong>Network ACLs</strong> are stateless subnet boundary controls and require explicit return-traffic considerations. <strong>Route tables</strong> provide path selection, not identity-based access control.</p>
+    <div class="warning"><strong>AWS WAF note:</strong> AWS WAF is associated with an Application Load Balancer (or other supported resources), rather than acting as a standalone network hop. The diagram's WAF element denotes logical request filtering.</div>
+  </section>
+  <section class="panel" id="lab"><h2>06 · Hands-on AWS Console build exercise</h2>
+    <p><span class="pill">Guided lab</span> &nbsp; Build a minimal functional variant of this architecture in a sandbox AWS account. <strong>Cost warning:</strong> NAT Gateways, ALBs, EC2, and RDS incur charges; delete lab resources after validation.</p>
+    <div class="step"><strong>Step 1 — Create VPC:</strong> Open VPC Console → Your VPCs → Create VPC. Select IPv4 CIDR <code>10.0.0.0/16</code> and enable DNS support/hostnames as appropriate.</div>
+    <div class="step"><strong>Step 2 — Create six subnets:</strong> Allocate the six CIDRs from the address plan; place A subnets in one AZ and B subnets in another.</div>
+    <div class="step"><strong>Step 3 — Add IGW:</strong> Create an Internet Gateway, attach it to the VPC, and configure a public route table with <code>0.0.0.0/0 → igw-...</code>.</div>
+    <div class="step"><strong>Step 4 — Add two NAT Gateways:</strong> Allocate Elastic IPs and place NAT A/B in their matching public subnets. Wait until both gateways become available.</div>
+    <div class="step"><strong>Step 5 — Create route tables:</strong> Create an app route table per AZ; route each default destination to its AZ-local NAT. Associate each route table with the correct subnet.</div>
+    <div class="step"><strong>Step 6 — Isolate DB routes:</strong> Create DB route tables with local routing only, and explicitly associate the DB subnets.</div>
+    <div class="step"><strong>Step 7 — Deploy and test:</strong> Deploy test instances/application targets into the private app subnets, place an ALB in public subnets, and validate application-to-database connectivity as applicable.</div>
+    <div class="step"><strong>Step 8 — Clean up:</strong> Remove ALB, EC2 instances, RDS, NAT Gateways, Elastic IPs, IGW, route-table associations, subnets, and VPC when finished.</div>
+  </section>
+  <section class="panel" id="validation"><h2>07 · Validation and troubleshooting checklist</h2>
+    <div class="tablewrap"><table><thead><tr><th>Symptom</th><th>Inspect</th><th>Likely explanation</th></tr></thead><tbody>
+    <tr><td>Private instance cannot reach update repository</td><td>App subnet route association, NAT state, NAT public subnet's IGW route, security egress</td><td>No default route or unavailable/misrouted NAT Gateway</td></tr>
+    <tr><td>Public instance cannot access internet</td><td>Public IP / Elastic IP, IGW route, security rules</td><td>IGW routing alone is insufficient</td></tr>
+    <tr><td>ALB cannot reach targets</td><td>Target health, app security group, listener/target port, NACLs</td><td>Unhealthy targets or blocked app traffic</td></tr>
+    <tr><td>App cannot connect to DB</td><td>Database security group, port, endpoint, NACLs, DNS</td><td>Traffic blocked even though local route exists</td></tr>
+    <tr><td>App A internet egress depends on AZ B</td><td>App A route table's NAT target</td><td>Cross-AZ NAT dependency; consider AZ-local NAT</td></tr>
+    </tbody></table></div>
+    <p>Use <strong>VPC Reachability Analyzer</strong>, VPC Flow Logs, EC2 security-group inspection, and route-table associations to diagnose reachability. Remember that Reachability Analyzer evaluates configuration paths; it does not replace application-level testing.</p>
+  </section>
+  <section class="panel" id="assessment"><h2>08 · Knowledge check</h2>
+    <ol><li>Can two subnets in different AZs share an identical CIDR within the same VPC? Explain.</li><li>What differentiates a public subnet from a private subnet in IPv4 routing terms?</li><li>Why does a private application tier commonly need one NAT Gateway per AZ?</li><li>Which route is selected for a packet addressed to <code>10.0.5.10</code> from <code>10.0.3.10</code>?</li><li>Why can a route table permit a path while a connection still fails?</li><li>How many AWS-usable addresses are available in a subnet with IPv4 prefix <code>/24</code>?</li><li>What happens when an isolated database subnet has no default route?</li></ol>
+    <details><summary class="fw-bold" style="cursor:pointer;color:#075aa9">Show instructor answer key</summary><p class="mt-3">1. No, CIDRs must not overlap. 2. An IGW default route (plus public addressing/security for usable internet access). 3. Reduce AZ dependency and cross-AZ egress. 4. Local route for the VPC CIDR. 5. Security groups, NACLs, endpoint/listener/DNS errors. 6. 251. 7. Off-VPC destinations without another matching route are unreachable.</p></details>
+  </section>
+  <section class="panel" id="takeaways"><h2>09 · Key takeaways</h2><p>Subnet design determines address allocation and AZ placement. Route-table associations determine paths. Internet Gateways support direct public routing, NAT Gateways provide private outbound IPv4 access, and security groups/NACLs enforce traffic constraints. For a resilient three-tier system, use multiple AZs, distinct subnet tiers, and deliberate route-table associations.</p>
+    <a th:href="@{/internships/cloud-computing/aws/vpc-foundations}" href="/internships/cloud-computing/aws/vpc-foundations" class="btn btn-outline-primary mt-2">← Previous lesson: VPC &amp; CIDR</a>
+  </section>
+</div>
+</main>
+</html>

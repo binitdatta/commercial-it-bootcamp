@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('AWS Internet &amp; NAT Gateways', 'AWS VPC Internet Gateway, public and private NAT Gateway architecture, route tables, and hands-on design', ~{::main})}">
+<main>
+<style>
+  .igw-page {max-width:1190px; margin:0 auto; padding:18px 8px 48px; color:#17223b}
+  .igw-hero {background:linear-gradient(112deg,#102f55,#0b5abb);border-radius:22px;padding:42px;color:#fff;margin-bottom:22px}
+  .igw-kicker {font-size:.78rem;letter-spacing:.13em;text-transform:uppercase;color:#b8ddff;font-weight:800}
+  .igw-hero h1 {font-size:clamp(2rem,4vw,3.15rem);font-weight:850;margin:12px 0}
+  .igw-hero p {max-width:920px; font-size:1.08rem;line-height:1.7}
+  .igw-panel {background:white;border:1px solid #d7e5f4;border-radius:18px;padding:26px;margin:20px 0;box-shadow:0 6px 24px rgba(18,55,91,.045)}
+  .igw-panel h2 {font-size:1.5rem;font-weight:800;color:#0c376b;margin:0 0 14px}
+  .igw-panel h3 {font-size:1.13rem;font-weight:750;color:#174b86;margin-top:20px}
+  .igw-panel p,.igw-panel li {line-height:1.75}
+  .igw-page table {width:100%;border-collapse:collapse;font-size:.94rem;margin:14px 0}
+  .igw-page th {background:#e5f0fb;color:#103968;text-align:left}
+  .igw-page td,.igw-page th {border:1px solid #cfdeee;padding:11px;vertical-align:top}
+  .igw-table-scroll {overflow-x:auto}
+  .igw-tag {display:inline-block;background:#ffffff24;border:1px solid #ffffff70;padding:7px 11px;border-radius:9px;margin:7px 7px 0 0;font-size:.88rem}
+  .igw-note {background:#eaf4ff;border-left:4px solid #2174c5;border-radius:8px;padding:15px 19px;margin:15px 0}
+  .igw-warning {background:#fff6e8;border-left:4px solid #e79724;border-radius:8px;padding:15px 19px;margin:15px 0}
+  .igw-code {display:block;background:#10243d;color:#f0f6ff;padding:17px;border-radius:10px;overflow-x:auto;white-space:pre;font-size:.88rem;line-height:1.6}
+  .igw-figure {width:100%;height:auto;display:block;border:1px solid #d8e7f4;border-radius:12px;background:#fff}
+  .igw-caption {font-size:.91rem;color:#566781;padding-top:12px}
+  .igw-nav a {display:inline-block;margin:7px 13px 7px 0;text-decoration:none;font-weight:650;font-size:.93rem}
+  .igw-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+  .igw-tile {border:1px solid #d8e6f7;background:#f4f8fd;border-radius:12px;padding:17px}
+  .igw-tile h3 {margin:0 0 5px;font-size:1rem}
+  @media(max-width:720px){.igw-grid{grid-template-columns:1fr}.igw-panel{padding:17px}.igw-hero{padding:26px}}
+</style>
+<div class="igw-page">
+  <a class="d-inline-block mb-3 text-decoration-none fw-semibold" th:href="@{/internships/cloud-computing}">← Cloud Computing</a>
+  <header class="igw-hero">
+    <div class="igw-kicker">Amazon Web Services · 02 · VPC, Networking &amp; Connectivity</div>
+    <h1>Internet &amp; NAT Gateways</h1>
+    <p>Learn how to design inbound Internet connectivity for public-facing workloads and controlled outbound connectivity for private application tiers using an Internet Gateway (IGW), NAT Gateway, and VPC route tables.</p>
+    <span class="igw-tag">IPv4 &amp; IPv6</span><span class="igw-tag">Two Availability Zones</span><span class="igw-tag">Route-table design</span><span class="igw-tag">AWS lab</span>
+  </header>
+  <nav class="igw-panel igw-nav" aria-label="Lesson contents"><strong>Learning path:</strong>
+    <a href="#architecture">01 Architecture</a><a href="#foundations">02 Gateway fundamentals</a><a href="#address-plan">03 CIDR plan</a><a href="#routes">04 Route tables</a><a href="#flows">05 Packet flow</a><a href="#resilience">06 Availability &amp; cost</a><a href="#security">07 Security</a><a href="#lab">08 Lab</a><a href="#troubleshooting">09 Troubleshooting</a><a href="#assessment">10 Assessment</a>
+  </nav>
+  <section id="architecture" class="igw-panel">
+    <h2>01 · Reference architecture — two-AZ VPC</h2>
+    <p>Our reference VPC uses <strong>10.0.0.0/16</strong> and six /24 subnets across two Availability Zones. The internet-facing Application Load Balancer (ALB) is attached to the public subnets, private EC2 instances serve application traffic, and RDS resides in isolated database subnets. Each Availability Zone has its own public NAT Gateway for availability and to reduce cross-AZ egress dependency.</p>
+    <figure>
+      <img class="igw-figure" th:src="@{/images/architecture/aws-internet-nat-gateways-architecture.png}" src="/images/architecture/aws-internet-nat-gateways-architecture.png" loading="lazy" alt="AWS Internet and NAT Gateway reference architecture showing two availability zones, public NAT gateways, internet gateway, public ALB, private EC2 workloads, isolated databases and route tables" />
+      <figcaption class="igw-caption">Reference architecture — conceptual illustration. Use the detailed route tables below as the authoritative design examples; isolated DB tiers intentionally do not have an Internet default route.</figcaption>
+    </figure>
+    <div class="igw-note"><strong>Traffic intent:</strong> Internet users reach only the public ALB. Application instances initiate outbound Internet connections through same-AZ NAT Gateways. NAT Gateways do not accept unsolicited inbound Internet connections to private instances.</div>
+  </section>
+  <section id="foundations" class="igw-panel">
+    <h2>02 · Internet Gateway vs. NAT Gateway</h2>
+    <div class="igw-grid">
+      <div class="igw-tile"><h3>Internet Gateway (IGW)</h3><p>A horizontally scaled, highly available VPC attachment that provides an Internet route target for Internet-routable traffic. For IPv4, a public resource generally needs a public IPv4 address (or EIP), permissive routes and security controls, and a path through the IGW. The IGW provides the public/private IPv4 translation for eligible resources.</p></div>
+      <div class="igw-tile"><h3>Public NAT Gateway</h3><p>Managed outbound address translation for IPv4 traffic from private subnets. Place it in a public subnet, associate an Elastic IP, and use its NAT Gateway ID as the private subnet's default route. Its public Internet egress goes via the IGW.</p></div>
+      <div class="igw-tile"><h3>Private NAT Gateway</h3><p>A distinct AWS NAT Gateway connectivity type for translation toward private networks (for example, through Transit Gateway or a virtual private gateway). It is <strong>not</strong> an Internet egress substitute and does not use an Elastic IP.</p></div>
+      <div class="igw-tile"><h3>Egress-only Internet Gateway</h3><p>For IPv6 private workloads requiring outbound-only Internet initiation, an egress-only IGW can provide a default IPv6 route (<code>::/0</code>) while refusing Internet-initiated inbound connections.</p></div>
+    </div>
+    <div class="igw-warning"><strong>Important:</strong> A subnet is "public" because its effective route table includes a route to an IGW, not simply because it contains an ALB or NAT Gateway. NAT Gateways cannot have Security Groups associated with them; use workload Security Groups and subnet NACLs instead.</div>
+    <div class="igw-table-scroll"><table><thead><tr><th>Feature</th><th>Internet Gateway</th><th>Public NAT Gateway</th></tr></thead><tbody>
+      <tr><td>Scope</td><td>Attached to VPC; regional service</td><td>Created in one subnet / Availability Zone</td></tr>
+      <tr><td>Traffic role</td><td>Path to/from public Internet for eligible endpoints</td><td>Outbound-initiated IPv4 connections from private workloads</td></tr>
+      <tr><td>Public IP</td><td>Public endpoints use public IPv4 or IPv6 addresses</td><td>Uses Elastic IP for public IPv4 egress</td></tr>
+      <tr><td>Subnet route</td><td><code>0.0.0.0/0 → igw-…</code></td><td><code>0.0.0.0/0 → nat-…</code></td></tr>
+      <tr><td>Direct unsolicited inbound to private EC2</td><td>Not by itself; a private EC2 has no public endpoint</td><td>No</td></tr>
+      <tr><td>Typical cost model</td><td>No hourly IGW charge; data transfer may apply</td><td>Hourly provisioning plus processed-GB and data-transfer charges</td></tr>
+    </tbody></table></div>
+  </section>
+  <section id="address-plan" class="igw-panel">
+    <h2>03 · IPv4 CIDR and subnet address plan</h2>
+    <div class="igw-table-scroll"><table><thead><tr><th>Subnet</th><th>AZ A</th><th>AZ B</th><th>Connectivity role</th></tr></thead><tbody>
+      <tr><td>Public</td><td>10.0.1.0/24</td><td>10.0.2.0/24</td><td>ALB ENIs; one public NAT Gateway per AZ</td></tr>
+      <tr><td>Private applications</td><td>10.0.3.0/24</td><td>10.0.4.0/24</td><td>EC2/ECS; outbound through same-AZ NAT</td></tr>
+      <tr><td>Isolated database</td><td>10.0.5.0/24</td><td>10.0.6.0/24</td><td>RDS; local VPC routing only by default</td></tr>
+    </tbody></table></div>
+    <p>Each /24 contains 256 IPv4 addresses, of which AWS reserves five, leaving <strong>251 usable private addresses</strong> in a typical subnet. Plan sufficient headroom for ALB IP requirements, ECS task ENIs, and scaling events.</p>
+  </section>
+  <section id="routes" class="igw-panel">
+    <h2>04 · Route-table associations and targets</h2>
+    <h3>Public route table (associated with both public subnets)</h3>
+    <div class="igw-table-scroll"><table><thead><tr><th>Destination</th><th>Target</th><th>Explanation</th></tr></thead><tbody>
+      <tr><td>10.0.0.0/16</td><td>local</td><td>Within-VPC communication</td></tr><tr><td>0.0.0.0/0</td><td>igw-xxxxxxxx</td><td>IPv4 Internet access for public resources</td></tr>
+    </tbody></table></div>
+    <h3>Private application route tables (separate table for each AZ)</h3>
+    <div class="igw-table-scroll"><table><thead><tr><th>Associated subnet</th><th>Destination</th><th>Target</th></tr></thead><tbody>
+      <tr><td>10.0.3.0/24 (AZ A)</td><td>10.0.0.0/16</td><td>local</td></tr><tr><td>10.0.3.0/24 (AZ A)</td><td>0.0.0.0/0</td><td>nat-az-a</td></tr>
+      <tr><td>10.0.4.0/24 (AZ B)</td><td>10.0.0.0/16</td><td>local</td></tr><tr><td>10.0.4.0/24 (AZ B)</td><td>0.0.0.0/0</td><td>nat-az-b</td></tr>
+    </tbody></table></div>
+    <h3>Isolated database route table</h3><p><code>10.0.0.0/16 → local</code>. Do not add a default Internet route unless a documented exception requires it; use approved endpoints or an application-mediated flow for operations instead.</p>
+    <div class="igw-note"><strong>Routing precedence:</strong> AWS selects the most specific matching prefix (longest-prefix match). A more-specific S3 gateway endpoint prefix-list route or transit route may override a broad <code>0.0.0.0/0</code> NAT route where applicable.</div>
+  </section>
+  <section id="flows" class="igw-panel">
+    <h2>05 · Follow the packets</h2>
+    <ol>
+      <li><strong>Customer HTTPS ingress:</strong> Browser → public DNS → ALB listener on TCP/443 via public subnets and Internet Gateway → target EC2/private app subnet. ALB security group permits approved ingress; app security group trusts ALB SG.</li>
+      <li><strong>Application outbound request:</strong> EC2 (10.0.3.x) → private subnet's <code>0.0.0.0/0</code> route → NAT Gateway in public subnet A → IGW → external API. Return packets traverse the NAT connection state back to EC2.</li>
+      <li><strong>Database connection:</strong> App (10.0.3.x) → local route → RDS private address (10.0.5.x), with DB SG allowing only app-SG on the DB port. Neither NAT nor IGW is required for VPC-local traffic.</li>
+      <li><strong>S3 retrieval with gateway endpoint:</strong> App → route to the S3 prefix list pointing at the gateway endpoint, rather than traversing a NAT Gateway. Configure endpoint policy and IAM correctly.</li>
+      <li><strong>Unsolicited external request to private EC2:</strong> No public address / inbound IGW path; the NAT Gateway does not provide inbound port forwarding to the instance.</li>
+    </ol>
+    <div class="igw-warning">DNS names such as an ALB alias are not equivalent to routes. DNS resolution determines addresses; route tables and security controls determine actual packet forwarding and access.</div>
+  </section>
+  <section id="resilience" class="igw-panel">
+    <h2>06 · High availability, failure modes, and cost</h2>
+    <p>Use one public NAT Gateway in each AZ for critical private egress. Associate AZ A private application subnets with NAT A and AZ B with NAT B. A single NAT Gateway shared across AZs is a cost optimization but creates additional cross-AZ dependency and potentially cross-AZ data transfer charges.</p>
+    <p>A public NAT Gateway consumes hourly billed capacity and data-processing charges even when utilization is low. Evaluate NAT usage through CloudWatch metrics and VPC Flow Logs. S3 gateway endpoints typically avoid NAT processing on S3 traffic; interface endpoints incur their own hourly and data-processing charges, so compare the real workload patterns.</p>
+    <p>For IPv6 designs, consider native IPv6 public addressing, an egress-only IGW for outbound-only connections, or NAT64/DNS64 where IPv6-only clients must reach IPv4 destinations, subject to AWS-supported routing configurations.</p>
+  </section>
+  <section id="security" class="igw-panel">
+    <h2>07 · Security and governance controls</h2>
+    <ul><li><strong>Least privilege:</strong> The ALB SG allows TCP/443 from appropriate client ranges; the app SG allows only listener target traffic from the ALB SG.</li>
+    <li><strong>No public application IPs:</strong> Disable automatic public IPv4 address assignment on private application subnets and do not attach Elastic IPs to private application instances.</li>
+    <li><strong>Database isolation:</strong> Restrict RDS SG to app-to-database port; keep DB route table local-only and turn off public accessibility.</li>
+    <li><strong>Observability:</strong> Enable appropriate VPC Flow Logs, CloudWatch NAT metrics, ALB access logs, AWS CloudTrail, and AWS Config controls.</li>
+    <li><strong>Outbound restriction:</strong> NAT provides translation, not layer-7 filtering. Apply egress Security Group restrictions, DNS controls, or managed egress filtering/firewalls as needed.</li></ul>
+  </section>
+  <section id="lab" class="igw-panel">
+    <h2>08 · AWS hands-on lab</h2>
+    <ol><li>In an isolated training AWS account, choose a region with two AZs and create VPC <code>10.0.0.0/16</code>.</li>
+      <li>Create six /24 subnets using the address plan above. Disable public-IP assignment for private tiers.</li>
+      <li>Attach an IGW to the VPC. Create a public route table with <code>0.0.0.0/0 → IGW</code>; associate both public subnets.</li>
+      <li>Allocate two Elastic IP addresses and create a <strong>public NAT Gateway in each public subnet</strong>.</li>
+      <li>Create per-AZ private app route tables with default routes pointing at the local-AZ NAT Gateway; associate each app subnet.</li>
+      <li>Create a DB route table with only the VPC local route; associate both DB subnets.</li>
+      <li>Launch a test private EC2 instance with a Systems Manager-compatible access path (appropriate IAM role and SSM endpoints or permitted Internet egress).</li>
+      <li>Verify outbound HTTPS from the private instance, and confirm there is no unsolicited direct Internet ingress.</li>
+      <li>Introduce a temporary erroneous NAT route; observe connectivity failure, then correct the route. Inspect NAT CloudWatch metrics and VPC Flow Logs.</li>
+      <li>Clean up billable NAT Gateways and Elastic IPs after the exercise; delete dependent resources in the correct order.</li>
+    </ol>
+    <div class="igw-warning"><strong>Cost caution:</strong> NAT Gateways and public IPv4 addresses can generate charges while allocated. Complete the cleanup step even if the lab is unfinished.</div>
+  </section>
+  <section id="troubleshooting" class="igw-panel">
+    <h2>09 · Troubleshooting checklist</h2>
+    <div class="igw-table-scroll"><table><thead><tr><th>Symptom</th><th>Likely cause</th><th>What to check</th></tr></thead><tbody>
+      <tr><td>Private EC2 cannot reach an external API</td><td>Missing route or NAT not Available</td><td>Private subnet route association, NAT status, NAT's public subnet IGW route, NACLs, SG egress and DNS</td></tr>
+      <tr><td>ALB endpoint times out</td><td>Listener, target health, or ingress controls</td><td>ALB SG inbound TCP/443, public subnet routes, target SG and health check</td></tr>
+      <tr><td>Public subnet instance cannot reach Internet</td><td>No public IPv4 / EIP, no IGW route, or blocked egress</td><td>IP association, effective subnet route table, SG/NACLs</td></tr>
+      <tr><td>AZ failure also disrupts healthy AZ egress</td><td>Private route crosses AZ to single NAT</td><td>Per-AZ NAT deployment and route tables</td></tr>
+      <tr><td>Unexpectedly high NAT charges</td><td>Data path to S3 or services unnecessarily traverses NAT</td><td>Top traffic destinations, CloudWatch bytes, endpoint options and cross-AZ charges</td></tr>
+      <tr><td>RDS cannot be accessed publicly</td><td>Expected secure behavior</td><td>Connect via private application tier, SSM tunnel/bastion or other approved private access path</td></tr>
+    </tbody></table></div>
+  </section>
+  <section id="assessment" class="igw-panel">
+    <h2>10 · Knowledge assessment</h2>
+    <ol><li>Why does <code>0.0.0.0/0 → igw</code> not automatically make a private-only EC2 instance directly Internet reachable?</li>
+      <li>What route table entry must private application subnet A contain to use NAT A?</li>
+      <li>Why is one NAT Gateway per AZ generally more resilient than one shared NAT?</li>
+      <li>Can a Security Group be attached directly to a NAT Gateway?</li>
+      <li>How do you ensure your isolated database tier does not have outbound Internet access by default?</li>
+      <li>What is the difference between a public NAT Gateway and an egress-only IGW?</li>
+      <li>Which AWS endpoint option commonly removes S3 traffic from the NAT data path?</li></ol>
+    <details><summary class="fw-bold text-primary">Show instructor answer guide</summary><ol class="mt-3">
+      <li>It also needs a routable public IP and permissive traffic controls; routing alone does not grant a public endpoint.</li>
+      <li><code>0.0.0.0/0 → nat-az-a</code>, alongside the automatically included local route.</li>
+      <li>It removes reliance on NAT infrastructure in a different AZ and can reduce cross-AZ traffic costs.</li>
+      <li>No; enforce traffic rules through source workload SGs and subnet NACLs.</li>
+      <li>Use isolated subnet route tables with only local routes (plus explicitly approved private paths).</li>
+      <li>Public NAT translates IPv4 for private workloads; egress-only IGW allows outbound-initiated IPv6 flows without address translation.</li>
+      <li>An S3 Gateway VPC Endpoint with correct route table associations.</li>
+    </ol></details>
+  </section>
+  <div class="igw-note"><strong>Design takeaway:</strong> IGW and NAT are routing/connectivity components—not substitutes for zero-trust application controls, Security Groups, NACLs, and identity enforcement. Use least privilege, AZ-local egress, private database routing, and service endpoints where justified.</div>
+</div>
+</main>
+</html>

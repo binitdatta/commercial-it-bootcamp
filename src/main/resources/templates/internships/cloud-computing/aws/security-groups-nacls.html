@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('AWS Security Groups &amp; Network ACLs', 'Defense in depth with stateful security groups and stateless network ACLs', ~{::main})}">
+<main>
+<style>
+  .aws-sec{max-width:1240px;margin:0 auto;color:#172b48}
+  .aws-sec *{box-sizing:border-box}
+  .aws-sec .back{display:inline-block;margin-bottom:16px;text-decoration:none;font-weight:700}
+  .aws-sec .hero{background:linear-gradient(110deg,#102b52,#075aac);color:#fff;border-radius:20px;padding:clamp(25px,4vw,48px);box-shadow:0 12px 30px #10396a1b}
+  .aws-sec .eyebrow{text-transform:uppercase;font-size:.78rem;font-weight:800;letter-spacing:.12em;color:#bddcff}
+  .aws-sec h1{font-weight:800;font-size:clamp(2rem,4.1vw,3.15rem);line-height:1.2;margin:14px 0}
+  .aws-sec .hero p{font-size:1.05rem;max-width:960px;line-height:1.7}
+  .aws-sec .tag{display:inline-block;border:1px solid #dceaff66;border-radius:9px;padding:8px 11px;margin:5px 7px 0 0;background:#ffffff19;font-size:.86rem}
+  .aws-sec .panel{background:white;border:1px solid #d8e6f5;border-radius:17px;padding:clamp(18px,3vw,32px);margin-top:21px;box-shadow:0 5px 20px #18395a0a}
+  .aws-sec .panel h2{font-size:1.48rem;font-weight:800;color:#10365f;margin:0 0 16px}
+  .aws-sec h3{font-size:1.12rem;color:#18558c;font-weight:750;margin:23px 0 10px}
+  .aws-sec p,.aws-sec li{line-height:1.75}
+  .aws-sec .toc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  .aws-sec .toc a{color:#075cac;font-weight:600;text-decoration:none}
+  .aws-sec img.diagram{width:100%;height:auto;display:block;border:1px solid #ccdeee;border-radius:12px;background:white}
+  .aws-sec figcaption{font-size:.85rem;color:#64768b;margin:10px 0}
+  .aws-sec .note{background:#edf6ff;border-left:4px solid #277bc5;padding:16px 18px;margin:16px 0;border-radius:9px}
+  .aws-sec .warn{background:#fff6e9;border-left:4px solid #e1a044;padding:16px 18px;margin:16px 0;border-radius:9px}
+  .aws-sec .tablewrap{overflow-x:auto}
+  .aws-sec table{width:100%;border-collapse:collapse;margin:12px 0 21px;font-size:.94rem}
+  .aws-sec th{background:#e9f2fd;color:#173b62}
+  .aws-sec td,.aws-sec th{padding:11px 13px;border:1px solid #d7e5f2;vertical-align:top}
+  .aws-sec tbody tr:nth-child(even){background:#f8fbff}
+  .aws-sec code{background:#edf4fc;color:#174b80;border-radius:5px;padding:2px 5px}
+  .aws-sec .cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:19px}
+  .aws-sec .step{padding:13px 0;border-bottom:1px solid #e1eaf4}
+  .aws-sec .step:last-child{border:0}
+  .aws-sec .num{display:inline-block;background:#0d62b0;color:white;border-radius:50%;height:26px;width:26px;text-align:center;line-height:26px;font-weight:800;margin-right:9px}
+  .aws-sec .subhead{font-size:.8rem;font-weight:800;letter-spacing:.07em;color:#1472bd;text-transform:uppercase;margin-bottom:8px}
+  @media(max-width:760px){.aws-sec .toc,.aws-sec .cols{grid-template-columns:1fr}.aws-sec .panel{padding:18px}}
+</style>
+<div class="aws-sec">
+  <a class="back" th:href="@{/internships/cloud-computing}">← Cloud Computing</a>
+  <header class="hero">
+    <div class="eyebrow">Amazon Web Services · 02 · VPC, Networking &amp; Connectivity</div>
+    <h1>Security Groups &amp; Network ACLs</h1>
+    <p>Design AWS network security in layers. Learn how stateful security groups protect resource network interfaces, how stateless subnet network ACLs filter packets, and how to secure an internet-facing three-tier application across Availability Zones.</p>
+    <span class="tag">Stateful vs. stateless</span><span class="tag">Least privilege</span><span class="tag">Two Availability Zones</span><span class="tag">Hands-on lab</span>
+  </header>
+  <nav class="panel" aria-label="Lesson sections">
+    <h2>Learning path</h2>
+    <div class="toc">
+      <a href="#architecture">01 · Reference architecture</a><a href="#sg">02 · Security Groups</a><a href="#nacl">03 · Network ACLs</a>
+      <a href="#comparison">04 · Side-by-side comparison</a><a href="#rules">05 · Example rules</a><a href="#flows">06 · Packet walkthrough</a>
+      <a href="#design">07 · Production design</a><a href="#lab">08 · Hands-on AWS lab</a><a href="#troubleshooting">09 · Troubleshooting</a>
+      <a href="#assessment">10 · Knowledge assessment</a>
+    </div>
+  </nav>
+  <section class="panel" id="architecture">
+    <h2>01 · End-to-end reference architecture</h2>
+    <p>The reference design uses one VPC (<code>10.0.0.0/16</code>) spanning two Availability Zones. An internet-facing Application Load Balancer (ALB) receives HTTPS, private application instances accept only ALB-originated application traffic, and RDS accepts database connections only from application instances. Each tier has a separate security group; each subnet tier can have an appropriate network ACL.</p>
+    <figure>
+      <img class="diagram" th:src="@{/images/architecture/aws-security-groups-nacls-architecture.png}" alt="AWS VPC architecture with public, private application and isolated database subnets in two Availability Zones; resource security groups and subnet network ACLs shown as separate enforcement boundaries" loading="lazy">
+      <figcaption>Illustrative reference topology. ALB is one regional load balancer with nodes spanning the selected subnets; the boxes represent its placement in two AZs. Network ACLs govern subnet boundaries; Security Groups govern supported resource network interfaces.</figcaption>
+    </figure>
+    <div class="note"><strong>Key mental model:</strong> A packet must satisfy the applicable subnet NACLs and security-group rules, plus routing and any host firewall. An allow decision at one layer does not override a deny or missing allow at another.</div>
+    <div class="warn"><strong>Diagram scope:</strong> The example focuses on ALB → EC2 → RDS. AWS WAF is an optional web ACL associated with the ALB, not a separate network hop. NAT Gateways are intentionally omitted from the core security path: they do not support attaching Security Groups.</div>
+  </section>
+  <section class="panel" id="sg">
+    <h2>02 · Security Groups: stateful resource-level filtering</h2>
+    <div class="cols"><div><h3>Where a security group applies</h3><p>Security Groups attach to elastic network interfaces (ENIs) or supported resources, including EC2 and ALBs, and are configured for RDS instances. Multiple Security Groups may be associated with a supported network interface; their allow rules are aggregated.</p></div><div><h3>Stateful behavior</h3><p>If an inbound connection is allowed, its tracked response traffic is allowed regardless of a matching outbound rule. Likewise, responses to allowed outbound connections are automatically permitted. This is connection tracking, not a blanket exemption for unrelated traffic.</p></div></div>
+    <h3>Core operating rules</h3>
+    <ul><li>Rules are <strong>allow-only</strong>; there is no explicit deny rule in a Security Group.</li><li>Every Security Group begins with no inbound allow rules; default outbound rules can permit all outbound traffic until you narrow them.</li><li>Reference another Security Group as an allowed source or destination when supported; this makes tier access independent of changing EC2 private IPs.</li><li>Changes to rules take effect without rebooting the instance; existing tracked connections can have nuanced behavior when rules change.</li><li>Security Groups are associated with resources/ENIs—not with subnets, Internet Gateways, or NAT Gateways.</li></ul>
+    <div class="note"><strong>Recommended model:</strong> <code>ALB-SG</code> allows HTTPS from trusted clients; <code>App-SG</code> allows TCP 8080 from <code>ALB-SG</code>; <code>DB-SG</code> allows TCP 3306 from <code>App-SG</code>. Match ports to the application's actual listener and database engine.</div>
+  </section>
+  <section class="panel" id="nacl">
+    <h2>03 · Network ACLs: stateless subnet-level filtering</h2>
+    <p>A Network ACL (NACL) is associated with one or more subnets. Each subnet must be associated with exactly one NACL at any given time. All matching ingress and egress traffic crossing a subnet boundary is evaluated against its rules, while traffic between instances within the same subnet is not filtered by that subnet's NACL.</p>
+    <ul><li><strong>Stateless:</strong> return packets must independently satisfy the opposite-direction NACL rules.</li><li><strong>Rule ordering:</strong> evaluate by ascending rule number and stop at the first match, regardless of whether it allows or denies.</li><li><strong>Explicit allow/deny:</strong> a matching deny blocks traffic even if the resource Security Group otherwise permits it.</li><li><strong>Implicit final deny:</strong> the final <code>*</code> rule denies traffic that no earlier rule matches.</li><li><strong>Source/destination:</strong> rules use CIDR blocks and ports/protocols rather than referencing Security Group IDs.</li></ul>
+    <div class="warn"><strong>Ephemeral ports matter:</strong> for TCP response traffic, account for the ephemeral port range used by the participating client/platform. Ranges vary across operating systems and services. Use VPC Flow Logs and connection tests to validate the actual return path.</div>
+  </section>
+  <section class="panel" id="comparison">
+    <h2>04 · Security Groups vs. NACLs</h2>
+    <div class="tablewrap"><table><thead><tr><th>Property</th><th>Security Group</th><th>Network ACL</th></tr></thead><tbody>
+      <tr><td>Enforcement point</td><td>ENI / supported resource</td><td>Subnet boundary</td></tr>
+      <tr><td>Connection behavior</td><td>Stateful connection tracking</td><td>Stateless, each direction independently evaluated</td></tr>
+      <tr><td>Rule actions</td><td>Allow only</td><td>Allow and deny</td></tr>
+      <tr><td>Evaluation</td><td>Union of applicable allow rules</td><td>First matching rule, ascending rule number</td></tr>
+      <tr><td>Source / destination</td><td>IP CIDR or supported Security Group reference</td><td>IP CIDR</td></tr>
+      <tr><td>Default VPC behavior</td><td>Default SG permits same-SG inbound and all outbound</td><td>Default NACL permits all inbound and outbound</td></tr>
+      <tr><td>Typical use</td><td>Primary tier-to-tier application access policy</td><td>Additional coarse-grained subnet defense / explicit subnet deny</td></tr>
+    </tbody></table></div>
+    <p>A custom NACL initially denies traffic until allow rules are supplied. Always distinguish a default VPC's permissive default NACL from a newly created custom NACL.</p>
+  </section>
+  <section class="panel" id="rules">
+    <h2>05 · Worked rule sets for a three-tier application</h2>
+    <div class="subhead">Illustrative resource Security Group rules</div>
+    <div class="tablewrap"><table><thead><tr><th>Group</th><th>Direction</th><th>Protocol / port</th><th>Source or destination</th><th>Purpose</th></tr></thead><tbody>
+      <tr><td>ALB-SG</td><td>Inbound</td><td>TCP 443</td><td>Approved client CIDRs / 0.0.0.0/0 for public site</td><td>HTTPS entry</td></tr>
+      <tr><td>ALB-SG</td><td>Outbound</td><td>TCP 8080</td><td>App-SG</td><td>Reach EC2 targets and health checks</td></tr>
+      <tr><td>App-SG</td><td>Inbound</td><td>TCP 8080</td><td>ALB-SG</td><td>Application listener</td></tr>
+      <tr><td>App-SG</td><td>Outbound</td><td>TCP 3306</td><td>DB-SG</td><td>Connect to MySQL/RDS</td></tr>
+      <tr><td>DB-SG</td><td>Inbound</td><td>TCP 3306</td><td>App-SG</td><td>Database access only from application</td></tr>
+    </tbody></table></div>
+    <p>Outbound rules may also need to permit necessary DNS, telemetry, package repositories or AWS endpoint connections. Tighten those destinations and ports based on actual workload behavior rather than copying a universal allow-all rule.</p>
+    <div class="subhead">Illustrative public-subnet NACL (IPv4)</div>
+    <div class="tablewrap"><table><thead><tr><th>Direction</th><th>Number</th><th>Protocol / port</th><th>Source / destination</th><th>Action</th></tr></thead><tbody>
+      <tr><td>Inbound</td><td>100</td><td>TCP 443</td><td>Approved internet CIDRs</td><td>Allow</td></tr>
+      <tr><td>Inbound</td><td>110</td><td>TCP 1024–65535</td><td>Private app subnet CIDRs</td><td>Allow (return from app targets)</td></tr>
+      <tr><td>Outbound</td><td>100</td><td>TCP 1024–65535</td><td>Approved internet CIDRs</td><td>Allow (HTTPS client response)</td></tr>
+      <tr><td>Outbound</td><td>110</td><td>TCP 8080</td><td>Private app subnet CIDRs</td><td>Allow (ALB to app)</td></tr>
+      <tr><td>Both</td><td>*</td><td>All unmatched</td><td>All</td><td>Deny</td></tr>
+    </tbody></table></div>
+    <div class="warn">This is a <strong>partial teaching example</strong>, not a drop-in production ACL. ALB health-check, other traffic paths and both sides' response-port requirements must be mapped. Both AZ subnets need appropriate NACL rules, and IPv6 (if enabled) requires separate IPv6 rules.</div>
+  </section>
+  <section class="panel" id="flows">
+    <h2>06 · Follow one HTTPS request through the controls</h2>
+    <div class="step"><span class="num">1</span><strong>Client → public ALB:</strong> DNS resolves the public endpoint. The public subnet's inbound NACL must allow TCP 443, and ALB-SG inbound permits the client's source.</div>
+    <div class="step"><span class="num">2</span><strong>ALB → private application:</strong> the ALB opens a connection to the target on TCP 8080. Public-subnet egress and app-subnet ingress NACLs must allow the flow; ALB-SG egress and App-SG ingress must permit it.</div>
+    <div class="step"><span class="num">3</span><strong>Application → RDS:</strong> the app opens TCP 3306. App-SG egress and DB-SG ingress govern resource access; relevant app/DB subnet NACL directions must match.</div>
+    <div class="step"><span class="num">4</span><strong>Return traffic:</strong> the Security Groups' connection tracking allows associated response packets; each crossed subnet NACL still requires appropriate reverse-direction allowances, often to ephemeral ports.</div>
+    <div class="step"><span class="num">5</span><strong>Log and verify:</strong> inspect ALB access logs, VPC Flow Logs and target health. A permitted security rule cannot fix a missing route, an unhealthy target or a process not listening.</div>
+  </section>
+  <section class="panel" id="design">
+    <h2>07 · Production security design considerations</h2>
+    <div class="cols"><div><h3>Availability and isolation</h3><ul><li>Spread ALB and application capacity across at least two AZs.</li><li>Keep DB instances in private isolated subnets, without direct public internet routing.</li><li>Use a dedicated Security Group for each tier and restrict DB ingress to the application group.</li><li>Apply deliberate NACL rules to public, app and DB subnets if requirements justify custom NACLs.</li></ul></div><div><h3>Operations and governance</h3><ul><li>Enable VPC Flow Logs for relevant VPCs/subnets/ENIs and retain logs per policy.</li><li>Use AWS Config, Security Hub, Firewall Manager or policy-as-code where appropriate.</li><li>Review unused and overly broad rules periodically.</li><li>Prefer IAM Session Manager or controlled access methods over open SSH/RDP ingress.</li></ul></div></div>
+    <p><strong>Scope boundaries:</strong> Network ACLs and Security Groups are not identity authorization systems and do not inspect application payloads. Use IAM, TLS, AWS WAF, application authorization, host hardening and database authentication as additional controls.</p>
+  </section>
+  <section class="panel" id="lab">
+    <h2>08 · Hands-on AWS Console lab</h2>
+    <p><strong>Prerequisites:</strong> a permitted AWS sandbox account, a VPC with public and private subnets, an ALB, an EC2 application target (or equivalent test target), and a database/test endpoint. Create resources in a sandbox and clean them up afterward to avoid charges.</p>
+    <div class="step"><span class="num">1</span><strong>Inventory:</strong> in VPC → Subnets, note subnet CIDRs, AZs and associated route tables and NACLs.</div>
+    <div class="step"><span class="num">2</span><strong>Create ALB-SG:</strong> in EC2 → Security Groups, allow inbound TCP 443 from intended client CIDRs; permit outbound to the application target port.</div>
+    <div class="step"><span class="num">3</span><strong>Create App-SG:</strong> allow inbound TCP 8080 with ALB-SG as source; allow required DB and operational egress.</div>
+    <div class="step"><span class="num">4</span><strong>Create DB-SG:</strong> allow inbound TCP 3306 only from App-SG. Do not allow <code>0.0.0.0/0</code> database ingress.</div>
+    <div class="step"><span class="num">5</span><strong>Associate groups:</strong> attach groups to the relevant ALB, application resources and DB instance, and verify target group health.</div>
+    <div class="step"><span class="num">6</span><strong>Inspect NACLs:</strong> identify the existing NACL for each subnet; create a <em>new test NACL</em> if changing rule behavior, and record original associations before modifying.</div>
+    <div class="step"><span class="num">7</span><strong>Exercise stateless behavior:</strong> allow one required connection direction but omit its return-path rule in the test NACL; observe the timeout; then permit the correct response traffic and retest. Keep an alternate management path.</div>
+    <div class="step"><span class="num">8</span><strong>Observe:</strong> enable and query VPC Flow Logs, confirming <code>ACCEPT</code>/<code>REJECT</code> records and correlating five-tuple, interface and time. Flow Logs cannot by themselves identify which specific rule caused a rejection.</div>
+    <div class="step"><span class="num">9</span><strong>Restore and clean up:</strong> re-associate original NACLs, remove temporary resources, and capture the approved SG/NACL tables for documentation.</div>
+  </section>
+  <section class="panel" id="troubleshooting">
+    <h2>09 · Troubleshooting checklist</h2>
+    <div class="tablewrap"><table><thead><tr><th>Symptom</th><th>What to investigate</th><th>Likely corrective action</th></tr></thead><tbody>
+      <tr><td>ALB returns 502 or 504</td><td>Target health, port mismatch, App-SG rule, NACL directions, app listener</td><td>Permit the exact ALB-to-target path and ensure the application is listening</td></tr>
+      <tr><td>Database timeout</td><td>DB-SG source, database port, subnet route, NACL response</td><td>Allow App-SG to DB-SG on the correct port and verify return path</td></tr>
+      <tr><td>Connection works with default NACL, fails with custom NACL</td><td>Missing ingress/egress or ephemeral port allowances</td><td>Add explicit rules in both directions as required</td></tr>
+      <tr><td>Security Group rule looks correct but still rejected</td><td>Other SGs, NACL, OS firewall, routes, listener, IP family</td><td>Trace all layers rather than broadening rules indiscriminately</td></tr>
+      <tr><td>IPv4 works but IPv6 fails</td><td>IPv6 SG rules, IPv6 NACL rules, subnet IPv6 addressing and routing</td><td>Add deliberate IPv6 policies and test separately</td></tr>
+    </tbody></table></div>
+  </section>
+  <section class="panel" id="assessment">
+    <h2>10 · Knowledge assessment</h2>
+    <ol><li>Why is a Security Group described as stateful? Provide an example with TCP 8080.</li><li>Can a Security Group contain a deny rule? How does that differ from a NACL?</li><li>What happens if NACL rule 100 denies a CIDR and rule 200 allows the same CIDR?</li><li>Why must a custom NACL account for ephemeral return ports?</li><li>Can you attach a Security Group to a NAT Gateway? Explain the appropriate controls.</li><li>How can you permit database access only from the application tier without maintaining an IP allowlist?</li><li>If ALB-SG permits TCP 8080 but App-SG denies it by omission, does the connection succeed?</li><li>Why might a client still get a 504 even when all Security Groups appear correctly configured?</li></ol>
+    <div class="note"><strong>Expected outcome:</strong> You can distinguish stateful and stateless control planes, design tier-specific Security Groups, evaluate numbered NACL rules, and trace both directions of an application connection across public, app and DB subnets.</div>
+  </section>
+</div>
+</main>
+</html>

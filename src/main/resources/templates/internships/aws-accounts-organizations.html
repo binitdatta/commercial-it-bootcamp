@@ -1,0 +1,341 @@
+<section class="internship-page" th:fragment="lesson">
+    <div class="container" style="max-width: 1200px;">
+        <a th:href="@{/internships/cloud-computing}" class="text-decoration-none fw-semibold">← Cloud Computing</a>
+
+        <div class="rounded-4 border mt-4 p-4 p-lg-5" style="background: linear-gradient(180deg, #f3f8ff 0%, #eef5ff 100%); border-color: #cfe0ff !important;">
+            <p class="text-uppercase fw-bold small mb-3" style="letter-spacing: .12em; color: #1f6fff;">Amazon Web Services · 01 · Cloud Foundations & IAM</p>
+            <h1 class="display-5 fw-bold mb-3">AWS Accounts &amp; Organizations</h1>
+            <p class="lead text-secondary mb-4">
+                Learn how enterprises structure AWS environments using multiple accounts, AWS Organizations,
+                Organizational Units (OUs), Service Control Policies (SCPs), IAM Identity Center, centralized
+                logging, and shared services.
+            </p>
+            <div class="d-flex flex-wrap gap-2">
+                <span class="badge rounded-pill text-bg-primary">AWS Organizations</span>
+                <span class="badge rounded-pill text-bg-primary">Management Account</span>
+                <span class="badge rounded-pill text-bg-primary">Organizational Units</span>
+                <span class="badge rounded-pill text-bg-primary">SCPs</span>
+                <span class="badge rounded-pill text-bg-primary">IAM Identity Center</span>
+                <span class="badge rounded-pill text-bg-primary">Shared Services</span>
+            </div>
+        </div>
+
+        <div class="row g-3 mt-1">
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0 rounded-4">
+                    <div class="card-body">
+                        <h2 class="h5 fw-bold">Understand</h2>
+                        <p class="text-secondary mb-0">See why enterprises separate workloads, identities, logs, and billing into multiple AWS accounts.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0 rounded-4">
+                    <div class="card-body">
+                        <h2 class="h5 fw-bold">Design</h2>
+                        <p class="text-secondary mb-0">Place OUs, accounts, roles, and guardrails into a secure operating model for development and production.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0 rounded-4">
+                    <div class="card-body">
+                        <h2 class="h5 fw-bold">Validate</h2>
+                        <p class="text-secondary mb-0">Apply governance, cost controls, centralized logging, and least-privilege access patterns.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rounded-4 border mt-3 p-3 p-lg-4 bg-white">
+            <div class="d-flex flex-wrap gap-3 small fw-semibold">
+                <a href="#architecture" class="text-decoration-none">Reference architecture</a>
+                <a href="#why-multiple-accounts" class="text-decoration-none">Why multiple accounts</a>
+                <a href="#organizations-model" class="text-decoration-none">Organizations model</a>
+                <a href="#identity-model" class="text-decoration-none">Identity &amp; access</a>
+                <a href="#guardrails" class="text-decoration-none">Guardrails</a>
+                <a href="#operations" class="text-decoration-none">Logging &amp; operations</a>
+                <a href="#costs" class="text-decoration-none">Billing &amp; costs</a>
+                <a href="#lab" class="text-decoration-none">Hands-on lab</a>
+                <a href="#checklist" class="text-decoration-none">Checklist</a>
+            </div>
+        </div>
+
+        <section id="architecture" class="mt-5">
+            <h2 class="fw-bold mb-3">1. Reference architecture</h2>
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-body p-3 p-lg-4">
+                    <figure class="mb-4 text-center">
+                        <img th:src="@{/images/aws-accounts-organizations.png}" src="/images/aws-accounts-organizations.png" class="img-fluid rounded-4 border" alt="AWS Accounts and Organizations governance architecture diagram">
+                        <figcaption class="small text-secondary mt-2">A practical multi-account AWS landing-zone style governance model using AWS Organizations.</figcaption>
+                    </figure>
+
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <h3 class="h5 fw-bold">How to read the diagram</h3>
+                            <p class="text-secondary">The top of the diagram shows the <strong>Management Account</strong>, which owns the AWS Organization. Under it is the <strong>Organization Root</strong>, then multiple <strong>Organizational Units (OUs)</strong> such as Security, Infrastructure, Sandbox, Non-Production and Production.</p>
+                            <p class="text-secondary mb-0">Each OU contains one or more member accounts. These accounts isolate workloads, permissions, quotas, logs and billing boundaries. Enterprise teams then apply governance controls consistently across the organization.</p>
+                        </div>
+                        <div class="col-lg-6">
+                            <h3 class="h5 fw-bold">Key architectural ideas</h3>
+                            <ul class="text-secondary mb-0">
+                                <li>Use <strong>separate accounts</strong> for separate environments and responsibilities.</li>
+                                <li>Use <strong>SCPs</strong> to define the maximum permissions allowed in an OU or account.</li>
+                                <li>Use <strong>IAM Identity Center</strong> for workforce access, permission sets, and centralized sign-in.</li>
+                                <li>Use <strong>centralized logging and security accounts</strong> for CloudTrail, Config, Security Hub, and backups.</li>
+                                <li>Use a <strong>shared services account</strong> for networking, DNS, artifact repositories, and reusable platform services.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="why-multiple-accounts" class="mt-5">
+            <h2 class="fw-bold mb-3">2. Why enterprises use multiple AWS accounts</h2>
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <p class="text-secondary">A single AWS account is fine for experimentation, but enterprises quickly need stronger separation. Multiple accounts provide isolation for security, operations, billing and change management.</p>
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th>Need</th>
+                                <th>Why multiple accounts help</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td class="fw-semibold">Security isolation</td>
+                                <td>Compromise in one account is less likely to affect all workloads. Blast radius is reduced.</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold">Environment separation</td>
+                                <td>Production, test, development and sandbox accounts can have different policies and approval controls.</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold">Cost management</td>
+                                <td>Each account has clean billing visibility, while consolidated billing rolls costs up to the organization.</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold">Quota and service limits</td>
+                                <td>Limits are often account-scoped, so account separation prevents contention.</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold">Operational ownership</td>
+                                <td>Different teams can own their own accounts while platform teams still enforce guardrails.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="organizations-model" class="mt-5">
+            <h2 class="fw-bold mb-3">3. AWS Organizations operating model</h2>
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-body p-4">
+                            <h3 class="h5 fw-bold">Core components</h3>
+                            <ul class="text-secondary mb-0">
+                                <li><strong>Management Account:</strong> The organization owner account. It should be heavily locked down and not used for daily workloads.</li>
+                                <li><strong>Organization Root:</strong> The top-level hierarchy node under which all OUs and accounts reside.</li>
+                                <li><strong>Organizational Units (OUs):</strong> Containers that group accounts by function, environment or risk posture.</li>
+                                <li><strong>Member Accounts:</strong> Individual AWS accounts where applications, shared services and security tooling run.</li>
+                                <li><strong>Delegated Administration:</strong> Lets certain AWS services be administered from designated member accounts rather than only from the management account.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-body p-4">
+                            <h3 class="h5 fw-bold">A practical OU layout</h3>
+                            <ul class="text-secondary mb-3">
+                                <li><strong>Security OU:</strong> Log archive, security tooling, audit and compliance.</li>
+                                <li><strong>Infrastructure OU:</strong> Shared services, DNS, networking and CI/CD utilities.</li>
+                                <li><strong>Sandbox OU:</strong> Low-risk experimentation for engineers and interns.</li>
+                                <li><strong>Non-Production OU:</strong> Development, integration, QA and performance testing accounts.</li>
+                                <li><strong>Production OU:</strong> Production application and data accounts with stronger change control.</li>
+                            </ul>
+                            <p class="text-secondary mb-0">This layout aligns people, risk and control boundaries with account boundaries.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="identity-model" class="mt-5">
+            <h2 class="fw-bold mb-3">4. Identity, access and cross-account design</h2>
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <p class="text-secondary">Modern AWS enterprises should avoid long-lived IAM users for workforce access. Instead, use centralized identity and short-lived role-based access.</p>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <h3 class="h5 fw-bold">Recommended approach</h3>
+                            <ul class="text-secondary mb-0">
+                                <li>Integrate the enterprise identity provider with <strong>IAM Identity Center</strong>.</li>
+                                <li>Create <strong>permission sets</strong> such as ReadOnly, Developer, PlatformAdmin and SecurityAudit.</li>
+                                <li>Assign users and groups to target AWS accounts and roles from one control plane.</li>
+                                <li>Use <strong>cross-account IAM roles</strong> when automation or shared services need controlled access into workload accounts.</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h3 class="h5 fw-bold">What to avoid</h3>
+                            <ul class="text-secondary mb-0">
+                                <li>Using the management account for routine engineering work.</li>
+                                <li>Creating many permanent IAM users in every account.</li>
+                                <li>Embedding long-lived access keys into scripts or applications.</li>
+                                <li>Granting AdministratorAccess broadly when narrower roles are enough.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="guardrails" class="mt-5">
+            <h2 class="fw-bold mb-3">5. Governance guardrails with SCPs</h2>
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <p class="text-secondary">Service Control Policies do not grant permissions. Instead, they define the outer boundary of what identities in member accounts are allowed to do.</p>
+                    <div class="row g-4">
+                        <div class="col-lg-7">
+                            <div class="table-responsive">
+                                <table class="table table-sm align-middle mb-0">
+                                    <thead class="table-light">
+                                    <tr>
+                                        <th>Example guardrail</th>
+                                        <th>Purpose</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>Deny leaving the organization</td>
+                                        <td>Prevents member accounts from detaching from the organization.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Deny disabling CloudTrail or Config</td>
+                                        <td>Protects audit and compliance visibility.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Deny use of unapproved regions</td>
+                                        <td>Supports compliance and cost management.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Deny root-user risky actions</td>
+                                        <td>Reduces the likelihood of high-impact configuration mistakes.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Require encryption controls</td>
+                                        <td>Reinforces organizational security standards.</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-lg-5">
+                            <div class="alert alert-primary mb-0 rounded-4">
+                                <h3 class="h6 fw-bold">Important mental model</h3>
+                                <p class="mb-0">Effective permissions in AWS are the intersection of identity-based policies, resource-based policies, session policies, permission boundaries and SCPs. If an SCP denies an action, the action stays denied even if an IAM policy allows it.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="operations" class="mt-5">
+            <h2 class="fw-bold mb-3">6. Centralized logging, security and operations</h2>
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-body p-4">
+                            <h3 class="h5 fw-bold">Log archive account</h3>
+                            <p class="text-secondary mb-0">Collect organization-wide CloudTrail logs, Config snapshots, VPC Flow Logs and backup copies in a dedicated account with tight retention and access control.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-body p-4">
+                            <h3 class="h5 fw-bold">Security account</h3>
+                            <p class="text-secondary mb-0">Centralize Security Hub, GuardDuty, detective investigations, findings review and security reporting.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-body p-4">
+                            <h3 class="h5 fw-bold">Shared services account</h3>
+                            <p class="text-secondary mb-0">Host reusable platform services such as Transit Gateway, Route 53 private DNS, artifact repositories, CI/CD or shared containers.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="costs" class="mt-5">
+            <h2 class="fw-bold mb-3">7. Consolidated billing and cost control</h2>
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <p class="text-secondary">AWS Organizations supports consolidated billing. That means the organization can receive a single bill while still preserving per-account cost allocation and visibility.</p>
+                    <ul class="text-secondary mb-0">
+                        <li>Track costs by account, environment, team, or application.</li>
+                        <li>Apply tags and cost categories for business reporting.</li>
+                        <li>Use AWS Budgets and Cost Explorer from central governance accounts.</li>
+                        <li>Reserve production purchasing decisions for approved finance or platform teams.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="lab" class="mt-5">
+            <h2 class="fw-bold mb-3">8. Hands-on lab</h2>
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <ol class="text-secondary mb-4">
+                        <li>Draw an OU structure for a company with production, non-production, sandbox, security and shared-services needs.</li>
+                        <li>Decide which accounts belong under each OU and who should own them.</li>
+                        <li>Define three permission sets for IAM Identity Center: ReadOnly, Developer and PlatformAdmin.</li>
+                        <li>Write two example SCP goals: one to protect audit logs and one to restrict regions.</li>
+                        <li>Explain where CloudTrail organization trails and Config aggregators should live.</li>
+                    </ol>
+                    <div class="bg-light rounded-4 p-3 border">
+<pre class="mb-0 small"><code># Example AWS CLI ideas to explore in a lab environment
+aws organizations describe-organization
+aws organizations list-roots
+aws organizations list-organizational-units-for-parent --parent-id r-xxxx
+aws organizations list-accounts
+aws sso-admin list-instances
+aws budgets describe-budgets --account-id 123456789012</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="checklist" class="mt-5 mb-5">
+            <h2 class="fw-bold mb-3">9. Intern completion checklist</h2>
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-check mb-2"><input class="form-check-input" type="checkbox" disabled><label class="form-check-label">I can explain why enterprises use multiple AWS accounts.</label></div>
+                            <div class="form-check mb-2"><input class="form-check-input" type="checkbox" disabled><label class="form-check-label">I understand management accounts, OUs and member accounts.</label></div>
+                            <div class="form-check mb-2"><input class="form-check-input" type="checkbox" disabled><label class="form-check-label">I understand the purpose of SCPs and what they do not do.</label></div>
+                            <div class="form-check mb-2"><input class="form-check-input" type="checkbox" disabled><label class="form-check-label">I know why IAM Identity Center is preferred for workforce access.</label></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check mb-2"><input class="form-check-input" type="checkbox" disabled><label class="form-check-label">I can describe centralized logging and security accounts.</label></div>
+                            <div class="form-check mb-2"><input class="form-check-input" type="checkbox" disabled><label class="form-check-label">I can describe consolidated billing and cost governance.</label></div>
+                            <div class="form-check mb-2"><input class="form-check-input" type="checkbox" disabled><label class="form-check-label">I can sketch a practical OU hierarchy for a real company.</label></div>
+                            <div class="form-check mb-2"><input class="form-check-input" type="checkbox" disabled><label class="form-check-label">I can map business ownership to AWS account structure.</label></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</section>

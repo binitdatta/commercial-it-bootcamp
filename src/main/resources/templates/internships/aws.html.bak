@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<section th:fragment="lesson" class="rpc container-fluid px-0">
+    <style>
+        .rpc{max-width:1120px;margin:auto;color:#19263d}.rpc .hero{background:linear-gradient(115deg,#fff,#e7f1ff);border:1px solid #d7e4f8;border-radius:16px;padding:2rem}.rpc .eyebrow{font-size:.75rem;font-weight:800;letter-spacing:.12em;color:#075be0;text-transform:uppercase}.rpc h1{font-size:clamp(2rem,3.2vw,2.65rem);font-weight:800;letter-spacing:-.03em}.rpc h2{font-size:1.45rem;font-weight:800;margin:0 0 1rem}.rpc h3{font-size:1.05rem;font-weight:750;margin:1.1rem 0 .55rem}.rpc p,.rpc li{line-height:1.65}.rpc .muted{color:#51647c}.rpc .panel{background:#fff;border:1px solid #d7e4f8;border-radius:12px;padding:1.25rem;margin:.8rem 0}.rpc .block{margin-top:2rem;scroll-margin-top:90px}.rpc .toc{display:flex;flex-wrap:wrap;gap:.65rem 1.1rem;padding:.85rem 1rem;border:1px solid #d7e4f8;border-radius:10px;background:#fff;margin-top:1.1rem}.rpc .toc a{font-size:.86rem;font-weight:650;text-decoration:none}.rpc .tag{background:#e3eeff;color:#0754cf;font-size:.78rem;font-weight:750;padding:.22rem .6rem;border-radius:20px;display:inline-block;margin:.2rem .2rem .1rem 0}.rpc pre{background:#142840;color:#f0f8ff;padding:1.15rem;border-radius:9px;overflow-x:auto;white-space:pre;line-height:1.6;font-size:.87rem}.rpc :not(pre)>code{background:#ecf3ff;color:#164b85;border-radius:4px;padding:.1rem .3rem}.rpc .note{border-left:4px solid #1264e4;background:#eff6ff;padding:.8rem 1rem;margin:1rem 0}.rpc table{width:100%;border-collapse:collapse}.rpc th,.rpc td{padding:.7rem;border-bottom:1px solid #d7e4f8;vertical-align:top}.rpc th{background:#edf4ff}.rpc .check{display:block;padding:.55rem;margin:.4rem 0;background:#fff;border:1px solid #d7e4f8;border-radius:8px}.rpc .check input{margin-right:.5rem}.rpc .back{display:inline-block;margin-bottom:1.1rem;text-decoration:none;font-weight:650}@media(max-width:650px){.rpc .hero{padding:1.2rem}}
+    </style>
+    <a class="back" th:href="@{/internships}">← Internship Overview</a>
+    <header class="hero"><p class="eyebrow">Internships · Aws · Applied engineering</p>
+        <h1>AWS Cloud Computing — Foundations and Enterprise Lab</h1>
+        <p class="lead muted">Understand AWS IAM, networking, managed compute, RDS, operational controls and a Spring
+            Boot architecture lab.</p><span class="tag">IAM</span><span class="tag">VPC</span><span class="tag">ECS/Fargate</span><span
+                class="tag">RDS</span><span class="tag">CloudTrail</span></header>
+    <div class="row g-3 my-2">
+        <div class="col-md-4">
+            <div class="panel h-100"><strong>Understand</strong>
+                <p class="muted mb-0">Identify key concepts, components, responsibilities and trade-offs.</p></div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel h-100"><strong>Build</strong>
+                <p class="muted mb-0">Practice working commands and a realistic enterprise use case.</p></div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel h-100"><strong>Validate</strong>
+                <p class="muted mb-0">Verify results, troubleshoot failures and apply security controls.</p></div>
+        </div>
+    </div>
+    <nav class="toc" aria-label="Lesson contents"><a href="#s1">Shared cloud architecture</a><a href="#s2">Networking
+        and IAM fundamentals</a><a href="#s3">Cloud-native Spring Boot architecture</a><a href="#s4">AWS account setup
+        and CLI</a><a href="#s5">Compute and data services</a><a href="#s6">Lab: serverless object upload</a><a
+            href="#s7">Operations, security and cost</a><a href="#s8">Capstone</a><a href="#references">References</a><a
+            href="#checklist">Checklist</a></nav>
+    <section class="block" id="s1"><h2>1. Shared cloud architecture</h2>
+        <div class="panel"><p>Cloud platforms provide on-demand infrastructure and managed services. The shared
+            responsibility model separates provider infrastructure obligations from customer workloads, data and access
+            decisions.</p>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Service model</th>
+                        <th>Customer typically manages</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>IaaS</td>
+                        <td>Guest OS, runtime, application, data, identities</td>
+                    </tr>
+                    <tr>
+                        <td>PaaS</td>
+                        <td>Application, data, identities and configuration</td>
+                    </tr>
+                    <tr>
+                        <td>SaaS</td>
+                        <td>Data, user permissions, identity and tenant configuration</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+    <section class="block" id="s2"><h2>2. Networking and IAM fundamentals</h2>
+        <div class="panel"><p>Learn virtual networks, subnets, routes, firewalls/security groups, load balancers, public
+            versus private endpoints, DNS and certificates. Identity policies must follow least privilege.</p>
+            <ul>
+                <li>Choose a region and documented network boundaries.</li>
+                <li>Use short-lived workload credentials and managed identities instead of static access keys.</li>
+                <li>Separate development and production environments.</li>
+                <li>Enable audit logs, monitoring and budget alerts before deploying resources.</li>
+            </ul>
+        </div>
+    </section>
+    <section class="block" id="s3"><h2>3. Cloud-native Spring Boot architecture</h2>
+        <div class="panel"><p>An enterprise pattern is browser → TLS ingress/load balancer → Spring Boot workload →
+            managed database, with IAM-bound service identity, secrets manager, logs, traces and metrics.</p>
+            <p>Make authorization enforcement explicit at the API and the database boundary; a browser login alone does
+                not secure services.</p></div>
+    </section>
+    <section class="block" id="s4"><h2>4. AWS account setup and CLI</h2>
+        <div class="panel"><p>Enable MFA on the root account, avoid using root for daily activity, use IAM Identity
+            Center where appropriate and set up a budget. Install AWS CLI v2.</p>
+            <pre><code>aws --version
+aws configure sso
+aws sso login --profile internship
+aws sts get-caller-identity --profile internship</code></pre>
+            <p>Use a dedicated sandbox account and bounded permissions; commands may require preconfigured Identity
+                Center access.</p></div>
+    </section>
+    <section class="block" id="s5"><h2>5. Compute and data services</h2>
+        <div class="panel">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>AWS service</th>
+                        <th>Use case</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>EC2</td>
+                        <td>Managed virtual machines</td>
+                    </tr>
+                    <tr>
+                        <td>ECS/Fargate</td>
+                        <td>Containers without managing servers</td>
+                    </tr>
+                    <tr>
+                        <td>EKS</td>
+                        <td>Managed Kubernetes control plane</td>
+                    </tr>
+                    <tr>
+                        <td>Lambda</td>
+                        <td>Event-driven functions</td>
+                    </tr>
+                    <tr>
+                        <td>RDS/Aurora</td>
+                        <td>Managed relational databases</td>
+                    </tr>
+                    <tr>
+                        <td>S3</td>
+                        <td>Object storage</td>
+                    </tr>
+                    <tr>
+                        <td>Secrets Manager</td>
+                        <td>Secrets lifecycle</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+    <section class="block" id="s6"><h2>6. Lab: serverless object upload</h2>
+        <div class="panel"><p>Create a sandbox S3 bucket with default encryption, Block Public Access and a limited IAM
+            role. Upload a test file using a temporary IAM Identity Center profile.</p>
+            <pre><code>aws s3 ls --profile internship
+# Replace with a unique bucket you already created in the sandbox:
+aws s3 cp sample.txt s3://YOUR-SANDBOX-BUCKET/sample.txt --profile internship
+aws s3 ls s3://YOUR-SANDBOX-BUCKET/ --profile internship</code></pre>
+            <p>Delete test objects and bucket afterward to avoid costs. Do not disable public-access controls.</p></div>
+    </section>
+    <section class="block" id="s7"><h2>7. Operations, security and cost</h2>
+        <div class="panel">
+            <ul>
+                <li>CloudWatch for logs and metrics.</li>
+                <li>CloudTrail for API auditing.</li>
+                <li>IAM policy simulator and Access Analyzer for least privilege.</li>
+                <li>Budgets and Cost Explorer for cost visibility.</li>
+                <li>Backup and disaster recovery objectives for critical data.</li>
+            </ul>
+        </div>
+    </section>
+    <section class="block" id="s8"><h2>8. Capstone</h2>
+        <div class="panel"><p>Design a secure Spring Boot Orders API deployed to an AWS managed compute service with
+            managed MySQL, private networking, workload identity, audit logs and cost estimate. Deliver a
+            network/data-flow diagram, runbook and threat model.</p></div>
+    </section>
+    <section class="block" id="references"><h2>References</h2>
+        <div class="panel"><p><strong>Official documentation:</strong> <a href="https://docs.aws.amazon.com/"
+                                                                          target="_blank" rel="noopener noreferrer">AWS
+            documentation</a> · <a href="https://docs.aws.amazon.com/cli/latest/userguide/" target="_blank"
+                                   rel="noopener noreferrer">AWS CLI</a> · <a
+                href="https://aws.amazon.com/compliance/shared-responsibility-model/" target="_blank"
+                rel="noopener noreferrer">AWS shared responsibility</a></p></div>
+    </section>
+    <section class="block" id="checklist"><h2>Completion checklist</h2>
+        <div class="panel"><label class="check"><input type="checkbox"> I can explain the architecture and primary
+            components</label><label class="check"><input type="checkbox"> I completed the setup and validation commands</label><label
+                class="check"><input type="checkbox"> I completed the hands-on lab</label><label class="check"><input
+                type="checkbox"> I can explain key security boundaries and operational failure cases</label></div>
+    </section>
+</section>
+</body>
+</html>
