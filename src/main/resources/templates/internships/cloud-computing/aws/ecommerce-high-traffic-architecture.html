@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('AWS High-Traffic E-Commerce Architecture', 'Reference architecture for a scalable AWS e-commerce platform with real-time analytics and event-driven integration', ~{::main})}">
+<main>
+<style>
+.lesson{max-width:1360px;margin:auto;color:#17233c;--navy:#102a51;--blue:#0b63c4;--line:#d9e5f2}
+.lesson .hero{background:linear-gradient(115deg,#102a51 0%,#0968c8 100%);border-radius:22px;color:#fff;padding:2.8rem 3rem;box-shadow:0 13px 28px #0c4b921f}
+.lesson .hero h1{font-size:clamp(2rem,3.7vw,3.3rem);font-weight:800;letter-spacing:-.035em}
+.lesson .eyebrow{font-size:.85rem;text-transform:uppercase;letter-spacing:.13em;font-weight:800;color:#b4ddff}
+.lesson .hero p{max-width:1080px;color:#e4f1ff;font-size:1.08rem}
+.lesson .pill{display:inline-block;padding:.45rem .85rem;border:1px solid #ffffff66;border-radius:24px;margin:.3rem .35rem .1rem 0;font-weight:650;background:#ffffff18}
+.lesson .panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:1.6rem 1.8rem;margin-top:1.25rem;box-shadow:0 5px 22px #08284c0b}
+.lesson h2{font-weight:800;font-size:1.42rem;color:#143763;margin-bottom:1rem}
+.lesson h3{font-weight:750;font-size:1.05rem;color:#0b4d8c;margin-top:1rem}
+.lesson p,.lesson li{line-height:1.73}
+.lesson .jump{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.65rem}
+.lesson .jump a{color:#07549e;text-decoration:none;background:#f0f7ff;border:1px solid #d5e9fe;padding:.65rem .8rem;border-radius:9px;font-weight:650;font-size:.89rem}
+.lesson .diagram{display:block;width:100%;height:auto;border:1px solid #d5e4f4;border-radius:13px;background:#fff}
+.lesson .callout{border-left:4px solid #1277d3;border-radius:7px;background:#eef7ff;padding:1rem 1.25rem;margin-top:1rem}
+.lesson .warning{border-left-color:#d18c13;background:#fff8e7}
+.lesson table{width:100%;border-collapse:collapse;font-size:.92rem}.lesson th{background:#e6f1fc;color:#173c69}.lesson th,.lesson td{padding:.75rem;border:1px solid #d9e5f2;vertical-align:top}.lesson .table-wrap{overflow:auto}
+.lesson pre{background:#12243e;color:#e4f5ff;border-radius:10px;padding:1rem;overflow:auto;font-size:.88rem}.lesson code{color:#904700;background:#fff4df;padding:2px 5px;border-radius:4px}.lesson pre code{background:none;color:inherit;padding:0}
+.lesson .feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.lesson .feature{padding:1.2rem;background:#f6faff;border:1px solid #d5e6fa;border-radius:12px}.lesson .feature h3{margin-top:0}.lesson .step{padding:.8rem 1rem;border-left:3px solid #2185db;margin-bottom:.65rem;background:#f7fbff;border-radius:0 8px 8px 0}
+@media(max-width:860px){.lesson .jump,.lesson .feature-grid{grid-template-columns:1fr 1fr}.lesson .hero{padding:1.6rem}.lesson .panel{padding:1rem}}@media(max-width:520px){.lesson .jump,.lesson .feature-grid{grid-template-columns:1fr}}
+</style>
+<div class="lesson container-fluid px-2 px-md-3 pb-5">
+ <a class="d-inline-block text-decoration-none fw-semibold my-3" th:href="@{/internships/cloud-computing}">← Cloud Computing</a>
+ <header class="hero">
+   <div class="eyebrow">Amazon Web Services · Reference Architecture · High-Traffic E-Commerce</div>
+   <h1 class="mt-3 mb-3">High-Traffic E-Commerce Application on AWS</h1>
+   <p>This lesson explains a modern AWS e-commerce platform serving web and mobile customers at scale while also generating near-real-time business analytics. It combines edge delivery, application scalability, relational and NoSQL data stores, caching, event-driven integration, notifications, streaming analytics, and a data lake strategy.</p>
+   <span class="pill">Route 53 + CloudFront + WAF</span><span class="pill">ALB + Auto Scaling</span><span class="pill">Aurora / RDS + DynamoDB</span><span class="pill">ElastiCache + EFS + S3</span><span class="pill">EventBridge + Step Functions + SQS + SNS</span><span class="pill">Kinesis + Analytics</span>
+ </header>
+ <nav class="panel" aria-label="Lesson sections"><h2>Learning path</h2><div class="jump">
+   <a href="#reference">01 · Reference architecture</a><a href="#overview">02 · End-to-end overview</a><a href="#edge">03 · Edge & app serving</a><a href="#core">04 · Core data services</a>
+   <a href="#integration">05 · Integration & messaging</a><a href="#analytics">06 · Real-time analytics</a><a href="#customerjourney">07 · Customer flow</a><a href="#security">08 · Security & governance</a>
+   <a href="#resilience">09 · Scalability & resilience</a><a href="#lab">10 · Hands-on lab</a><a href="#troubleshooting">11 · Troubleshooting</a><a href="#assessment">12 · Knowledge check</a>
+ </div></nav>
+ <section class="panel" id="reference"><h2>01 · Reference architecture</h2>
+   <p>The diagram below brings together the AWS services you listed into a coherent high-traffic e-commerce architecture. It serves online customers through a scalable application tier, keeps business transactions in operational data stores, uses event-driven messaging for asynchronous processes, and streams application events into analytics services for fast insights.</p>
+   <img class="diagram" th:src="@{/images/architecture/aws-ecommerce-high-traffic-architecture.png}" src="/images/architecture/aws-ecommerce-high-traffic-architecture.png" alt="AWS high traffic ecommerce architecture with customers, Route 53, CloudFront, WAF, Application Load Balancer, auto scaling apps, Aurora RDS, DynamoDB, ElastiCache, EFS, S3, EventBridge, Step Functions, SQS, SNS, Kinesis and analytics" loading="lazy" />
+   <div class="callout"><strong>Architecture principle:</strong> Separate the platform into clear layers: customer access, application serving, core operational data, integration and messaging, and analytics. This keeps the architecture understandable and lets you scale each area independently.</div>
+ </section>
+ <section class="panel" id="overview"><h2>02 · End-to-end architecture overview</h2>
+   <div class="step"><strong>Step 1 — Customer entry:</strong> Web and mobile shoppers arrive through Route 53 and CloudFront. AWS WAF helps protect the platform from common web threats.</div>
+   <div class="step"><strong>Step 2 — Application execution:</strong> The Application Load Balancer routes traffic to an auto-scaling application tier such as EC2, ECS, or EKS-based application services.</div>
+   <div class="step"><strong>Step 3 — Operational data:</strong> The application reads and writes business data using Aurora/RDS for transactions, DynamoDB for high-scale key-value or session-style data, ElastiCache for low-latency caching, EFS for shared file needs, and S3 for assets and lake storage.</div>
+   <div class="step"><strong>Step 4 — Event-driven processing:</strong> Business events flow into EventBridge, Step Functions, SQS, and SNS so the system can process orders asynchronously and notify downstream systems or customers.</div>
+   <div class="step"><strong>Step 5 — Real-time analytics:</strong> Application clicks, searches, cart actions, and orders stream into Amazon Kinesis, land in S3, and drive dashboards or deeper analysis.</div>
+ </section>
+ <section class="panel" id="edge"><h2>03 · Edge and application-serving layer</h2><div class="feature-grid">
+   <div class="feature"><h3>Amazon Route 53</h3><p>Handles DNS and can direct users toward the correct public entry point for the e-commerce platform.</p></div>
+   <div class="feature"><h3>Amazon CloudFront</h3><p>Improves performance for global customers by caching static and cache-friendly content at edge locations.</p></div>
+   <div class="feature"><h3>AWS WAF</h3><p>Protects the application from common web attacks and can be associated with CloudFront or ALB depending on design.</p></div>
+   <div class="feature"><h3>Application Load Balancer</h3><p>Distributes traffic across application instances or containers and supports modern HTTP/HTTPS routing patterns.</p></div>
+ </div>
+ <div class="callout"><strong>Auto scaling application tier:</strong> The compute layer can be implemented with EC2, ECS, or EKS. The core goal is elastic capacity for catalog browsing, checkout, account management, and search workloads.</div>
+ </section>
+ <section class="panel" id="core"><h2>04 · Core data services</h2><div class="table-wrap"><table><thead><tr><th>Service</th><th>Recommended role</th><th>Why it fits</th></tr></thead><tbody>
+   <tr><td>Amazon Aurora / RDS</td><td>Orders, payments, inventory transactions, and customer master data</td><td>Strong relational consistency and transactional integrity</td></tr>
+   <tr><td>Amazon DynamoDB</td><td>Shopping cart, session store, user preferences, product metadata access patterns</td><td>Very high scale key-value / NoSQL access with low latency</td></tr>
+   <tr><td>Amazon ElastiCache</td><td>Catalog cache, session cache, search acceleration, frequently accessed reference data</td><td>Improves latency and reduces load on primary data stores</td></tr>
+   <tr><td>Amazon EFS</td><td>Shared content, import/export files, batch-processing work areas, shared media processing</td><td>Managed shared file system accessible by multiple compute nodes</td></tr>
+   <tr><td>Amazon S3</td><td>Product images, static files, reports, exports, historical analytics, archival assets</td><td>Durable, scalable, and cost-effective object storage</td></tr>
+ </tbody></table></div>
+   <div class="callout warning"><strong>Design tip:</strong> Not every workload belongs in one database. Mix relational, NoSQL, cache, file, and object storage deliberately according to access pattern and performance requirements.</div>
+ </section>
+ <section class="panel" id="integration"><h2>05 · Integration and messaging layer</h2><div class="feature-grid">
+   <div class="feature"><h3>Amazon EventBridge</h3><p>Central event bus for business-domain events such as order created, payment captured, shipment prepared, or return initiated.</p></div>
+   <div class="feature"><h3>AWS Step Functions</h3><p>Coordinates multi-step workflows like checkout, fraud check, inventory reservation, payment processing, fulfillment, and returns.</p></div>
+   <div class="feature"><h3>Amazon SQS</h3><p>Buffers asynchronous work such as fulfillment jobs, inventory updates, email dispatch preparation, and slow background processing.</p></div>
+   <div class="feature"><h3>Amazon SNS</h3><p>Fan-out notifications to customers, internal systems, or multiple subscribers for email, SMS, push, and integration events.</p></div>
+ </div>
+   <pre><code>Example business flow
+Order placed -> EventBridge publishes order event
+-> Step Functions orchestrates payment + fraud + inventory
+-> SQS queues background tasks
+-> SNS sends order confirmation notifications</code></pre>
+ </section>
+ <section class="panel" id="analytics"><h2>06 · Real-time analytics layer</h2>
+   <p>Modern e-commerce platforms need insight into clicks, searches, cart abandonment, checkout conversion, and operational trends as events happen. Amazon Kinesis receives streaming application events and operational telemetry. Those streams can feed processing pipelines and land analytics datasets in S3 for dashboards and deeper analysis.</p>
+   <div class="feature-grid">
+     <div class="feature"><h3>Amazon Kinesis</h3><p>Captures real-time clickstream, order, and operational events for near-real-time analytics and event processing.</p></div>
+     <div class="feature"><h3>Amazon S3 analytics data lake</h3><p>Stores raw and processed analytics data for historical analysis, BI, machine learning preparation, and cost-efficient retention.</p></div>
+   </div>
+   <div class="callout"><strong>Outcome:</strong> The business can monitor sales, customer behavior, operational bottlenecks, and conversion trends without impacting the performance of the transactional application databases.</div>
+ </section>
+ <section class="panel" id="customerjourney"><h2>07 · Typical customer journey through the architecture</h2>
+   <ol>
+     <li>A shopper browses the storefront via browser or mobile app.</li>
+     <li>CloudFront accelerates delivery of product content and static assets.</li>
+     <li>The application tier loads catalog and account data, often using ElastiCache for speed.</li>
+     <li>The user adds items to cart, which may be stored or accelerated in DynamoDB.</li>
+     <li>Checkout writes authoritative order and payment state into Aurora/RDS.</li>
+     <li>The order event is published to EventBridge and handled asynchronously through Step Functions, SQS, and SNS.</li>
+     <li>At the same time, customer behavior and order telemetry are streamed into Kinesis for real-time analytics.</li>
+   </ol>
+ </section>
+ <section class="panel" id="security"><h2>08 · Security and governance</h2><div class="feature-grid">
+   <div class="feature"><h3>Identity and access</h3><p>Use least-privilege IAM roles for application components, messaging services, analytics producers, and operational automation.</p></div>
+   <div class="feature"><h3>Data protection</h3><p>Use encryption in transit and at rest across S3, Aurora/RDS, DynamoDB, EFS, ElastiCache, and Kinesis where supported.</p></div>
+   <div class="feature"><h3>Web protection</h3><p>AWS WAF helps reduce exposure to malicious request patterns. Rate limits and ALB security posture also matter.</p></div>
+   <div class="feature"><h3>Observability</h3><p>Use CloudWatch, logs, alarms, and tracing to understand customer experience, backend health, and asynchronous workflow issues.</p></div>
+ </div></section>
+ <section class="panel" id="resilience"><h2>09 · Scalability, resilience, and design strengths</h2>
+   <ul>
+     <li><strong>Elastic serving layer:</strong> ALB + auto scaling absorb traffic spikes such as promotions or seasonal peaks.</li>
+     <li><strong>Database specialization:</strong> Each data service plays to its strengths rather than forcing one engine to handle every need.</li>
+     <li><strong>Asynchronous decoupling:</strong> SQS, SNS, EventBridge, and Step Functions prevent the checkout path from becoming tightly coupled to all downstream processes.</li>
+     <li><strong>Analytics separation:</strong> Kinesis and S3 analytics flows reduce reporting pressure on transactional systems.</li>
+   </ul>
+ </section>
+ <section class="panel" id="lab"><h2>10 · Hands-on lab ideas</h2>
+   <div class="step"><strong>Lab 1:</strong> Build a simple Spring Boot product or order service and place it behind an ALB.</div>
+   <div class="step"><strong>Lab 2:</strong> Persist orders in Aurora or RDS and cart/session data in DynamoDB.</div>
+   <div class="step"><strong>Lab 3:</strong> Add ElastiCache to accelerate catalog or session lookups.</div>
+   <div class="step"><strong>Lab 4:</strong> Publish an order-created event into EventBridge and orchestrate follow-up actions with Step Functions.</div>
+   <div class="step"><strong>Lab 5:</strong> Send notification fan-out through SNS and background tasks through SQS.</div>
+   <div class="step"><strong>Lab 6:</strong> Push clickstream or order telemetry into Kinesis and land historical analytics data in S3.</div>
+ </section>
+ <section class="panel" id="troubleshooting"><h2>11 · Troubleshooting guide</h2><div class="table-wrap"><table><thead><tr><th>Symptom</th><th>Likely cause</th><th>Diagnostic action</th></tr></thead><tbody>
+   <tr><td>Slow page load globally</td><td>Insufficient edge caching or backend bottleneck</td><td>Review CloudFront cache behavior, origin latency, and ALB target performance</td></tr>
+   <tr><td>Cart inconsistency</td><td>Improper state design or conflicting writes</td><td>Review cart persistence pattern and DynamoDB access design</td></tr>
+   <tr><td>Checkout delay</td><td>Synchronous coupling to downstream processes</td><td>Move non-critical steps into Step Functions or SQS-backed async flows</td></tr>
+   <tr><td>Notification not sent</td><td>SNS subscription or downstream consumer issue</td><td>Inspect SNS topic subscriptions and subscriber health</td></tr>
+   <tr><td>Analytics lag</td><td>Kinesis throughput or downstream sink delay</td><td>Review stream capacity, consumer health, and S3 landing cadence</td></tr>
+ </tbody></table></div></section>
+ <section class="panel" id="assessment"><h2>12 · Knowledge assessment</h2><ol>
+   <li>Why might an e-commerce application use both Aurora/RDS and DynamoDB instead of only one database?</li>
+   <li>What specific job does ElastiCache solve in this architecture?</li>
+   <li>How do Step Functions, SQS, SNS, and EventBridge complement one another?</li>
+   <li>Why should analytics events be separated from transactional processing paths?</li>
+   <li>What is the value of putting CloudFront and WAF in front of the platform?</li>
+ </ol>
+   <p>Official documentation: <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html" target="_blank" rel="noopener noreferrer">Amazon S3</a> · <a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html" target="_blank" rel="noopener noreferrer">DynamoDB</a> · <a href="https://docs.aws.amazon.com/streams/latest/dev/introduction.html" target="_blank" rel="noopener noreferrer">Amazon Kinesis</a> · <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html" target="_blank" rel="noopener noreferrer">EventBridge</a> · <a href="https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html" target="_blank" rel="noopener noreferrer">Step Functions</a>.</p>
+ </section>
+</div>
+</main>
+</html>

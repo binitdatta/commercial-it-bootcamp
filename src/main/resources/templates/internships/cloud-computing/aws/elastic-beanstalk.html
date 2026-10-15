@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('AWS Elastic Beanstalk', 'A comprehensive guide to AWS Elastic Beanstalk application deployment and operations', ~{::main})}">
+<main>
+<style>
+.eb-lesson{max-width:1360px;margin:0 auto;color:#182b46;--line:#d6e4f3;--blue:#0a67bd}
+.eb-lesson .eb-hero{background:linear-gradient(115deg,#092850,#0869c7);border-radius:22px;padding:2.6rem 3rem;color:white;box-shadow:0 15px 30px #164a7c25}
+.eb-lesson .eyebrow{font-size:.79rem;letter-spacing:.13em;text-transform:uppercase;color:#b9e0ff;font-weight:800}
+.eb-lesson h1{font-size:clamp(2.05rem,4vw,3.3rem);font-weight:800;letter-spacing:-.035em}
+.eb-lesson .lead{color:#e3f3ff;font-size:1.13rem;line-height:1.7}
+.eb-lesson .pill{display:inline-block;background:#ffffff1d;border:1px solid #ffffff70;border-radius:30px;padding:.32rem .8rem;margin:.25rem .4rem .1rem 0;font-size:.88rem;font-weight:650}
+.eb-lesson .panel{background:white;border:1px solid var(--line);border-radius:18px;padding:1.65rem 1.9rem;margin-top:1.2rem;box-shadow:0 6px 20px #113c6809}
+.eb-lesson .panel h2{font-size:1.45rem;font-weight:800;color:#153960;margin-bottom:1rem}
+.eb-lesson .panel h3{font-size:1.08rem;font-weight:760;color:#105b9a;margin:1rem 0 .6rem}
+.eb-lesson p,.eb-lesson li{line-height:1.78}
+.eb-lesson .jump{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.6rem}
+.eb-lesson .jump a{background:#f0f7ff;border:1px solid #d1e6fa;padding:.65rem .75rem;border-radius:9px;text-decoration:none;color:#13578e;font-size:.89rem;font-weight:650}
+.eb-lesson .diagram{width:100%;display:block;height:auto;border:1px solid #d6e6f4;border-radius:13px;background:#fff}
+.eb-lesson .table-scroll{overflow-x:auto}
+.eb-lesson table{border-collapse:collapse;width:100%;font-size:.91rem}
+.eb-lesson th,.eb-lesson td{padding:.8rem;border:1px solid var(--line);vertical-align:top}
+.eb-lesson th{background:#eaf4ff;color:#1b436f}
+.eb-lesson .features{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.9rem}
+.eb-lesson .feature{border:1px solid #d9e8f7;background:#f7fbff;border-radius:12px;padding:1rem 1.2rem}
+.eb-lesson .feature h3{margin-top:0}
+.eb-lesson .note{background:#eef7ff;border-left:4px solid #2080d0;padding:1rem 1.2rem;border-radius:7px;margin-top:1rem}
+.eb-lesson .warning{background:#fff8e8;border-left-color:#d2942c}
+.eb-lesson .step{padding:.85rem 1rem;border-left:3px solid #2683d7;background:#f6faff;margin:.7rem 0;border-radius:0 8px 8px 0}
+.eb-lesson pre{padding:1rem;background:#142d4d;border-radius:12px;color:#e7f6ff;overflow-x:auto;line-height:1.6}
+.eb-lesson code{color:#904a16;background:#fff1de;padding:2px 5px;border-radius:4px}
+.eb-lesson pre code{color:inherit;background:none;padding:0}
+.eb-lesson .muted{font-size:.89rem;color:#5b6d82}
+@media(max-width:800px){.eb-lesson .jump,.eb-lesson .features{grid-template-columns:repeat(2,minmax(0,1fr))}.eb-lesson .panel{padding:1.1rem}.eb-lesson .eb-hero{padding:1.8rem}}
+@media(max-width:540px){.eb-lesson .jump,.eb-lesson .features{grid-template-columns:1fr}}
+</style>
+<div class="eb-lesson container-fluid px-2 px-md-3 pb-5">
+ <a class="d-inline-block text-decoration-none fw-semibold my-3" th:href="@{/internships/cloud-computing}">← Cloud Computing</a>
+ <header class="eb-hero">
+  <div class="eyebrow">Amazon Web Services · 03 · Virtual Machines &amp; Compute</div>
+  <h1 class="mt-3 mb-3">AWS Elastic Beanstalk</h1>
+  <p class="lead">Deploy a Spring Boot application without manually orchestrating its entire EC2 infrastructure. Learn how Beanstalk manages environments, application versions, configuration, load balancing, scaling, monitoring, and controlled updates—while you retain ownership of the underlying AWS resources.</p>
+  <span class="pill">Managed application platform</span><span class="pill">Java / Spring Boot</span><span class="pill">EC2 &amp; Auto Scaling</span><span class="pill">Rolling deployments</span><span class="pill">Production operations</span>
+ </header>
+ <nav class="panel" aria-label="Lesson navigation"><h2>Learning path</h2><div class="jump">
+  <a href="#architecture">01 · Architecture</a><a href="#fundamentals">02 · Fundamentals</a><a href="#platforms">03 · Platform options</a><a href="#environments">04 · Environments</a>
+  <a href="#deployment">05 · Deployment lifecycle</a><a href="#networking">06 · Networking</a><a href="#configuration">07 · Configuration</a><a href="#updates">08 · Deployment strategies</a>
+  <a href="#security">09 · Security & IAM</a><a href="#observability">10 · Monitoring</a><a href="#lab">11 · Hands-on lab</a><a href="#operations">12 · Troubleshooting</a>
+  <a href="#comparison">13 · Service comparison</a><a href="#cost">14 · Cost & governance</a><a href="#assessment">15 · Assessment</a><a href="#references">16 · Resources</a>
+ </div></nav>
+ <section class="panel" id="architecture"><h2>01 · Enterprise reference architecture</h2>
+  <p>Elastic Beanstalk coordinates an application environment backed by AWS services in <strong>your AWS account</strong>. For a load-balanced production environment, an internet-facing ALB can span public subnets in two Availability Zones, while an Auto Scaling group runs application EC2 instances in private subnets. Traffic reaches the application through a target group and the instances access approved AWS services using instance profiles, VPC endpoints, or appropriate egress.</p>
+  <img class="diagram" th:src="@{/images/architecture/aws-elastic-beanstalk-architecture.png}" src="/images/architecture/aws-elastic-beanstalk-architecture.png" alt="AWS Elastic Beanstalk architecture: developer deployment to Beanstalk control plane, load-balanced multi-Availability Zone VPC, ALB nodes in public subnets, Auto Scaling EC2 application instances in private subnets, external managed services and operational controls" loading="lazy" />
+  <div class="note"><strong>Correct architecture interpretation:</strong> A single logical ALB operates across multiple enabled subnets; the two drawn nodes are not two separately provisioned ALBs. The EC2 instances belong to one Auto Scaling group spanning the Availability Zones. RDS, S3, and other dependencies are separate integrations and are not automatically created with every Beanstalk environment.</div>
+  <div class="note warning"><strong>Infrastructure responsibility:</strong> Beanstalk manages orchestration, but you remain responsible for appropriate IAM permissions, secure application configuration, database lifecycle, backup retention, platform updates, and costs.</div>
+ </section>
+ <section class="panel" id="fundamentals"><h2>02 · Elastic Beanstalk fundamentals</h2><div class="features">
+  <div class="feature"><h3>Application</h3><p>Logical top-level container for environments, application versions, and saved configurations. A single application can have development, QA, and production environments.</p></div>
+  <div class="feature"><h3>Application version</h3><p>A labeled source bundle, commonly backed by Amazon S3, that can be deployed to an environment. Versions can be reused for recovery or promoted through stages.</p></div>
+  <div class="feature"><h3>Environment</h3><p>Running infrastructure and deployed application configuration. A web-server environment may have an ALB and ASG; a worker environment processes queued jobs.</p></div>
+  <div class="feature"><h3>Environment configuration</h3><p>Controls instance configuration, networking, capacity, platform, health reporting, rolling updates, deployment policy, logging, and environment properties.</p></div>
+ </div></section>
+ <section class="panel" id="platforms"><h2>03 · Supported platforms and application packaging</h2>
+  <p>Beanstalk provides managed platform branches for common stacks, including <strong>Corretto Java</strong>, Node.js, Python, .NET on Linux, Ruby, PHP, Go, and Docker, subject to current AWS support. Choose an actively supported platform branch and verify your runtime version against the published platform matrix.</p>
+  <div class="table-scroll"><table><thead><tr><th>Platform</th><th>Application example</th><th>Packaging considerations</th></tr></thead><tbody>
+   <tr><td>Java / Corretto</td><td>Spring Boot REST API</td><td>Executable JAR or supported Java packaging; process and port configuration</td></tr>
+   <tr><td>Docker</td><td>Containerized microservice</td><td>Dockerfile or supported Docker platform configuration; image lifecycle</td></tr>
+   <tr><td>Node.js</td><td>Express server</td><td>package.json, startup command, production dependencies</td></tr>
+   <tr><td>Python</td><td>Flask / Django</td><td>Dependencies, WSGI entry point, environment configuration</td></tr>
+   <tr><td>.NET on Linux</td><td>ASP.NET Core API</td><td>Runtime compatibility and deployment artifact</td></tr>
+  </tbody></table></div>
+  <p class="muted">Do not assume older or retired platform branches are still supported; verify current Beanstalk platform documentation.</p>
+ </section>
+ <section class="panel" id="environments"><h2>04 · Web-server, worker, and lifecycle environments</h2>
+  <h3>Single-instance versus load-balanced</h3><p>A single-instance environment is useful for demos and low-cost development, but it is not an HA design. A load-balanced environment coordinates EC2 capacity with Elastic Load Balancing and Auto Scaling for scale and fault tolerance.</p>
+  <h3>Worker environment</h3><p>A worker environment can process background tasks from SQS through the Beanstalk worker infrastructure. It is useful for asynchronous jobs instead of direct browser traffic.</p>
+  <h3>Development-to-production progression</h3><p>Maintain independent environments for development, staging, and production. Version promotion and immutable deployment practices reduce drift and support repeatable releases.</p>
+ </section>
+ <section class="panel" id="deployment"><h2>05 · Application deployment lifecycle</h2>
+  <div class="step"><strong>1. Build:</strong> Create a tested Spring Boot artifact and ensure the application starts with a configurable HTTP port and externalized configuration.</div>
+  <div class="step"><strong>2. Package:</strong> Build a valid Beanstalk source bundle, Procfile where applicable, and optional configuration files.</div>
+  <div class="step"><strong>3. Register:</strong> Publish a new application version, typically stored in S3.</div>
+  <div class="step"><strong>4. Deploy:</strong> Choose the target environment and its deployment policy; Beanstalk orchestrates the change.</div>
+  <div class="step"><strong>5. Validate:</strong> Check enhanced health, ALB target health, application readiness, metrics, and logs.</div>
+  <div class="step"><strong>6. Promote or recover:</strong> Move an approved version through environments or redeploy a prior healthy version if necessary.</div>
+  <pre><code>./mvnw clean package -DskipTests
+# Example Procfile (when the selected Java platform requires it):
+web: java -jar app.jar
+
+# Basic EB CLI workflow (after credentials and EB CLI installation):
+eb init
+eb create bootcamp-dev
+eb deploy
+ eb status</code></pre>
+  <div class="note warning"><strong>Port note:</strong> The proxy-to-application port is controlled by platform conventions and configuration. Confirm the selected Java platform's process and port requirements instead of assuming that Spring Boot's default 8080 always matches the proxy configuration.</div>
+ </section>
+ <section class="panel" id="networking"><h2>06 · VPC networking and high availability</h2>
+  <p>In a typical production architecture, the public ALB spans at least two public subnets, private EC2 instances span two or more private subnets, and any database resides in its own controlled subnet group. Configure VPC routes, subnet capacity, security groups, listener/target health checks, and outbound access explicitly.</p>
+  <div class="table-scroll"><table><thead><tr><th>Layer</th><th>Illustrative CIDR</th><th>Connectivity</th><th>Control</th></tr></thead><tbody>
+   <tr><td>VPC</td><td><code>10.20.0.0/16</code></td><td>Private network boundary</td><td>Subnet routes, NACLs, SGs</td></tr>
+   <tr><td>ALB AZ-A / AZ-B</td><td><code>10.20.1.0/24</code>, <code>10.20.2.0/24</code></td><td>Inbound HTTPS from approved clients</td><td>ALB SG and certificates</td></tr>
+   <tr><td>EC2 AZ-A / AZ-B</td><td><code>10.20.11.0/24</code>, <code>10.20.12.0/24</code></td><td>Target-group traffic from ALB</td><td>Application SG references ALB SG</td></tr>
+   <tr><td>Database</td><td>Separate private DB subnets</td><td>Application-only connections</td><td>DB SG references app SG</td></tr>
+  </tbody></table></div>
+  <div class="note"><strong>Availability:</strong> Beanstalk's environment health is not a substitute for application-level resiliency. Configure stateless instances, resilient data stores, safe deploys, and failure testing.</div>
+ </section>
+ <section class="panel" id="configuration"><h2>07 · Configuration and environment properties</h2>
+  <p>Use environment properties for non-secret runtime settings such as environment names, feature toggles, and API endpoints. Store secrets in purpose-built secret-management services and retrieve them with an appropriately scoped IAM role or a supported secret reference mechanism.</p>
+  <div class="features">
+   <div class="feature"><h3>Saved configuration</h3><p>Persist environment configuration for repeatability. Review settings that can trigger replacement or downtime before applying changes.</p></div>
+   <div class="feature"><h3>.ebextensions and .platform</h3><p>Supply supported application/environment customization, hooks, proxy settings, and platform-specific configurations. Validate on the actual platform branch.</p></div>
+   <div class="feature"><h3>IAM instance profile</h3><p>Provides scoped EC2 access to S3, SSM, CloudWatch, and other services. Keep environment service-role permissions separate from application runtime permissions.</p></div>
+   <div class="feature"><h3>External dependencies</h3><p>Prefer independent databases and caches with separate lifecycle management so terminating an environment does not accidentally remove business data.</p></div>
+  </div></section>
+ <section class="panel" id="updates"><h2>08 · Deployment strategies and platform maintenance</h2>
+  <div class="table-scroll"><table><thead><tr><th>Strategy</th><th>Operational behavior</th><th>Trade-off</th></tr></thead><tbody>
+   <tr><td>All at once</td><td>Updates all instances together</td><td>Fast; possible outage</td></tr>
+   <tr><td>Rolling</td><td>Updates in batches</td><td>Reduced capacity during update</td></tr>
+   <tr><td>Rolling with additional batch</td><td>Maintains capacity through extra instances</td><td>Temporary additional cost</td></tr>
+   <tr><td>Immutable</td><td>Provisions a replacement fleet for deployment</td><td>Safer validation; slower and costlier</td></tr>
+   <tr><td>Traffic splitting (supported platforms)</td><td>Routes a percentage to a new version for evaluation</td><td>Controlled risk; platform-dependent</td></tr>
+   <tr><td>Blue/green environments</td><td>Use separate environments and switch traffic</td><td>High control; duplicate resources</td></tr>
+  </tbody></table></div>
+  <p>Managed platform updates can help apply platform patches, but you remain accountable for runtime compatibility, regression testing, approved maintenance windows, and alert response.</p>
+ </section>
+ <section class="panel" id="security"><h2>09 · Identity, security, and governance</h2><ul>
+  <li>Use dedicated IAM service roles for Beanstalk and least-privilege EC2 instance profiles for application workloads.</li>
+  <li>Terminate HTTPS on the ALB using ACM certificates; enforce HTTPS redirects where appropriate.</li>
+  <li>Keep application instances and data services private; tightly scope ingress from the ALB security group.</li>
+  <li>Restrict SSH or eliminate it using Systems Manager Session Manager where supported.</li>
+  <li>Protect secrets using Secrets Manager or Parameter Store, avoiding plaintext credentials in application source or build artifacts.</li>
+  <li>Enable CloudTrail, appropriate logging, encryption, vulnerability management, and resource tagging.</li>
+ </ul></section>
+ <section class="panel" id="observability"><h2>10 · Health monitoring and operations</h2>
+  <p>Elastic Beanstalk reports environment health status and related events. Use enhanced health where available and correlate it with CloudWatch metrics and alarms, ALB 4xx/5xx and target response times, EC2 metrics, log streams, and application traces.</p>
+  <div class="features">
+   <div class="feature"><h3>Environment health</h3><p>Review degraded instance counts, request health, startup failures, and deployment events.</p></div>
+   <div class="feature"><h3>CloudWatch Logs</h3><p>Configure log streaming/retention; correlate application failures with deployment or scaling events.</p></div>
+   <div class="feature"><h3>ALB target health</h3><p>Use a stable readiness endpoint and verify health check path, port, expected response code, and grace periods.</p></div>
+   <div class="feature"><h3>Alarms</h3><p>Set thresholds on error rate, response time, unhealthy hosts, elevated CPU, and exhausted capacity.</p></div>
+  </div></section>
+ <section class="panel" id="lab"><h2>11 · Step-by-step Spring Boot hands-on lab</h2>
+  <p><strong>Goal:</strong> Deploy a simple Spring Boot REST application on Elastic Beanstalk, exercise its health checks, and validate an application-version update. Use a sandbox account with spending alerts; ALBs and EC2 instances incur charges.</p>
+  <div class="step"><strong>Step 1:</strong> Prepare a Java 21 Spring Boot application with a <code>/api/hello</code> endpoint and a health/readiness endpoint.</div>
+  <div class="step"><strong>Step 2:</strong> Build the artifact using Maven and inspect the resulting JAR.</div>
+  <div class="step"><strong>Step 3:</strong> Open Elastic Beanstalk and create an application with a supported Corretto Java platform branch.</div>
+  <div class="step"><strong>Step 4:</strong> Choose a single-instance sandbox to minimize cost or a load-balanced environment for multi-AZ architecture validation.</div>
+  <div class="step"><strong>Step 5:</strong> Select the IAM service role and EC2 instance profile; verify their trust policies and permissions.</div>
+  <div class="step"><strong>Step 6:</strong> Configure the VPC/subnets, application/process port, security groups, deployment policy, log streaming, and health check path.</div>
+  <div class="step"><strong>Step 7:</strong> Upload the tested application bundle, monitor environment events, and wait for a healthy environment.</div>
+  <div class="step"><strong>Step 8:</strong> Call the endpoint using the environment URL and verify application logs.</div>
+  <div class="step"><strong>Step 9:</strong> Change the response, publish a second version, deploy with a controlled strategy, and verify updated traffic.</div>
+  <div class="step"><strong>Step 10:</strong> Review CloudWatch and Beanstalk health; optionally redeploy an earlier version. Terminate the temporary environment and clean up unused resources.</div>
+ </section>
+ <section class="panel" id="operations"><h2>12 · Diagnostics and troubleshooting</h2><div class="table-scroll"><table><thead><tr><th>Symptom</th><th>Likely issue</th><th>Recommended check</th></tr></thead><tbody>
+  <tr><td>Environment health is Severe</td><td>Application startup or health path failure</td><td>Inspect platform logs, target health, startup command and HTTP port</td></tr>
+  <tr><td>HTTP 502 / 503</td><td>No healthy targets or proxy mismatch</td><td>Check ALB target-group health, SGs, proxy forwarding and application port</td></tr>
+  <tr><td>Deployment fails</td><td>Artifact packaging or platform mismatch</td><td>Inspect deployment events, Procfile and runtime compatibility</td></tr>
+  <tr><td>Instances cannot reach AWS services</td><td>No NAT/VPC endpoint or missing IAM permission</td><td>Check private-subnet routes, interface endpoints and instance profile</td></tr>
+  <tr><td>Scaling does not happen</td><td>Capacity policy, min/max or alarms</td><td>Review Auto Scaling activity history, triggers and constraints</td></tr>
+  <tr><td>Database lost when environment terminated</td><td>Database lifecycle coupled to environment</td><td>Use independent database lifecycle and deletion protection</td></tr>
+ </tbody></table></div></section>
+ <section class="panel" id="comparison"><h2>13 · Elastic Beanstalk versus alternative AWS compute options</h2><div class="table-scroll"><table><thead><tr><th>Service</th><th>What you manage</th><th>Best use case</th></tr></thead><tbody>
+  <tr><td>Elastic Beanstalk</td><td>Application and desired environment configuration; AWS manages platform orchestration</td><td>Conventional web apps and APIs with infrastructure visibility</td></tr>
+  <tr><td>Amazon EC2</td><td>OS, deployment, scaling and full infrastructure lifecycle</td><td>Specialized control or nonstandard workloads</td></tr>
+  <tr><td>Amazon ECS / Fargate</td><td>Containers and service definitions; Fargate manages server capacity</td><td>Container-first microservices</td></tr>
+  <tr><td>AWS App Runner</td><td>Application source/container and service configuration</td><td>Simpler managed HTTP applications</td></tr>
+  <tr><td>AWS Lambda</td><td>Functions and event triggers</td><td>Event-driven, short-lived serverless execution</td></tr>
+ </tbody></table></div></section>
+ <section class="panel" id="cost"><h2>14 · Cost optimization and operational governance</h2>
+  <p>Elastic Beanstalk itself generally has no additional charge beyond the AWS resources it provisions. You pay for underlying EC2, EBS, load balancers, data transfer, logging, and other consumed services. A load-balanced environment costs more than a single-instance sandbox.</p>
+  <p>Use AWS Budgets, cost-allocation tags, suitable instance types, sensible scaling boundaries, log retention controls, and environment termination procedures. Treat data stores as independent resources and review service quotas, platform retirement notices, and patch windows.</p>
+ </section>
+ <section class="panel" id="assessment"><h2>15 · Knowledge assessment</h2><ol>
+   <li>Explain the difference between an Elastic Beanstalk application, application version, and environment.</li>
+   <li>What is the relationship between a load-balanced environment, one ALB, and an Auto Scaling group?</li>
+   <li>Why should a production application's database generally be managed independently from its Beanstalk environment?</li>
+   <li>How do rolling, immutable, and blue/green deployments differ in safety, cost, and availability?</li>
+   <li>What causes a 502 error when the environment appears to have running EC2 instances?</li>
+   <li>Which IAM role is used by EC2 application code and which is used by Beanstalk orchestration?</li>
+   <li>How would you safely promote a Spring Boot release from staging to production?</li>
+   <li>What resources contribute to the recurring cost of a load-balanced Beanstalk environment?</li>
+  </ol></section>
+ <section class="panel" id="references"><h2>16 · Terminology and AWS references</h2>
+  <p><strong>Application:</strong> logical container. <strong>Version:</strong> deployable artifact revision. <strong>Environment:</strong> provisioned AWS infrastructure and running application. <strong>Platform branch:</strong> supported runtime and operating system configuration. <strong>Enhanced health:</strong> richer environment and instance status reporting.</p>
+  <p>Official references: <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/Welcome.html" target="_blank" rel="noopener noreferrer">Elastic Beanstalk Developer Guide</a> · <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/concepts.html" target="_blank" rel="noopener noreferrer">Elastic Beanstalk concepts</a> · <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/platforms-supported.html" target="_blank" rel="noopener noreferrer">Supported platforms</a> · <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.deploy-existing-version.html" target="_blank" rel="noopener noreferrer">Deploying versions</a>.</p>
+ </section>
+</div>
+</main>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('Amazon EBS Volumes', 'High-performance EC2 block storage, performance, encryption and recovery', ~{::main})}">
+<main>
+<style>
+
+.ebs-lesson{max-width:1340px;margin:0 auto 3rem;color:#18263e;--stroke:#d8e5f4;--navy:#102947;--azure:#0872d3}
+.ebs-lesson .hero{background:linear-gradient(114deg,#0e2749,#0757a8 68%,#0879dd);color:#fff;border-radius:22px;padding:3rem 3.1rem;box-shadow:0 16px 30px #0642831c}
+.ebs-lesson .hero h1{font-size:clamp(2.1rem,4vw,3.4rem);font-weight:850;letter-spacing:-.03em}
+.ebs-lesson .eyebrow{font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.13em;color:#afd8ff}
+.ebs-lesson .hero p{max-width:990px;font-size:1.12rem;line-height:1.65;color:#e6f3ff}
+.ebs-lesson .tag{display:inline-block;background:#ffffff1b;border:1px solid #ffffff66;border-radius:99px;padding:.4rem .85rem;margin:.3rem .3rem 0 0;font-size:.9rem;font-weight:650}
+.ebs-lesson .panel{padding:1.6rem 1.8rem;background:#fff;border:1px solid var(--stroke);border-radius:18px;margin-top:1.25rem;box-shadow:0 5px 20px #0b44700b;scroll-margin-top:85px}
+.ebs-lesson h2{font-weight:800;color:#143d6e;font-size:1.44rem;margin-bottom:1rem}
+.ebs-lesson h3{font-weight:750;color:#09569f;font-size:1.09rem;margin-top:1.1rem}
+.ebs-lesson p,.ebs-lesson li{line-height:1.73}
+.ebs-lesson .jump{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.65rem}
+.ebs-lesson .jump a{background:#eef7ff;border:1px solid #d2e8fa;padding:.7rem .8rem;border-radius:9px;text-decoration:none;font-weight:650;color:#07519a;font-size:.87rem}
+.ebs-lesson .diagram{display:block;width:100%;height:auto;border:1px solid #dae8f7;border-radius:12px;background:#fff}
+.ebs-lesson .callout{background:#ecf6ff;border-left:4px solid #0e78ca;border-radius:7px;padding:1rem 1.15rem;margin-top:1rem}
+.ebs-lesson .caution{background:#fff8e7;border-left-color:#ca8b1e}
+.ebs-lesson .good{background:#eaf8f0;border-left-color:#2a9561}
+.ebs-lesson .twocol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.95rem}
+.ebs-lesson .feature{border:1px solid #d8e9f9;background:#f7fbff;padding:1.15rem 1.25rem;border-radius:12px}
+.ebs-lesson .feature h3{margin-top:0}
+.ebs-lesson .tablewrap{overflow-x:auto}
+.ebs-lesson table{border-collapse:collapse;width:100%;font-size:.91rem}
+.ebs-lesson th,.ebs-lesson td{border:1px solid #d8e4f0;padding:.7rem .76rem;vertical-align:top}
+.ebs-lesson th{background:#e7f2fc;color:#173d6c;font-weight:750}
+.ebs-lesson code{color:#87500c;background:#fff3df;padding:2px 5px;border-radius:4px}
+.ebs-lesson pre{background:#112844;color:#eaf5ff;border-radius:10px;padding:1.1rem;overflow-x:auto;font-size:.88rem}
+.ebs-lesson pre code{background:transparent;color:inherit;padding:0}
+.ebs-lesson .step{background:#f5faff;border-left:3px solid #157aca;border-radius:0 9px 9px 0;margin:.7rem 0;padding:.85rem 1rem}
+.ebs-lesson .muted{color:#5c6c80;font-size:.91rem}
+@media(max-width:800px){.ebs-lesson .jump,.ebs-lesson .twocol{grid-template-columns:repeat(2,minmax(0,1fr))}.ebs-lesson .hero{padding:1.7rem}.ebs-lesson .panel{padding:1.05rem}}
+@media(max-width:520px){.ebs-lesson .jump,.ebs-lesson .twocol{grid-template-columns:1fr}}
+
+</style>
+
+<div class="ebs-lesson container-fluid px-2 px-md-3 pb-5">
+<a class="d-inline-block fw-semibold text-decoration-none my-3" th:href="@{/internships/cloud-computing}">← Cloud Computing</a>
+<header class="hero">
+<div class="eyebrow">Amazon Web Services · 03 · Virtual Machines &amp; Compute</div>
+<h1 class="my-3">Amazon EBS Volumes</h1>
+<p>Engineer persistent block storage for Amazon EC2 with deliberate choices for volume performance, encryption, snapshots, restore operations, Availability Zone boundaries, resilience, observability, and cost.</p>
+<span class="tag">Block storage</span><span class="tag">gp3 and io2</span><span class="tag">Snapshots and AWS Backup</span><span class="tag">KMS encryption</span><span class="tag">Hands-on lab</span>
+</header>
+<nav class="panel" aria-label="Lesson navigation"><h2>Learning path</h2><div class="jump">
+<a href="#reference">01 · Architecture</a><a href="#concepts">02 · Fundamentals</a><a href="#types">03 · Volume types</a><a href="#lifecycle">04 · Volume lifecycle</a>
+<a href="#az">05 · Availability and recovery</a><a href="#snapshots">06 · Snapshots / backup</a><a href="#security">07 · Encryption &amp; IAM</a><a href="#performance">08 · IOPS / throughput</a>
+<a href="#comparison">09 · Storage comparison</a><a href="#lab">10 · Guided lab</a><a href="#operations">11 · Troubleshooting</a><a href="#cost">12 · Cost management</a><a href="#quiz">13 · Assessment</a><a href="#links">14 · Resources</a>
+</div></nav>
+<section class="panel" id="reference"><h2>01 · End-to-end reference architecture</h2>
+<p>The diagram demonstrates EC2 virtual machines with attached root and data volumes, independently deployed instances in two Availability Zones, and EBS snapshot/backup protection. Operational services such as CloudWatch, Systems Manager, AWS KMS, and AWS Backup provide visibility, administration, encryption, and recovery orchestration.</p>
+<img class="diagram" th:src="@{/images/architecture/aws-ebs-volumes-architecture.png}" src="/images/architecture/aws-ebs-volumes-architecture.png" alt="Amazon EBS persistent block storage reference architecture with EC2 in two Availability Zones, attached root and data volumes, snapshots, KMS, CloudWatch and AWS Backup" loading="lazy" />
+<div class="callout caution"><strong>Important technical correction to the conceptual infographic:</strong> An EBS volume resides in one Availability Zone and normally attaches to EC2 in that <em>same</em> AZ. EBS itself is <strong>not</strong> a cross-AZ shared volume or an application-level replication service. EBS snapshots can be used to create restored volumes in a different AZ; cross-Region recovery requires copying snapshots. Database high availability is an independent concern. EBS snapshots are stored in AWS-managed Amazon S3 storage, not generally in your own S3 bucket.</div>
+</section>
+<section class="panel" id="concepts"><h2>02 · EC2 block storage fundamentals</h2><div class="twocol">
+<div class="feature"><h3>Amazon EBS</h3><p>Durable block volumes exposed as devices to EC2. The operating system handles partitioning, filesystems, mount points, and application I/O. Volume lifecycle can outlast the EC2 instance.</p></div>
+<div class="feature"><h3>Root and data volumes</h3><p>Root volumes hold the boot operating system. Separate data volumes help isolate application data, performance needs, and backup policies. Configure <code>DeleteOnTermination</code> intentionally.</p></div>
+<div class="feature"><h3>AZ-scoped resources</h3><p>Standard EBS volumes are AZ-specific. Independent volumes and application replication support multi-AZ deployment patterns; snapshots assist recovery and relocation.</p></div>
+<div class="feature"><h3>EC2 attachment</h3><p>Most EBS volumes attach to one instance at a time. Multi-Attach is an exception available for supported Provisioned IOPS SSD volumes and compatible EC2 instances in the same AZ, and requires clustered-filesystem/application coordination.</p></div>
+</div></section>
+<section class="panel" id="types"><h2>03 · Choosing an EBS volume type</h2><div class="tablewrap"><table><thead><tr><th>Volume type</th><th>Access pattern</th><th>Typical use</th><th>Design considerations</th></tr></thead><tbody>
+<tr><td><strong>gp3</strong> General Purpose SSD</td><td>Random read/write</td><td>Boot, general applications, many database workloads</td><td>Provision size, IOPS, and throughput independently within AWS limits; sensible default for many workloads</td></tr>
+<tr><td><strong>gp2</strong> Previous generation SSD</td><td>Random read/write</td><td>Existing application volumes</td><td>Performance characteristics are tied to allocated capacity; evaluate migrating to gp3</td></tr>
+<tr><td><strong>io2 / io2 Block Express</strong> Provisioned IOPS SSD</td><td>High-IOPS latency-sensitive</td><td>Transactional databases and critical systems</td><td>Higher durability/performance targets, supported hardware prerequisites, higher cost</td></tr>
+<tr><td><strong>io1</strong> Earlier Provisioned IOPS SSD</td><td>High-IOPS random access</td><td>Legacy performance-sensitive applications</td><td>Evaluate io2 capabilities and compatibility</td></tr>
+<tr><td><strong>st1</strong> Throughput Optimized HDD</td><td>Large sequential I/O</td><td>Log processing and streaming scans</td><td>Not supported as boot volume; inappropriate for low-latency random I/O</td></tr>
+<tr><td><strong>sc1</strong> Cold HDD</td><td>Infrequent sequential access</td><td>Low-cost cold data</td><td>Not supported as boot volume; prioritize cost over I/O speed</td></tr>
+</tbody></table></div><div class="callout"><strong>Selection method:</strong> Measure workload IOPS, throughput (MiB/s), read/write mix, average I/O size, latency sensitivity, queue depth, and capacity. Then match a volume type and compatible EC2 EBS bandwidth allowance.</div></section>
+<section class="panel" id="lifecycle"><h2>04 · EBS volume lifecycle and operating-system steps</h2>
+<div class="step"><strong>Create:</strong> Select EBS volume type, AZ, capacity, encryption/key, and optional snapshot source.</div>
+<div class="step"><strong>Attach:</strong> Choose an EC2 instance in the same AZ. The device name requested in AWS may map to a different OS-level path on Nitro instances.</div>
+<div class="step"><strong>Prepare:</strong> Inspect the device, create a filesystem only for a new blank volume, and mount it at the chosen application directory.</div>
+<div class="step"><strong>Operate:</strong> Monitor CloudWatch and OS-level metrics. Add a persistent mount with filesystem UUID rather than depending on unstable device names.</div>
+<div class="step"><strong>Modify:</strong> Use Elastic Volumes to grow capacity or adjust supported performance settings; expand the partition and filesystem separately as needed.</div>
+<div class="step"><strong>Detach and delete:</strong> Stop I/O, unmount cleanly, detach, and confirm the lifecycle/retention policy before deletion.</div>
+<pre><code># Linux validation example: inspect; do not format an existing data device
+lsblk -f
+sudo file -s /dev/nvme1n1
+sudo mkfs -t xfs /dev/nvme1n1       # ONLY on a confirmed new/blank volume
+sudo mkdir -p /data
+sudo mount /dev/nvme1n1 /data
+sudo blkid /dev/nvme1n1
+ df -h /data
+</code></pre><p class="muted">Device names vary by instance family, operating system, and attachment order. Prefer EC2/NVMe volume identification and filesystem UUIDs. For an existing volume, formatting destroys its data.</p>
+</section>
+<section class="panel" id="az"><h2>05 · Availability Zone boundaries and high availability</h2><p>EC2 and its ordinary attached EBS volumes operate in the same AZ. EBS stores data redundantly within that AZ, but EBS by itself does not provide cross-AZ availability. For a multi-AZ service, deploy EC2 instances and EBS volumes separately in each AZ, and use application/database replication or a managed data service where appropriate.</p>
+<div class="twocol"><div class="feature"><h3>AZ failure scenario</h3><p>When a volume's AZ is unavailable, the application cannot simply mount that same EBS volume from an EC2 instance in another AZ. Instead, restore from an available snapshot or use another independently replicated application node.</p></div><div class="feature"><h3>Multi-Region disaster recovery</h3><p>Copy EBS snapshots to the recovery Region, align encryption/key access policies, and provision new volumes and EC2 instances in a target AZ. Validate RPO/RTO under realistic recovery tests.</p></div></div></section>
+<section class="panel" id="snapshots"><h2>06 · Snapshots, restore and AWS Backup</h2>
+<p>EBS snapshots represent point-in-time backups, typically incremental after the initial snapshot. AWS stores the snapshot data in its managed S3 infrastructure. Snapshot retention can be governed using Amazon Data Lifecycle Manager or AWS Backup plans with policies and recovery points.</p>
+<div class="step"><strong>1. Prepare consistency:</strong> Coordinate with applications; quiesce database/file activity or use an application-consistent procedure before initiating snapshots.</div>
+<div class="step"><strong>2. Capture:</strong> Create a snapshot or a coordinated multi-volume snapshot set. Snapshot creation can run while an attached volume remains in service, but consistency is a separate concern.</div>
+<div class="step"><strong>3. Automate:</strong> Define schedules, retention, cross-account or cross-Region copies where supported, resource tags, and AWS Backup vault controls.</div>
+<div class="step"><strong>4. Restore:</strong> Create a new EBS volume from the snapshot in the chosen AZ, attach it to EC2, then mount/validate application data.</div>
+<div class="step"><strong>5. Test:</strong> Run periodic recovery tests and measure elapsed restoration and application validation time—not just snapshot success.</div>
+<div class="callout caution"><strong>Snapshot ≠ immediate hot standby.</strong> A snapshot provides a recovery point. It does not keep another AZ's EC2 application continuously synchronized. For fast database failover use application-level replication or services such as Amazon RDS Multi-AZ.</div></section>
+<section class="panel" id="security"><h2>07 · EBS encryption, keys and access management</h2><div class="twocol">
+<div class="feature"><h3>AWS KMS at rest</h3><p>Enable EBS encryption by default at the account/Region level and choose the required KMS key. Encrypted volumes and their snapshots remain encrypted, subject to key availability, copy, and sharing controls.</p></div>
+<div class="feature"><h3>IAM least privilege</h3><p>Restrict permissions such as <code>ec2:CreateVolume</code>, <code>ec2:AttachVolume</code>, <code>ec2:CreateSnapshot</code>, and <code>ec2:DeleteSnapshot</code>. Use conditions/tags and appropriate KMS key grants and policies.</p></div>
+<div class="feature"><h3>Host access</h3><p>EBS encryption does not replace OS-level file permissions or application authentication. Prefer Systems Manager Session Manager for management without public SSH when supported.</p></div>
+<div class="feature"><h3>Governance and audit</h3><p>Track volume/snapshot API operations with CloudTrail; tag data classification and retention; validate backup vaults, recovery roles, and cross-account boundaries.</p></div>
+</div></section>
+<section class="panel" id="performance"><h2>08 · Performance: IOPS, throughput and latency</h2>
+<p><strong>IOPS</strong> measures completed I/O operations per second; <strong>throughput</strong> measures bytes moved per second; <strong>latency</strong> measures time to complete an individual operation. Required throughput depends on average I/O size and IOPS, and actual volume performance is constrained by both provisioned EBS settings and EC2 instance EBS bandwidth/IOPS capability.</p>
+<div class="tablewrap"><table><thead><tr><th>Signal</th><th>What it indicates</th><th>Typical action</th></tr></thead><tbody>
+<tr><td>VolumeReadOps / VolumeWriteOps</td><td>I/O frequency</td><td>Correlate with application request rate</td></tr>
+<tr><td>VolumeReadBytes / VolumeWriteBytes</td><td>Data volume transferred</td><td>Estimate throughput and compare to provisioned level</td></tr>
+<tr><td>VolumeQueueLength</td><td>Outstanding I/O</td><td>Investigate persistent queuing or saturation</td></tr>
+<tr><td>VolumeTotalReadTime / VolumeTotalWriteTime</td><td>Aggregate I/O service time</td><td>Estimate latency with matching operation counts when supported</td></tr>
+<tr><td>Instance EBS bandwidth</td><td>EC2 host-side throughput ceiling</td><td>Check EC2 instance EBS-optimized performance</td></tr>
+</tbody></table></div><p>Example: at a mean 16 KiB I/O size, 8,000 IOPS corresponds to about 125 MiB/s of data throughput if the workload sustains that average size; real performance depends on distribution and queue depth.</p>
+</section>
+<section class="panel" id="comparison"><h2>09 · EBS vs instance store vs EFS vs S3</h2><div class="tablewrap"><table><thead><tr><th>Property</th><th>Amazon EBS</th><th>EC2 instance store</th><th>Amazon EFS</th><th>Amazon S3</th></tr></thead><tbody>
+<tr><td>Interface</td><td>Block device</td><td>Local block device</td><td>Shared NFS filesystem</td><td>Object APIs</td></tr>
+<tr><td>Scope</td><td>Volume in an AZ, attached to supported same-AZ EC2</td><td>Host-local ephemeral storage</td><td>Regional file service with AZ mount targets</td><td>Regional object service</td></tr>
+<tr><td>Best fit</td><td>Boot disk, database/data volume</td><td>Scratch, temporary cache</td><td>Shared files across instances</td><td>Archives, objects, static assets</td></tr>
+<tr><td>Persistence</td><td>Independent of instance lifecycle if configured</td><td>Data may be lost on stop/termination or host failure</td><td>Managed durable filesystem</td><td>Managed durable object storage</td></tr>
+<tr><td>Shared access</td><td>Usually single attachment; constrained Multi-Attach exceptions</td><td>Local to one instance</td><td>Multiple clients supported</td><td>Many API clients</td></tr>
+</tbody></table></div></section>
+<section class="panel" id="lab"><h2>10 · Guided AWS hands-on exercise</h2><p><strong>Objective:</strong> Create an encrypted gp3 data volume, attach it to EC2, safely mount it, take a snapshot, restore into another AZ, then clean up. Use a sandbox account and monitor incurred costs.</p>
+<div class="step"><strong>Step 1:</strong> Launch a test EC2 instance in a selected AZ with Systems Manager access, an instance role, and a verified operating system image.</div>
+<div class="step"><strong>Step 2:</strong> In EC2 → Elastic Block Store → Volumes, create a new encrypted gp3 volume in the <em>same AZ</em> as the instance. Add project and retention tags.</div>
+<div class="step"><strong>Step 3:</strong> Attach the data volume to the instance. Use <code>lsblk</code> to identify the actual device, and verify that it is new and empty before formatting.</div>
+<div class="step"><strong>Step 4:</strong> Create an XFS or ext4 filesystem, mount under <code>/data</code>, create a test file, and optionally configure an <code>/etc/fstab</code> mount by filesystem UUID.</div>
+<div class="step"><strong>Step 5:</strong> Inspect gp3 IOPS/throughput settings and CloudWatch volume metrics. Record an initial performance baseline.</div>
+<div class="step"><strong>Step 6:</strong> Safely quiesce writes, create an EBS snapshot, and label its workload, date, and restore purpose.</div>
+<div class="step"><strong>Step 7:</strong> Create another volume from the snapshot in a <em>different AZ of the same Region</em>. Attach it to a separate test instance in that target AZ and verify the restored file.</div>
+<div class="step"><strong>Step 8:</strong> Test snapshot copying to another Region if DR is in scope; ensure KMS key permissions are valid at the destination.</div>
+<div class="step"><strong>Step 9:</strong> Unmount and detach test data volumes, remove unused snapshots/volumes, and terminate lab EC2 resources only after validating that nothing is needed.</div>
+<div class="callout caution"><strong>Lab safety:</strong> Never run <code>mkfs</code> against a volume containing data. Validate the target device by EBS volume ID before preparing the filesystem. Snapshots and provisioned volumes can incur charges even after instances are stopped.</div></section>
+<section class="panel" id="operations"><h2>11 · Diagnostics and troubleshooting</h2><div class="tablewrap"><table><thead><tr><th>Symptom</th><th>Potential cause</th><th>What to check</th></tr></thead><tbody>
+<tr><td>Volume cannot attach</td><td>Different AZ, unsupported attachment, or conflicting state</td><td>EC2 AZ, EBS AZ, attachment status, Multi-Attach eligibility</td></tr>
+<tr><td>Volume missing in Linux</td><td>NVMe device naming differs from AWS mapping</td><td><code>lsblk</code>, NVMe enumeration, AWS EBS volume ID</td></tr>
+<tr><td>Filesystem won't mount</td><td>Filesystem absent, damaged, or wrong type</td><td><code>blkid</code>, <code>file -s</code>, OS logs; avoid formatting existing data</td></tr>
+<tr><td>Performance below expectation</td><td>Instance EBS cap, low provisioned performance, workload queues</td><td>CloudWatch, EC2 EBS limits, queue depth, throughput/IOPS settings</td></tr>
+<tr><td>Restore fails due to permissions</td><td>Missing snapshot sharing or KMS access</td><td>IAM policies, KMS key policy/grants, snapshot ownership</td></tr>
+<tr><td>Data gone after instance termination</td><td>Root/data volume delete-on-termination flag</td><td>EC2 block device mappings and retention/backups</td></tr>
+</tbody></table></div></section>
+<section class="panel" id="cost"><h2>12 · Cost optimization and governance</h2><p>Manage cost with volume-type selection, capacity rightsizing, provisioned IOPS and throughput, retention windows, and the lifecycle of unattached volumes and stale snapshots. gp3 often allows capacity, IOPS and throughput to be configured independently. Model pricing by Region and confirm current AWS rates, especially for premium provisioned-performance families and snapshot storage.</p><div class="twocol"><div class="feature"><h3>Reduce avoidable spend</h3><p>Identify unattached volumes, oversized allocations, excessive provisioned gp3 performance, unneeded snapshots, and duplicated backup policies.</p></div><div class="feature"><h3>Govern responsibly</h3><p>Tag environment, owner, application, data classification, cost center, backup policy, and deletion eligibility; automate periodic reviews with approvals before destructive cleanup.</p></div></div></section>
+<section class="panel" id="quiz"><h2>13 · Knowledge assessment</h2><ol>
+<li>Why can't an ordinary EBS volume be attached to an EC2 instance in another Availability Zone?</li>
+<li>How would you restore a failed-AZ service using an existing EBS snapshot?</li>
+<li>Compare gp3 and io2 for a high-write transactional workload.</li>
+<li>Why do EBS encryption and IAM controls address different threats?</li>
+<li>What OS checks must you complete before formatting and mounting a newly attached EBS volume?</li>
+<li>Explain the difference between IOPS and throughput with an example involving 16 KiB I/O sizes.</li>
+<li>When should you choose EFS or S3 instead of EBS?</li>
+<li>Why isn't an EBS snapshot equivalent to multi-AZ application high availability?</li>
+<li>What checks would you run if CloudWatch shows increasing volume queue length?</li>
+<li>How can you preserve a data volume after terminating its EC2 instance?</li>
+</ol></section>
+<section class="panel" id="links"><h2>14 · Official reference material</h2><p><a href="https://docs.aws.amazon.com/ebs/latest/userguide/what-is-ebs.html" target="_blank" rel="noopener noreferrer">Amazon EBS User Guide</a> · <a href="https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volume-types.html" target="_blank" rel="noopener noreferrer">EBS volume types</a> · <a href="https://docs.aws.amazon.com/ebs/latest/userguide/ebs-snapshots.html" target="_blank" rel="noopener noreferrer">Snapshots</a> · <a href="https://docs.aws.amazon.com/ebs/latest/userguide/ebs-encryption.html" target="_blank" rel="noopener noreferrer">EBS encryption</a> · <a href="https://aws.amazon.com/ebs/pricing/" target="_blank" rel="noopener noreferrer">AWS EBS pricing</a>.</p><p class="muted">Diagram uses conceptual icons for a complete workload. EBS is AZ-scoped; arrows to AWS Backup, CloudWatch, KMS and snapshot services signify management and data protection relationships, not application data-plane hops.</p></section>
+</div>
+
+</main>
+</html>

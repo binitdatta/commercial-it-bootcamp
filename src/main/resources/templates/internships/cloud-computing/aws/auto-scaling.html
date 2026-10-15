@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('AWS EC2 Auto Scaling', 'A practical guide to policy-driven horizontal scaling, launch templates, CloudWatch alarms, and resilient multi-AZ compute architecture in AWS', ~{::main})}">
+<main>
+<style>
+.auto-lesson{max-width:1320px;margin:auto;color:#17233c;--navy:#102a51;--blue:#0b63c4;--line:#d9e5f2}
+.auto-lesson .hero{background:linear-gradient(115deg,#102a51 0%,#0968c8 100%);border-radius:22px;color:#fff;padding:2.8rem 3rem;box-shadow:0 13px 28px #0c4b921f}
+.auto-lesson .hero h1{font-size:clamp(2rem,3.7vw,3.3rem);font-weight:800;letter-spacing:-.035em}
+.auto-lesson .eyebrow{font-size:.85rem;text-transform:uppercase;letter-spacing:.13em;font-weight:800;color:#b4ddff}
+.auto-lesson .hero p{max-width:1020px;color:#e4f1ff;font-size:1.1rem}
+.auto-lesson .pill{display:inline-block;padding:.45rem .85rem;border:1px solid #ffffff66;border-radius:24px;margin:.3rem .35rem .1rem 0;font-weight:650;background:#ffffff18}
+.auto-lesson .panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:1.6rem 1.8rem;margin-top:1.25rem;box-shadow:0 5px 22px #08284c0b}
+.auto-lesson h2{font-weight:800;font-size:1.42rem;color:#143763;margin-bottom:1rem}
+.auto-lesson h3{font-weight:750;font-size:1.06rem;color:#0b4d8c;margin-top:1rem}
+.auto-lesson p,.auto-lesson li{line-height:1.73}
+.auto-lesson .jump{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.65rem}
+.auto-lesson .jump a{color:#07549e;text-decoration:none;background:#f0f7ff;border:1px solid #d5e9fe;padding:.65rem .8rem;border-radius:9px;font-weight:650;font-size:.89rem}
+.auto-lesson .diagram{display:block;width:100%;height:auto;border:1px solid #d5e4f4;border-radius:13px;background:#fff}
+.auto-lesson .callout{border-left:4px solid #1277d3;border-radius:7px;background:#eef7ff;padding:1rem 1.25rem;margin-top:1rem}
+.auto-lesson .warning{border-left-color:#d18c13;background:#fff8e7}
+.auto-lesson table{width:100%;border-collapse:collapse;font-size:.92rem}
+.auto-lesson th{background:#e6f1fc;color:#173c69}
+.auto-lesson th,.auto-lesson td{padding:.75rem;border:1px solid #d9e5f2;vertical-align:top}
+.auto-lesson .table-wrap{overflow:auto}
+.auto-lesson code{color:#904700;background:#fff4df;padding:2px 5px;border-radius:4px}
+.auto-lesson pre{background:#12243e;color:#e4f5ff;border-radius:10px;padding:1rem;overflow:auto;font-size:.88rem}
+.auto-lesson pre code{background:none;color:inherit;padding:0}
+.auto-lesson .feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.auto-lesson .feature{padding:1.2rem;background:#f6faff;border:1px solid #d5e6fa;border-radius:12px}
+.auto-lesson .feature h3{margin-top:0}
+.auto-lesson .step{padding:.8rem 1rem;border-left:3px solid #2185db;margin-bottom:.65rem;background:#f7fbff;border-radius:0 8px 8px 0}
+.auto-lesson .muted{color:#5b687a;font-size:.92rem}
+@media(max-width:800px){.auto-lesson .jump,.auto-lesson .feature-grid{grid-template-columns:1fr 1fr}.auto-lesson .hero{padding:1.6rem}.auto-lesson .panel{padding:1rem}}
+@media(max-width:520px){.auto-lesson .jump,.auto-lesson .feature-grid{grid-template-columns:1fr}}
+</style>
+<div class="auto-lesson container-fluid px-2 px-md-3 pb-5">
+ <a class="d-inline-block text-decoration-none fw-semibold my-3" th:href="@{/internships/cloud-computing}">← Cloud Computing</a>
+ <header class="hero">
+  <div class="eyebrow">Amazon Web Services · 03 · Virtual Machines &amp; Compute</div>
+  <h1 class="mt-3 mb-3">EC2 Auto Scaling</h1>
+  <p>Design scalable, resilient compute platforms that automatically adjust EC2 capacity based on real demand. Learn how launch templates, Auto Scaling groups, load balancers, CloudWatch alarms, and scaling policies work together across multiple Availability Zones.</p>
+  <span class="pill">Launch templates</span><span class="pill">Auto Scaling groups</span><span class="pill">CloudWatch alarms</span><span class="pill">ALB integration</span><span class="pill">Hands-on lab</span>
+ </header>
+ <nav class="panel" aria-label="Lesson sections"><h2>Learning path</h2><div class="jump">
+  <a href="#reference">01 · Reference architecture</a><a href="#concepts">02 · Core concepts</a><a href="#workflow">03 · Scaling workflow</a><a href="#policies">04 · Policy types</a>
+  <a href="#design">05 · Design patterns</a><a href="#security">06 · Security & IAM</a><a href="#operations">07 · Monitoring & operations</a><a href="#lab">08 · Hands-on lab</a>
+  <a href="#troubleshooting">09 · Troubleshooting</a><a href="#cost">10 · Cost optimization</a><a href="#assessment">11 · Knowledge check</a><a href="#glossary">12 · Key terminology</a>
+ </div></nav>
+ <section class="panel" id="reference"><h2>01 · Auto Scaling reference architecture</h2>
+  <p>This design places internet-facing traffic behind <strong>Route 53</strong>, optional <strong>CloudFront</strong>, and an <strong>Application Load Balancer</strong>. The ALB distributes traffic to EC2 instances managed by an <strong>Auto Scaling group</strong> across multiple Availability Zones. CloudWatch alarms feed scaling signals into the ASG, while launch templates define the instance blueprint used for scale-out events.</p>
+  <img class="diagram" th:src="@{/images/architecture/aws-ec2-auto-scaling-architecture.png}" src="/images/architecture/aws-ec2-auto-scaling-architecture.png" alt="AWS EC2 Auto Scaling architecture with Route 53, optional CloudFront, multi-AZ VPC, Application Load Balancer, Auto Scaling groups, EC2 instances, CloudWatch, launch templates, IAM role, EBS, Systems Manager, AWS Backup, and RDS" loading="lazy" />
+  <div class="callout"><strong>Architecture principle:</strong> Auto Scaling is not just about adding instances. It is about maintaining the right amount of capacity for availability, performance, and cost across changing traffic conditions.</div>
+  <div class="callout warning"><strong>Important note:</strong> The infographic is conceptual. In real deployments, you may use one ALB spanning multiple enabled subnets rather than thinking of it as a standalone instance per Availability Zone.</div>
+ </section>
+ <section class="panel" id="concepts"><h2>02 · Core Auto Scaling concepts</h2><div class="feature-grid">
+  <div class="feature"><h3>Launch template</h3><p>Defines the instance configuration used by the Auto Scaling group, such as AMI, instance type, EBS settings, user data, security groups, IAM role, and optional purchase options.</p></div>
+  <div class="feature"><h3>Auto Scaling group (ASG)</h3><p>Manages a fleet of EC2 instances and attempts to maintain the configured desired capacity between the minimum and maximum boundaries you define.</p></div>
+  <div class="feature"><h3>Desired, minimum, and maximum capacity</h3><p><strong>Desired capacity</strong> is what the ASG tries to maintain. <strong>Minimum</strong> protects baseline availability. <strong>Maximum</strong> prevents uncontrolled scale-out.</p></div>
+  <div class="feature"><h3>Health checks</h3><p>Auto Scaling can use EC2 and Elastic Load Balancing health checks. If an instance fails health checks, the ASG can terminate it and launch a replacement.</p></div>
+ </div></section>
+ <section class="panel" id="workflow"><h2>03 · End-to-end scaling workflow</h2>
+  <div class="step"><strong>Step 1 — Define the blueprint:</strong> Create a launch template with AMI, instance type, bootstrap logic, IAM role, networking, and storage settings.</div>
+  <div class="step"><strong>Step 2 — Create the ASG:</strong> Attach the group to selected subnets across multiple Availability Zones and configure minimum, maximum, and desired capacity.</div>
+  <div class="step"><strong>Step 3 — Attach to the ALB:</strong> Register the ASG with a target group so that new instances automatically receive traffic when healthy.</div>
+  <div class="step"><strong>Step 4 — Observe metrics:</strong> CloudWatch tracks metrics such as CPU utilization, request count per target, and custom application metrics.</div>
+  <div class="step"><strong>Step 5 — Trigger scaling policy:</strong> When conditions are met, the ASG scales out or scales in based on target tracking, step scaling, scheduled scaling, or predictive logic.</div>
+  <div class="step"><strong>Step 6 — Warm-up and health validation:</strong> New instances initialize, run user data, register with the target group, and pass health checks before serving production traffic.</div>
+  <pre><code>Example ASG baseline
+Min capacity:      2
+Desired capacity:  4
+Max capacity:      10
+Target tracking:   Maintain average CPU at 50%
+Health checks:     ALB + EC2
+Subnets:           Private app subnets across 2 AZs</code></pre>
+ </section>
+ <section class="panel" id="policies"><h2>04 · Scaling policy types</h2><div class="table-wrap"><table><thead><tr><th>Policy type</th><th>How it works</th><th>Best use case</th></tr></thead><tbody>
+ <tr><td>Target tracking</td><td>Automatically adjusts capacity to maintain a target metric value</td><td>Most general production web and application workloads</td></tr>
+ <tr><td>Step scaling</td><td>Adds or removes capacity in steps when thresholds are crossed</td><td>When you want more control over capacity jumps</td></tr>
+ <tr><td>Simple scaling</td><td>Legacy-style threshold response with cooldown behavior</td><td>Basic scenarios, though target tracking is often preferred</td></tr>
+ <tr><td>Scheduled scaling</td><td>Changes capacity at known times</td><td>Business-hour traffic, batch windows, planned events</td></tr>
+ <tr><td>Predictive scaling</td><td>Uses historical patterns to pre-scale before expected demand</td><td>Recurring traffic patterns with strong historical signals</td></tr>
+ </tbody></table></div>
+ <p class="muted">Production designs often combine baseline min capacity, target tracking for day-to-day scaling, and scheduled scaling for known traffic peaks.</p>
+ </section>
+ <section class="panel" id="design"><h2>05 · Design patterns and real-world use cases</h2><div class="feature-grid">
+  <div class="feature"><h3>Web applications</h3><p>Use an ALB with private EC2 instances in an ASG across multiple Availability Zones for resilience and elasticity.</p></div>
+  <div class="feature"><h3>API and microservices backends</h3><p>Scale application-tier instances independently based on request metrics, latency, or custom telemetry.</p></div>
+  <div class="feature"><h3>Batch and queue workers</h3><p>Scale worker instances using queue depth or job backlog to align compute capacity with asynchronous workloads.</p></div>
+  <div class="feature"><h3>Development and test</h3><p>Reduce cost by scheduling environments to scale down after hours and scale up automatically during active periods.</p></div>
+ </div>
+ <div class="callout"><strong>Best practice:</strong> Keep EC2 instances as stateless as possible. Store state in managed databases, caches, or object stores so the ASG can freely replace or rebalance instances.</div>
+ </section>
+ <section class="panel" id="security"><h2>06 · Security and IAM</h2><div class="feature-grid">
+  <div class="feature"><h3>IAM roles for EC2</h3><p>Attach least-privilege instance roles through the launch template so instances can access S3, Systems Manager, CloudWatch, and other AWS services without hard-coded credentials.</p></div>
+  <div class="feature"><h3>Private subnets</h3><p>Place application instances in private subnets whenever possible. Use the ALB in public subnets for inbound traffic and NAT or VPC endpoints for controlled outbound access.</p></div>
+  <div class="feature"><h3>Patch and command management</h3><p>Use Systems Manager for patching, session access, run commands, and fleet management across the Auto Scaling group.</p></div>
+  <div class="feature"><h3>Data protection</h3><p>Use encrypted EBS volumes, secure AMI pipelines, security groups, and controlled bootstrap logic to reduce drift and harden the fleet.</p></div>
+ </div></section>
+ <section class="panel" id="operations"><h2>07 · Monitoring, operations, and lifecycle management</h2><div class="feature-grid">
+  <div class="feature"><h3>CloudWatch alarms</h3><p>Use alarms on CPU, memory (with agent), ALB request count per target, network metrics, or custom application metrics to trigger scaling.</p></div>
+  <div class="feature"><h3>Instance warm-up and cooldown</h3><p>Warm-up avoids premature scale-in or repeated oscillation while new instances are still initializing. Tune it according to application startup time.</p></div>
+  <div class="feature"><h3>Lifecycle hooks</h3><p>Use lifecycle hooks to pause launch or termination events, enabling bootstrap validation, graceful drain, or cleanup before an instance is fully in or out of service.</p></div>
+  <div class="feature"><h3>Replacements and rebalancing</h3><p>Auto Scaling can replace unhealthy instances and rebalance across Availability Zones to maintain fault tolerance over time.</p></div>
+ </div></section>
+ <section class="panel" id="lab"><h2>08 · Guided AWS console lab</h2><p><strong>Goal:</strong> Create a two-AZ Auto Scaling environment behind an ALB and test scaling behavior.</p>
+ <div class="step"><strong>Step 1:</strong> Build a VPC with public load balancer subnets and private application subnets across two Availability Zones.</div>
+ <div class="step"><strong>Step 2:</strong> Create a launch template with an EC2 AMI, instance type, security group, IAM role, EBS root volume, and user data that installs a simple web app.</div>
+ <div class="step"><strong>Step 3:</strong> Create an Application Load Balancer and target group.</div>
+ <div class="step"><strong>Step 4:</strong> Create an Auto Scaling group using the launch template, attach the target group, and set min/desired/max capacity.</div>
+ <div class="step"><strong>Step 5:</strong> Configure a target tracking policy such as maintaining average CPU at 50%.</div>
+ <div class="step"><strong>Step 6:</strong> Generate load, observe CloudWatch metrics, and verify that the ASG launches additional instances.</div>
+ <div class="step"><strong>Step 7:</strong> Reduce load and confirm controlled scale-in after the configured warm-up and scaling logic.</div>
+ <div class="step"><strong>Step 8:</strong> Review activity history, target group health, and cleanup resources to avoid charges.</div>
+ </section>
+ <section class="panel" id="troubleshooting"><h2>09 · Troubleshooting guide</h2><div class="table-wrap"><table><thead><tr><th>Symptom</th><th>Likely cause</th><th>Diagnostic action</th></tr></thead><tbody>
+ <tr><td>Instances launch but never serve traffic</td><td>Target group or health check failure</td><td>Inspect ALB target health, security groups, user data, and instance startup logs</td></tr>
+ <tr><td>Scale-out never occurs</td><td>Policy not attached or metric not reaching threshold</td><td>Check CloudWatch alarms, scaling policy configuration, and metric source</td></tr>
+ <tr><td>Repeated scale-in and scale-out oscillation</td><td>Warm-up or threshold tuning problem</td><td>Increase warm-up, review target value, and inspect load pattern</td></tr>
+ <tr><td>Instances terminate too early</td><td>Scale-in rules too aggressive</td><td>Review cooldown, termination policies, and lifecycle hooks</td></tr>
+ <tr><td>Application errors after scale-out</td><td>Non-stateless app or missing shared state</td><td>Move state to databases, caches, or object storage and recheck bootstrap logic</td></tr>
+ <tr><td>Unexpected cost growth</td><td>High max capacity or inefficient instance mix</td><td>Audit scaling history, instance types, min/max settings, and consider mixed purchase models</td></tr>
+ </tbody></table></div></section>
+ <section class="panel" id="cost"><h2>10 · Cost optimization</h2>
+  <p>Auto Scaling can lower cost by aligning compute to demand, but it can also raise cost if policies are poorly tuned. Use right-sized instance families, scheduled scaling for predictable patterns, and mixed On-Demand / Spot strategies where appropriate. Keep a sensible minimum capacity for resilience while avoiding unnecessary idle headroom.</p>
+  <p>Use tags, CloudWatch dashboards, and cost allocation views to monitor scaling behavior over time. A cheaper fleet is only successful if it still meets performance and availability objectives.</p>
+ </section>
+ <section class="panel" id="assessment"><h2>11 · Knowledge assessment</h2><ol>
+  <li>What is the difference between a launch template and an Auto Scaling group?</li>
+  <li>Why is desired capacity different from minimum and maximum capacity?</li>
+  <li>When would target tracking be preferable to scheduled scaling?</li>
+  <li>Why should application instances in an Auto Scaling group be as stateless as possible?</li>
+  <li>How do ALB health checks influence instance replacement and traffic flow?</li>
+  <li>What can happen if instance warm-up is too short?</li>
+  <li>How can mixed purchase models help with cost optimization?</li>
+ </ol></section>
+ <section class="panel" id="glossary"><h2>12 · Key terms and further reading</h2>
+  <p><strong>Launch template:</strong> EC2 configuration blueprint used by the ASG. <strong>Auto Scaling group:</strong> fleet manager that maintains instance capacity. <strong>Target group:</strong> load balancer destination set for registered instances. <strong>Warm-up:</strong> time allowed for a new instance to initialize before full policy evaluation.</p>
+  <p>Official documentation: <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html" target="_blank" rel="noopener noreferrer">EC2 Auto Scaling</a> · <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html" target="_blank" rel="noopener noreferrer">Application Load Balancer</a> · <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html" target="_blank" rel="noopener noreferrer">CloudWatch</a>.</p>
+ </section>
+</div>
+</main>
+</html>

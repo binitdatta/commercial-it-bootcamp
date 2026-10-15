@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('Amazon S3 Streaming Analytics Pipeline', 'Streaming transactional data from Spring Boot source systems through Kinesis, Firehose, Lambda, S3, Athena, and Redshift', ~{::main})}">
+<main>
+<style>
+.lesson{max-width:1340px;margin:auto;color:#17233c;--navy:#102a51;--blue:#0b63c4;--line:#d9e5f2}
+.lesson .hero{background:linear-gradient(115deg,#102a51 0%,#0968c8 100%);border-radius:22px;color:#fff;padding:2.8rem 3rem;box-shadow:0 13px 28px #0c4b921f}
+.lesson .hero h1{font-size:clamp(2rem,3.7vw,3.3rem);font-weight:800;letter-spacing:-.035em}
+.lesson .eyebrow{font-size:.85rem;text-transform:uppercase;letter-spacing:.13em;font-weight:800;color:#b4ddff}
+.lesson .hero p{max-width:1050px;color:#e4f1ff;font-size:1.08rem}
+.lesson .pill{display:inline-block;padding:.45rem .85rem;border:1px solid #ffffff66;border-radius:24px;margin:.3rem .35rem .1rem 0;font-weight:650;background:#ffffff18}
+.lesson .panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:1.6rem 1.8rem;margin-top:1.25rem;box-shadow:0 5px 22px #08284c0b}
+.lesson h2{font-weight:800;font-size:1.42rem;color:#143763;margin-bottom:1rem}
+.lesson h3{font-weight:750;font-size:1.05rem;color:#0b4d8c;margin-top:1rem}
+.lesson p,.lesson li{line-height:1.73}
+.lesson .jump{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.65rem}
+.lesson .jump a{color:#07549e;text-decoration:none;background:#f0f7ff;border:1px solid #d5e9fe;padding:.65rem .8rem;border-radius:9px;font-weight:650;font-size:.89rem}
+.lesson .diagram{display:block;width:100%;height:auto;border:1px solid #d5e4f4;border-radius:13px;background:#fff}
+.lesson .callout{border-left:4px solid #1277d3;border-radius:7px;background:#eef7ff;padding:1rem 1.25rem;margin-top:1rem}
+.lesson .warning{border-left-color:#d18c13;background:#fff8e7}
+.lesson table{width:100%;border-collapse:collapse;font-size:.92rem}.lesson th{background:#e6f1fc;color:#173c69}.lesson th,.lesson td{padding:.75rem;border:1px solid #d9e5f2;vertical-align:top}.lesson .table-wrap{overflow:auto}
+.lesson pre{background:#12243e;color:#e4f5ff;border-radius:10px;padding:1rem;overflow:auto;font-size:.88rem}.lesson code{color:#904700;background:#fff4df;padding:2px 5px;border-radius:4px}.lesson pre code{background:none;color:inherit;padding:0}
+.lesson .feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.lesson .feature{padding:1.2rem;background:#f6faff;border:1px solid #d5e6fa;border-radius:12px}.lesson .feature h3{margin-top:0}.lesson .step{padding:.8rem 1rem;border-left:3px solid #2185db;margin-bottom:.65rem;background:#f7fbff;border-radius:0 8px 8px 0}
+@media(max-width:800px){.lesson .jump,.lesson .feature-grid{grid-template-columns:1fr 1fr}.lesson .hero{padding:1.6rem}.lesson .panel{padding:1rem}}@media(max-width:520px){.lesson .jump,.lesson .feature-grid{grid-template-columns:1fr}}
+</style>
+<div class="lesson container-fluid px-2 px-md-3 pb-5">
+ <a class="d-inline-block text-decoration-none fw-semibold my-3" th:href="@{/internships/cloud-computing}">← Cloud Computing</a>
+ <header class="hero">
+   <div class="eyebrow">Amazon Web Services · 05 · Storage, Databases &amp; Caching</div>
+   <h1 class="mt-3 mb-3">Amazon S3 Streaming Analytics Pipeline</h1>
+   <p>Learn how Spring Boot transactional applications stream operational events into Amazon Kinesis Data Streams, how Amazon Kinesis Data Firehose buffers and delivers those events, how AWS Lambda transforms records, and how Amazon S3, Amazon Athena, and Amazon Redshift turn raw event data into queryable analytics assets.</p>
+   <span class="pill">Spring Boot sources</span><span class="pill">Kinesis Data Streams</span><span class="pill">Kinesis Firehose</span><span class="pill">AWS Lambda</span><span class="pill">Amazon S3</span><span class="pill">Athena &amp; Redshift</span>
+ </header>
+ <nav class="panel" aria-label="Lesson sections"><h2>Learning path</h2><div class="jump">
+  <a href="#reference">01 · Reference architecture</a><a href="#flow">02 · End-to-end workflow</a><a href="#services">03 · Service roles</a><a href="#s3">04 · S3 bucket strategy</a>
+  <a href="#athena">05 · Athena analytics</a><a href="#redshift">06 · Redshift analytics</a><a href="#governance">07 · Governance & security</a><a href="#springboot">08 · Spring Boot publisher role</a>
+  <a href="#lab">09 · Hands-on lab</a><a href="#troubleshooting">10 · Troubleshooting</a><a href="#patterns">11 · Design patterns</a><a href="#assessment">12 · Knowledge check</a>
+ </div></nav>
+ <section class="panel" id="reference"><h2>01 · Streaming pipeline reference architecture</h2>
+  <p>This architecture shows transactional events published by multiple <strong>Spring Boot source applications</strong> into <strong>Amazon Kinesis Data Streams</strong>. <strong>Amazon Kinesis Data Firehose</strong> consumes the stream, buffers records, optionally invokes <strong>AWS Lambda</strong> to validate, enrich, and transform them, and then lands data into different <strong>Amazon S3</strong> buckets such as raw, processed, and curated zones. Analysts then query the S3 data lake through <strong>Amazon Athena</strong> or load curated data into <strong>Amazon Redshift</strong> for higher-performance warehousing and BI reporting.</p>
+  <img class="diagram" th:src="@{/images/architecture/aws-s3-streaming-pipeline-architecture.png}" src="/images/architecture/aws-s3-streaming-pipeline-architecture.png" alt="AWS streaming pipeline showing Spring Boot source apps publishing to Kinesis Data Streams, Firehose invoking Lambda transformations, data landing in S3 raw, processed, and curated buckets, and analytics using Athena and Redshift" loading="lazy" />
+  <div class="callout"><strong>Architecture principle:</strong> Keep ingestion, delivery, transformation, storage, and analytics as clearly separated layers. That gives you operational clarity, easier troubleshooting, and flexibility to evolve each stage independently.</div>
+  <div class="callout warning"><strong>Important note:</strong> Firehose does not always require Lambda. Lambda is introduced when you need custom record transformation, validation, enrichment, or filtering before final delivery.</div>
+ </section>
+ <section class="panel" id="flow"><h2>02 · End-to-end workflow</h2>
+   <div class="step"><strong>Step 1 — Publish operational events:</strong> Spring Boot applications such as order, payment, inventory, and customer services publish transactional records in JSON, Avro, or another agreed format.</div>
+   <div class="step"><strong>Step 2 — Buffer in Kinesis Data Streams:</strong> Kinesis stores the streaming records durably in shards for real-time ingestion and replay tolerance.</div>
+   <div class="step"><strong>Step 3 — Deliver through Firehose:</strong> Firehose consumes the stream, buffers records by time and/or size, and prepares them for managed delivery.</div>
+   <div class="step"><strong>Step 4 — Invoke Lambda for transformation:</strong> Lambda can clean, validate, enrich, filter, or reformat each batch of records before landing.</div>
+   <div class="step"><strong>Step 5 — Land data in S3:</strong> Firehose writes objects into raw, processed, and curated S3 buckets or prefixes based on pipeline rules.</div>
+   <div class="step"><strong>Step 6 — Query with Athena:</strong> Athena runs SQL over S3 data using table definitions from the Glue Data Catalog.</div>
+   <div class="step"><strong>Step 7 — Warehouse in Redshift:</strong> Curated data can also be loaded into Redshift for BI dashboards, dimensional models, and complex reporting.</div>
+   <pre><code>Example logical zones
+s3://company-datalake/raw/
+s3://company-datalake/processed/
+s3://company-datalake/curated/</code></pre>
+ </section>
+ <section class="panel" id="services"><h2>03 · Role of each AWS service</h2><div class="table-wrap"><table><thead><tr><th>Service</th><th>Role in the pipeline</th><th>Why it matters</th></tr></thead><tbody>
+   <tr><td>Spring Boot applications</td><td>Source systems that emit business transactions and operational events</td><td>They generate the actual business data consumed by downstream analytics</td></tr>
+   <tr><td>Kinesis Data Streams</td><td>Real-time ingestion and durable event buffering</td><td>Provides scalable streaming intake with shard-based throughput</td></tr>
+   <tr><td>Kinesis Data Firehose</td><td>Managed delivery from stream to destinations</td><td>Reduces operational work for buffering, batching, retry, and output handling</td></tr>
+   <tr><td>AWS Lambda</td><td>Optional record transformation layer</td><td>Lets you clean, enrich, validate, or reformat data before storage</td></tr>
+   <tr><td>Amazon S3</td><td>Durable data lake storage</td><td>Low-cost storage for raw, processed, and curated data zones</td></tr>
+   <tr><td>Amazon Athena</td><td>Serverless SQL queries on S3</td><td>Supports quick analysis without provisioning a database server</td></tr>
+   <tr><td>Amazon Redshift</td><td>Cloud data warehouse</td><td>Supports high-performance analytic workloads and BI reporting</td></tr>
+ </tbody></table></div></section>
+ <section class="panel" id="s3"><h2>04 · Amazon S3 bucket and prefix strategy</h2><div class="feature-grid">
+   <div class="feature"><h3>Raw zone</h3><p>Store the original records with minimal change. This supports traceability, replay, audit, and backfill workflows.</p></div>
+   <div class="feature"><h3>Processed zone</h3><p>Store cleaned or normalized records after basic validation and transformation. This is often where schema alignment begins.</p></div>
+   <div class="feature"><h3>Curated zone</h3><p>Store analytics-ready datasets, often in partitioned columnar formats such as Parquet for Athena and Redshift loading.</p></div>
+   <div class="feature"><h3>Partition strategy</h3><p>Use business and time partitions such as <code>event_date=2026-10-15</code> or <code>source=orders</code> to improve analytics efficiency.</p></div>
+ </div>
+ <div class="callout"><strong>Best practice:</strong> Prefer compressed columnar formats like Parquet for processed and curated zones to reduce scan cost and improve Athena performance.</div>
+ </section>
+ <section class="panel" id="athena"><h2>05 · Amazon Athena in the pipeline</h2>
+  <p>Athena lets analysts and engineers run serverless SQL directly against S3 data. It works best when the data is structured, partitioned, and cataloged properly. Glue crawlers or explicit DDL can register tables for raw, processed, or curated datasets.</p>
+  <ul>
+    <li>Great for ad hoc exploration and quick analytics</li>
+    <li>No infrastructure to provision</li>
+    <li>Charges are based on data scanned, so good file formats and partitions matter</li>
+  </ul>
+ </section>
+ <section class="panel" id="redshift"><h2>06 · Amazon Redshift in the pipeline</h2>
+  <p>Redshift is often used when the business wants a classic data warehouse experience, dimensional models, optimized BI dashboards, or higher-performance recurring analytics. Curated S3 data can be loaded into Redshift through COPY-style ingestion or other orchestration patterns.</p>
+  <ul>
+    <li>Supports structured, governed analytics</li>
+    <li>Works well for enterprise reporting and warehouse-style transformations</li>
+    <li>Can complement—not replace—your S3 data lake pattern</li>
+  </ul>
+ </section>
+ <section class="panel" id="governance"><h2>07 · Governance, security, and observability</h2><div class="feature-grid">
+   <div class="feature"><h3>IAM</h3><p>Use least-privilege policies for publishers, Firehose delivery roles, Lambda execution roles, Athena users, and Redshift integrations.</p></div>
+   <div class="feature"><h3>Encryption</h3><p>Protect data in motion with TLS and data at rest with SSE-S3, SSE-KMS, or Redshift encryption controls.</p></div>
+   <div class="feature"><h3>Metadata and schema</h3><p>Use the AWS Glue Data Catalog to register table definitions and standardize schema interpretation.</p></div>
+   <div class="feature"><h3>Monitoring</h3><p>Use CloudWatch for metrics, logs, alarms, and delivery failure visibility across Streams, Firehose, and Lambda.</p></div>
+ </div></section>
+ <section class="panel" id="springboot"><h2>08 · What the Spring Boot source applications do</h2>
+  <p>The Spring Boot services are the event producers. For example, an order service may publish order-created events, a payment service may publish payment-approved events, and an inventory service may publish stock adjustment events.</p>
+  <pre><code>Typical producer responsibilities
+- Build domain event payloads
+- Add metadata (timestamp, source service, event type)
+- Publish reliably to Kinesis Data Streams
+- Handle retry and error paths appropriately
+- Keep event schema stable and versioned</code></pre>
+  <div class="callout"><strong>Producer design tip:</strong> Publish facts, not database tables. The event contract should represent a business event, not an arbitrary internal persistence structure.</div>
+ </section>
+ <section class="panel" id="lab"><h2>09 · Guided hands-on lab</h2>
+   <div class="step"><strong>Step 1:</strong> Create a Kinesis Data Stream for inbound business events.</div>
+   <div class="step"><strong>Step 2:</strong> Build a Spring Boot producer that writes sample transaction events into the stream.</div>
+   <div class="step"><strong>Step 3:</strong> Create an S3 bucket structure for raw, processed, and curated data.</div>
+   <div class="step"><strong>Step 4:</strong> Create a Lambda function that validates and reformats incoming records into a cleaner payload.</div>
+   <div class="step"><strong>Step 5:</strong> Create a Kinesis Data Firehose delivery stream that reads from Kinesis Data Streams, invokes Lambda transformation, and writes to S3.</div>
+   <div class="step"><strong>Step 6:</strong> Create Athena tables on top of the S3 data lake and run sample SQL queries.</div>
+   <div class="step"><strong>Step 7:</strong> Optionally load curated data into Redshift and compare query behavior between Athena and Redshift.</div>
+ </section>
+ <section class="panel" id="troubleshooting"><h2>10 · Troubleshooting guide</h2><div class="table-wrap"><table><thead><tr><th>Symptom</th><th>Likely cause</th><th>Diagnostic action</th></tr></thead><tbody>
+   <tr><td>No data in S3</td><td>Firehose delivery issue or role permissions problem</td><td>Check Firehose status, CloudWatch logs, and IAM delivery role</td></tr>
+   <tr><td>Lambda transform failures</td><td>Bad payloads, code errors, timeout, or format mismatch</td><td>Inspect Lambda logs, dead-letter behavior, and record schema</td></tr>
+   <tr><td>Athena query scans too much data</td><td>Poor partitioning or inefficient file format</td><td>Adopt partitioned Parquet datasets in processed/curated zones</td></tr>
+   <tr><td>Unexpected Kinesis throttling</td><td>Insufficient shard capacity</td><td>Review incoming throughput and resize shards as needed</td></tr>
+   <tr><td>Redshift load delays</td><td>Curated zone not optimized or warehouse contention</td><td>Review batch size, file layout, and warehouse loading approach</td></tr>
+ </tbody></table></div></section>
+ <section class="panel" id="patterns"><h2>11 · Design patterns and tradeoffs</h2><div class="feature-grid">
+   <div class="feature"><h3>Real-time + batch hybrid</h3><p>This pattern gives you near-real-time ingestion while still landing durable datasets in S3 for downstream analytics.</p></div>
+   <div class="feature"><h3>Lambda transform before landing</h3><p>Useful when records need cleansing or enrichment before they become part of the data lake.</p></div>
+   <div class="feature"><h3>Athena for flexible SQL</h3><p>Best when you want rapid, serverless analysis directly on S3.</p></div>
+   <div class="feature"><h3>Redshift for governed BI</h3><p>Best when you want a dedicated analytics warehouse with optimized dashboard performance.</p></div>
+ </div></section>
+ <section class="panel" id="assessment"><h2>12 · Knowledge assessment</h2><ol>
+   <li>What is the difference between Kinesis Data Streams and Kinesis Data Firehose?</li>
+   <li>Why would you place Lambda between Firehose ingestion and S3 delivery?</li>
+   <li>Why should raw, processed, and curated S3 zones be kept separate?</li>
+   <li>When is Athena a better fit than Redshift, and when is Redshift a better fit than Athena?</li>
+   <li>What responsibilities belong to the Spring Boot source applications?</li>
+ </ol>
+   <p>Official documentation: <a href="https://docs.aws.amazon.com/streams/latest/dev/introduction.html" target="_blank" rel="noopener noreferrer">Kinesis Data Streams</a> · <a href="https://docs.aws.amazon.com/firehose/latest/dev/what-is-this-service.html" target="_blank" rel="noopener noreferrer">Kinesis Data Firehose</a> · <a href="https://docs.aws.amazon.com/athena/latest/ug/what-is.html" target="_blank" rel="noopener noreferrer">Athena</a> · <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/welcome.html" target="_blank" rel="noopener noreferrer">Redshift</a>.</p>
+ </section>
+</div>
+</main>
+</html>

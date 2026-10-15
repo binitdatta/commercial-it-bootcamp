@@ -1,20 +1,15 @@
-AWS TRANSIT GATEWAY & VPC PEERING — SPRING BOOT LESSON
+AWS E-Commerce Integration & Messaging Architecture package
 
 Contents:
-  src/main/java/com/commercialit/bootcamp/controller/AwsTransitGatewayPeeringLessonController.java
-  src/main/resources/templates/internships/cloud-computing/aws/transit-gateway-peering.html
-  src/main/resources/static/images/architecture/aws-transit-gateway-peering-architecture.png
+- Dedicated controller for /internships/cloud-computing/aws/ecommerce-integration-messaging-architecture
+- Thymeleaf lesson template using the existing base :: layout(...)
+- High-quality PNG architecture diagram preserving the high-traffic e-commerce design while emphasizing EventBridge, Step Functions, SQS, and SNS
 
-The controller defines an EXACT path and does not replace AwsTrainingCatalogController.
-The Thymeleaf lesson delegates navbar/footer to existing base :: layout.
-No base.html or shared menu files are modified.
+This package does NOT overwrite:
+- src/main/resources/templates/base.html
+- AwsTrainingCatalogController.java
+- Existing shared layered menus
 
-From the Spring Boot project root run:
-  unzip -o ~/Downloads/aws-transit-gateway-peering-complete.zip -d .
+Install from the commercial-it-bootcamp project root with:
+  unzip -o ~/Downloads/aws-ecommerce-integration-messaging-architecture-complete.zip -d .
   mvn clean package -DskipTests
-
-Restart the app, then navigate to:
-  http://localhost:8081/internships/cloud-computing/aws/transit-gateway-peering
-
-Diagram is AI generated at 1536x1024 then high-quality resampled to 3072x2048 for packaging.
-Inspect technical diagrams against live AWS documentation before production implementation.

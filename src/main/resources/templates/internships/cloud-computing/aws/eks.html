@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('Amazon EKS (Kubernetes)', 'Deep-dive guide to Amazon EKS cluster architecture, node groups, Fargate, networking, security, storage, and operations', ~{::main})}">
+<main>
+<style>
+.lesson{max-width:1320px;margin:auto;color:#17233c;--navy:#102a51;--blue:#0b63c4;--line:#d9e5f2}
+.lesson .hero{background:linear-gradient(115deg,#102a51 0%,#0968c8 100%);border-radius:22px;color:#fff;padding:2.8rem 3rem;box-shadow:0 13px 28px #0c4b921f}
+.lesson .hero h1{font-size:clamp(2rem,3.7vw,3.3rem);font-weight:800;letter-spacing:-.035em}
+.lesson .eyebrow{font-size:.85rem;text-transform:uppercase;letter-spacing:.13em;font-weight:800;color:#b4ddff}
+.lesson .hero p{max-width:1050px;color:#e4f1ff;font-size:1.08rem}
+.lesson .pill{display:inline-block;padding:.45rem .85rem;border:1px solid #ffffff66;border-radius:24px;margin:.3rem .35rem .1rem 0;font-weight:650;background:#ffffff18}
+.lesson .panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:1.6rem 1.8rem;margin-top:1.25rem;box-shadow:0 5px 22px #08284c0b}
+.lesson h2{font-weight:800;font-size:1.42rem;color:#143763;margin-bottom:1rem}
+.lesson h3{font-weight:750;font-size:1.05rem;color:#0b4d8c;margin-top:1rem}
+.lesson p,.lesson li{line-height:1.73}.lesson .jump{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.65rem}
+.lesson .jump a{color:#07549e;text-decoration:none;background:#f0f7ff;border:1px solid #d5e9fe;padding:.65rem .8rem;border-radius:9px;font-weight:650;font-size:.89rem}
+.lesson .diagram{display:block;width:100%;height:auto;border:1px solid #d5e4f4;border-radius:13px;background:#fff}
+.lesson .callout{border-left:4px solid #1277d3;border-radius:7px;background:#eef7ff;padding:1rem 1.25rem;margin-top:1rem}
+.lesson .warning{border-left-color:#d18c13;background:#fff8e7}
+.lesson table{width:100%;border-collapse:collapse;font-size:.92rem}.lesson th{background:#e6f1fc;color:#173c69}.lesson th,.lesson td{padding:.75rem;border:1px solid #d9e5f2;vertical-align:top}.lesson .table-wrap{overflow:auto}
+.lesson code{color:#904700;background:#fff4df;padding:2px 5px;border-radius:4px}.lesson pre{background:#12243e;color:#e4f5ff;border-radius:10px;padding:1rem;overflow:auto;font-size:.88rem}.lesson pre code{background:none;color:inherit;padding:0}
+.lesson .feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.lesson .feature{padding:1.2rem;background:#f6faff;border:1px solid #d5e6fa;border-radius:12px}.lesson .feature h3{margin-top:0}.lesson .step{padding:.8rem 1rem;border-left:3px solid #2185db;margin-bottom:.65rem;background:#f7fbff;border-radius:0 8px 8px 0}
+@media(max-width:800px){.lesson .jump,.lesson .feature-grid{grid-template-columns:1fr 1fr}.lesson .hero{padding:1.6rem}.lesson .panel{padding:1rem}}@media(max-width:520px){.lesson .jump,.lesson .feature-grid{grid-template-columns:1fr}}
+</style>
+<div class="lesson container-fluid px-2 px-md-3 pb-5">
+ <a class="d-inline-block text-decoration-none fw-semibold my-3" th:href="@{/internships/cloud-computing}">← Cloud Computing</a>
+ <header class="hero">
+  <div class="eyebrow">Amazon Web Services · 04 · Containers &amp; Serverless</div>
+  <h1 class="mt-3 mb-3">Amazon EKS (Kubernetes)</h1>
+  <p>Run production-grade Kubernetes on AWS with a managed control plane, scalable worker capacity, secure image delivery from Amazon ECR, and deep integration with AWS networking, IAM, storage, logging, and load balancing.</p>
+  <span class="pill">Managed Kubernetes</span><span class="pill">Node groups &amp; Fargate</span><span class="pill">ECR integration</span><span class="pill">IRSA</span><span class="pill">Hands-on lab</span>
+ </header>
+ <nav class="panel" aria-label="Lesson sections"><h2>Learning path</h2><div class="jump">
+   <a href="#reference">01 · Reference architecture</a><a href="#concepts">02 · Core concepts</a><a href="#controlplane">03 · Control plane vs data plane</a><a href="#networking">04 · Networking model</a>
+   <a href="#security">05 · Security &amp; IAM</a><a href="#storage">06 · Storage &amp; state</a><a href="#scaling">07 · Scaling &amp; operations</a><a href="#workflow">08 · Deployment workflow</a>
+   <a href="#lab">09 · Hands-on lab</a><a href="#troubleshooting">10 · Troubleshooting</a><a href="#cost">11 · Cost &amp; design tradeoffs</a><a href="#assessment">12 · Knowledge check</a>
+ </div></nav>
+ <section class="panel" id="reference"><h2>01 · EKS + ECR reference architecture</h2>
+  <p>This end-to-end architecture starts with developers and a CI/CD pipeline building and scanning container images, storing them in <strong>Amazon ECR</strong>, and then deploying Kubernetes workloads into <strong>Amazon EKS</strong>. EKS runs a managed control plane while application pods execute on managed node groups or AWS Fargate inside private subnets. Add-ons such as the AWS Load Balancer Controller, IAM Roles for Service Accounts (IRSA), CloudWatch Container Insights, and EBS/EFS integrations round out the platform.</p>
+  <img class="diagram" th:src="@{/images/architecture/aws-eks-ecr-architecture.png}" src="/images/architecture/aws-eks-ecr-architecture.png" alt="Amazon EKS and Amazon ECR container platform architecture showing developers, CI/CD, ECR repositories, managed Kubernetes control plane, worker nodes, Fargate, pods, ingress, IAM, CloudWatch, and downstream services" loading="lazy" />
+  <div class="callout"><strong>Architecture principle:</strong> EKS orchestrates containers; ECR stores container images. Your CI/CD pipeline typically pushes images into ECR, while EKS pulls those images when Kubernetes workloads are deployed or updated.</div>
+  <div class="callout warning"><strong>Important note:</strong> EKS does not eliminate Kubernetes complexity. AWS manages the control plane, but you still design networking, RBAC, storage, observability, upgrades, and workload rollout strategies.</div>
+ </section>
+ <section class="panel" id="concepts"><h2>02 · Core EKS concepts</h2><div class="feature-grid">
+   <div class="feature"><h3>Managed control plane</h3><p>AWS manages the Kubernetes API server, etcd, scheduler, and controllers across multiple AZs for high availability and operational resilience.</p></div>
+   <div class="feature"><h3>Worker capacity</h3><p>Application pods run on <strong>managed node groups</strong> (EC2-backed worker nodes) or <strong>AWS Fargate</strong> for serverless container execution.</p></div>
+   <div class="feature"><h3>Kubernetes primitives</h3><p>Deployments, StatefulSets, Services, Ingress, ConfigMaps, Secrets, and Horizontal Pod Autoscalers remain central to application design.</p></div>
+   <div class="feature"><h3>AWS integrations</h3><p>EKS integrates with IAM, VPC CNI networking, Elastic Load Balancing, EBS/EFS storage drivers, CloudWatch, and ECR.</p></div>
+ </div></section>
+ <section class="panel" id="controlplane"><h2>03 · Control plane vs data plane</h2><div class="table-wrap"><table><thead><tr><th>Layer</th><th>What AWS manages</th><th>What you manage</th></tr></thead><tbody>
+   <tr><td>Control plane</td><td>Kubernetes API server, etcd, scheduler, control plane HA and patching for the managed cluster service</td><td>Cluster version lifecycle planning, add-ons, admission controls, and overall operational policy</td></tr>
+   <tr><td>Data plane</td><td>Managed node group orchestration services or Fargate platform</td><td>Node group design, instance families, pod scheduling strategy, DaemonSets, workload resources, and container runtime behavior</td></tr>
+   <tr><td>Applications</td><td>None of the application logic</td><td>Container images, manifests, Helm charts, runtime config, secrets, scaling, and rollout safety</td></tr>
+ </tbody></table></div>
+ <pre><code>Typical production split
+- EKS control plane: AWS-managed
+- Worker nodes: managed node groups (EC2) or Fargate
+- Images: stored in Amazon ECR
+- Ingress: ALB/NLB via AWS Load Balancer Controller
+- Logs/metrics: CloudWatch / Container Insights</code></pre>
+ </section>
+ <section class="panel" id="networking"><h2>04 · Networking model</h2>
+  <p>EKS commonly runs in a VPC using private subnets for worker capacity and public subnets for internet-facing load balancers. The VPC CNI plugin gives pods IP addresses from VPC subnets, which provides native network reachability but requires subnet planning.</p>
+  <div class="feature-grid">
+   <div class="feature"><h3>Ingress</h3><p>Use the AWS Load Balancer Controller to translate Kubernetes Ingress resources or Services into ALB/NLB resources.</p></div>
+   <div class="feature"><h3>Service-to-service traffic</h3><p>Cluster-internal communication usually travels through Kubernetes Services, CoreDNS, and pod IP networking inside the VPC.</p></div>
+   <div class="feature"><h3>Private vs public design</h3><p>Keep worker nodes private when possible. Expose only the load balancer layer or private internal services as needed.</p></div>
+   <div class="feature"><h3>Network policy</h3><p>Security groups, pod-level network policies, and namespace segmentation all contribute to workload isolation.</p></div>
+  </div>
+ </section>
+ <section class="panel" id="security"><h2>05 · Security, IAM, and RBAC</h2>
+  <ul>
+   <li><strong>IAM authentication</strong> controls who can access the EKS cluster.</li>
+   <li><strong>Kubernetes RBAC</strong> controls what authenticated identities can do inside the cluster.</li>
+   <li><strong>IAM Roles for Service Accounts (IRSA)</strong> lets pods access AWS services without node-wide credentials.</li>
+   <li><strong>Secrets management</strong> can be handled with Kubernetes Secrets, external secret providers, or AWS service integrations.</li>
+  </ul>
+  <div class="callout warning"><strong>Best practice:</strong> Avoid granting broad IAM permissions to worker nodes. Prefer fine-grained permissions via IRSA for individual workloads.</div>
+ </section>
+ <section class="panel" id="storage"><h2>06 · Storage and stateful workloads</h2><div class="feature-grid">
+   <div class="feature"><h3>Amazon EBS CSI</h3><p>Use EBS-backed persistent volumes for block storage needs, especially for zone-local stateful workloads.</p></div>
+   <div class="feature"><h3>Amazon EFS</h3><p>Use EFS when multiple pods need a shared file system across Availability Zones.</p></div>
+   <div class="feature"><h3>Databases and caches</h3><p>Most production applications keep durable state in managed services such as Amazon RDS or ElastiCache rather than inside containers.</p></div>
+   <div class="feature"><h3>Artifact and object storage</h3><p>Use Amazon S3 for assets, backups, reports, and application object storage needs.</p></div>
+ </div></section>
+ <section class="panel" id="scaling"><h2>07 · Scaling and operations</h2><p>EKS can scale at multiple layers: Kubernetes Horizontal Pod Autoscaler for pods, Cluster Autoscaler or Karpenter for nodes, and managed node groups for underlying compute capacity. Monitoring usually includes CloudWatch metrics, logs, and container observability dashboards.</p>
+ <div class="table-wrap"><table><thead><tr><th>Scaling layer</th><th>Mechanism</th><th>Typical signal</th></tr></thead><tbody>
+   <tr><td>Pod scaling</td><td>Horizontal Pod Autoscaler</td><td>CPU, memory, or custom metrics</td></tr>
+   <tr><td>Node scaling</td><td>Cluster Autoscaler / Karpenter</td><td>Unschedulable pods, capacity pressure</td></tr>
+   <tr><td>Ingress capacity</td><td>ALB/NLB scale behavior</td><td>Traffic demand and backend health</td></tr>
+ </tbody></table></div>
+ </section>
+ <section class="panel" id="workflow"><h2>08 · Deployment workflow</h2>
+  <div class="step"><strong>Step 1:</strong> Developers commit application code and container definitions.</div>
+  <div class="step"><strong>Step 2:</strong> CI/CD builds the image, runs tests, scans for vulnerabilities, and tags the image.</div>
+  <div class="step"><strong>Step 3:</strong> The pipeline pushes the image to Amazon ECR.</div>
+  <div class="step"><strong>Step 4:</strong> Deployment tooling updates Kubernetes manifests, Helm charts, or GitOps state.</div>
+  <div class="step"><strong>Step 5:</strong> EKS pulls the image from ECR and creates or updates pods.</div>
+  <div class="step"><strong>Step 6:</strong> Services and Ingress expose the workload and health checks validate readiness.</div>
+ </section>
+ <section class="panel" id="lab"><h2>09 · Guided hands-on lab</h2>
+  <div class="step"><strong>Step 1:</strong> Create or identify an ECR repository for your application image.</div>
+  <div class="step"><strong>Step 2:</strong> Create an EKS cluster with managed node groups across at least two Availability Zones.</div>
+  <div class="step"><strong>Step 3:</strong> Install kubectl, eksctl or your preferred provisioning tooling, and verify cluster access.</div>
+  <div class="step"><strong>Step 4:</strong> Push a sample application image into ECR.</div>
+  <div class="step"><strong>Step 5:</strong> Deploy a Kubernetes Deployment and Service using the ECR image URI.</div>
+  <div class="step"><strong>Step 6:</strong> Install the AWS Load Balancer Controller and expose the app using an Ingress or LoadBalancer Service.</div>
+  <div class="step"><strong>Step 7:</strong> Scale the deployment and observe pod placement, node behavior, and metrics.</div>
+  <div class="step"><strong>Step 8:</strong> Clean up the cluster and load balancer resources when finished.</div>
+ </section>
+ <section class="panel" id="troubleshooting"><h2>10 · Troubleshooting guide</h2><div class="table-wrap"><table><thead><tr><th>Symptom</th><th>Likely cause</th><th>Diagnostic action</th></tr></thead><tbody>
+   <tr><td>Pods stuck in ImagePullBackOff</td><td>Bad image URI, missing tag, auth or network issue</td><td>Verify ECR image path, tag, node role permissions, and registry reachability</td></tr>
+   <tr><td>Ingress not routing traffic</td><td>AWS Load Balancer Controller or Ingress config issue</td><td>Inspect controller logs, target group health, and annotations</td></tr>
+   <tr><td>Unschedulable pods</td><td>Insufficient node capacity or constraints</td><td>Check node group size, taints/tolerations, requests/limits, and autoscaler behavior</td></tr>
+   <tr><td>Access denied to AWS services</td><td>Missing or mis-scoped IAM permissions</td><td>Review IRSA role policy or node role configuration</td></tr>
+  </tbody></table></div></section>
+ <section class="panel" id="cost"><h2>11 · Cost and design tradeoffs</h2>
+  <p>EKS provides a highly capable Kubernetes platform, but it introduces cost and operational complexity. Managed node groups give more control and may reduce runtime cost for steady workloads, while Fargate simplifies node operations for certain workloads at potentially higher unit cost. Logging, load balancers, NAT, and cross-AZ traffic can materially influence total cost.</p>
+ </section>
+ <section class="panel" id="assessment"><h2>12 · Knowledge assessment</h2><ol>
+   <li>What is the difference between Amazon ECR and Amazon EKS?</li>
+   <li>What does AWS manage in the EKS control plane?</li>
+   <li>When would you choose managed node groups versus Fargate?</li>
+   <li>Why is IRSA preferred over broad node-level AWS permissions?</li>
+   <li>How does an image get from CI/CD into a running pod?</li>
+ </ol>
+ <p>Official documentation: <a href="https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html" target="_blank" rel="noopener noreferrer">Amazon EKS</a> · <a href="https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html" target="_blank" rel="noopener noreferrer">AWS Load Balancer Controller</a>.</p>
+ </section>
+</div>
+</main>
+</html>

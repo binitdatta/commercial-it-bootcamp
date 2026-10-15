@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout('AWS Site-to-Site VPN &amp; Direct Connect', 'A practical architectural guide to hybrid networking between on-premises environments and AWS VPCs', ~{::main})}">
+<main>
+<style>
+.hybrid-lesson{max-width:1320px;margin:auto;color:#17233c;--navy:#102a51;--blue:#0b63c4;--line:#d9e5f2}
+.hybrid-lesson .hero{background:linear-gradient(115deg,#102a51 0%,#0968c8 100%);border-radius:22px;color:#fff;padding:2.8rem 3rem;box-shadow:0 13px 28px #0c4b921f}
+.hybrid-lesson .hero h1{font-size:clamp(2rem,3.7vw,3.3rem);font-weight:800;letter-spacing:-.035em}
+.hybrid-lesson .eyebrow{font-size:.85rem;text-transform:uppercase;letter-spacing:.13em;font-weight:800;color:#b4ddff}
+.hybrid-lesson .hero p{max-width:1020px;color:#e4f1ff;font-size:1.1rem}
+.hybrid-lesson .pill{display:inline-block;padding:.45rem .85rem;border:1px solid #ffffff66;border-radius:24px;margin:.3rem .35rem .1rem 0;font-weight:650;background:#ffffff18}
+.hybrid-lesson .panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:1.6rem 1.8rem;margin-top:1.25rem;box-shadow:0 5px 22px #08284c0b}
+.hybrid-lesson h2{font-weight:800;font-size:1.42rem;color:#143763;margin-bottom:1rem}
+.hybrid-lesson h3{font-weight:750;font-size:1.06rem;color:#0b4d8c;margin-top:1rem}
+.hybrid-lesson p,.hybrid-lesson li{line-height:1.73}
+.hybrid-lesson .jump{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.65rem}
+.hybrid-lesson .jump a{color:#07549e;text-decoration:none;background:#f0f7ff;border:1px solid #d5e9fe;padding:.65rem .8rem;border-radius:9px;font-weight:650;font-size:.89rem}
+.hybrid-lesson .diagram{display:block;width:100%;height:auto;border:1px solid #d5e4f4;border-radius:13px;background:#fff}
+.hybrid-lesson .callout{border-left:4px solid #1277d3;border-radius:7px;background:#eef7ff;padding:1rem 1.25rem;margin-top:1rem}
+.hybrid-lesson .warning{border-left-color:#d18c13;background:#fff8e7}
+.hybrid-lesson table{width:100%;border-collapse:collapse;font-size:.92rem}
+.hybrid-lesson th{background:#e6f1fc;color:#173c69}
+.hybrid-lesson th,.hybrid-lesson td{padding:.75rem;border:1px solid #d9e5f2;vertical-align:top}
+.hybrid-lesson .table-wrap{overflow:auto}
+.hybrid-lesson code{color:#904700;background:#fff4df;padding:2px 5px;border-radius:4px}
+.hybrid-lesson pre{background:#12243e;color:#e4f5ff;border-radius:10px;padding:1rem;overflow:auto;font-size:.88rem}
+.hybrid-lesson pre code{background:none;color:inherit;padding:0}
+.hybrid-lesson .feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.hybrid-lesson .feature{padding:1.2rem;background:#f6faff;border:1px solid #d5e6fa;border-radius:12px}
+.hybrid-lesson .feature h3{margin-top:0}
+.hybrid-lesson .step{padding:.8rem 1rem;border-left:3px solid #2185db;margin-bottom:.65rem;background:#f7fbff;border-radius:0 8px 8px 0}
+.hybrid-lesson .muted{color:#5b687a;font-size:.92rem}
+@media(max-width:800px){.hybrid-lesson .jump,.hybrid-lesson .feature-grid{grid-template-columns:1fr 1fr}.hybrid-lesson .hero{padding:1.6rem}.hybrid-lesson .panel{padding:1rem}}
+@media(max-width:520px){.hybrid-lesson .jump,.hybrid-lesson .feature-grid{grid-template-columns:1fr}}
+</style>
+<div class="hybrid-lesson container-fluid px-2 px-md-3 pb-5">
+ <a class="d-inline-block text-decoration-none fw-semibold my-3" th:href="@{/internships/cloud-computing}">← Cloud Computing</a>
+ <header class="hero">
+  <div class="eyebrow">Amazon Web Services · VPC, Networking &amp; Connectivity</div>
+  <h1 class="mt-3 mb-3">Site-to-Site VPN &amp; Direct Connect</h1>
+  <p>Design resilient hybrid connectivity between on-premises environments and AWS. Learn when to use encrypted internet-based Site-to-Site VPN, when to use dedicated private AWS Direct Connect, and how to combine both with Transit Gateway for production-grade failover and centralized routing.</p>
+  <span class="pill">Hybrid networking</span><span class="pill">IPsec VPN</span><span class="pill">Direct Connect</span><span class="pill">Transit Gateway</span><span class="pill">BGP routing</span>
+ </header>
+ <nav class="panel" aria-label="Lesson sections"><h2>Learning path</h2><div class="jump">
+  <a href="#reference">01 · Reference architecture</a><a href="#concepts">02 · Core concepts</a><a href="#comparison">03 · VPN vs Direct Connect</a><a href="#routing">04 · BGP &amp; route flow</a>
+  <a href="#design">05 · Hybrid design patterns</a><a href="#resilience">06 · Resilience &amp; failover</a><a href="#security">07 · Security</a><a href="#lab">08 · Hands-on lab</a>
+  <a href="#troubleshooting">09 · Troubleshooting</a><a href="#cost">10 · Cost &amp; operations</a><a href="#assessment">11 · Knowledge check</a><a href="#glossary">12 · Key terminology</a>
+ </div></nav>
+ <section class="panel" id="reference"><h2>01 · Enterprise reference architecture</h2>
+  <p>The reference design shows two hybrid paths from an on-premises network into AWS: <strong>Site-to-Site VPN</strong> over the public internet using IPsec encryption, and <strong>AWS Direct Connect</strong> over a dedicated private connection. Both paths feed a <strong>Transit Gateway</strong>, which then routes to an application VPC and a shared-services / inspection VPC.</p>
+  <img class="diagram" th:src="@{/images/architecture/aws-site-to-site-vpn-direct-connect-architecture.png}" src="/images/architecture/aws-site-to-site-vpn-direct-connect-architecture.png" alt="AWS Site-to-Site VPN and Direct Connect architecture with on-premises data center, VPN over internet, Direct Connect location, Direct Connect gateway, Transit Gateway, application VPC, shared services VPC, and BGP route exchange" loading="lazy" />
+  <div class="callout warning"><strong>Diagram interpretation:</strong> This infographic illustrates the architecture conceptually. In an actual Transit Gateway deployment, a Site-to-Site VPN terminates as a VPN attachment to the TGW (rather than chaining a Virtual Private Gateway through the TGW), and Direct Connect integrates using a Direct Connect gateway with an associated transit virtual interface. The production, staging, and shared-services networks are separate VPCs, each requiring its own non-overlapping VPC CIDR. Validate the route tables, attachments, and BGP paths before deployment.</div>
+  <div class="callout"><strong>Architecture principle:</strong> Use Site-to-Site VPN when you need rapid deployment and encrypted connectivity over internet paths. Use Direct Connect when you need more consistent latency, higher bandwidth, and a dedicated private path for steady production traffic.</div>
+  <div class="callout warning"><strong>Important distinction:</strong> Direct Connect is not automatically encrypted. If workloads require encryption in transit, add MACsec where supported or overlay encryption such as IPsec at higher layers.</div>
+ </section>
+ <section class="panel" id="concepts"><h2>02 · Core concepts</h2><div class="feature-grid">
+  <div class="feature"><h3>Site-to-Site VPN</h3><p>A managed AWS IPsec service connecting a <strong>Customer Gateway</strong> in your datacenter to AWS. VPN typically uses <strong>two tunnels</strong> for resilience and can terminate on a <strong>Transit Gateway</strong> or <strong>Virtual Private Gateway</strong>.</p></div>
+  <div class="feature"><h3>AWS Direct Connect</h3><p>A private physical connectivity model using a dedicated circuit through a Direct Connect location or partner. It is suited for predictable throughput, private data transfer, and lower latency variation.</p></div>
+  <div class="feature"><h3>Transit Gateway</h3><p>A regional routing hub that centralizes connectivity among VPCs and hybrid attachments. It simplifies hub-and-spoke designs and segmentation through TGW route tables and route propagation controls.</p></div>
+  <div class="feature"><h3>BGP route exchange</h3><p>Border Gateway Protocol dynamically exchanges prefixes between your on-premises routers and AWS VPN / Direct Connect integrations. Dynamic routing reduces manual route maintenance and supports failover scenarios.</p></div>
+ </div></section>
+ <section class="panel" id="comparison"><h2>03 · Site-to-Site VPN vs Direct Connect</h2><div class="table-wrap"><table><thead><tr><th>Characteristic</th><th>Site-to-Site VPN</th><th>AWS Direct Connect</th></tr></thead><tbody>
+ <tr><td>Transport medium</td><td>Public internet path</td><td>Dedicated private connection into AWS</td></tr>
+ <tr><td>Encryption</td><td>IPsec encrypted</td><td>Private path; encryption optional / separate</td></tr>
+ <tr><td>Provisioning speed</td><td>Fast: often hours to days</td><td>Slower: circuit provisioning may take weeks</td></tr>
+ <tr><td>Bandwidth profile</td><td>Good for branch, backup, or moderate workloads</td><td>Better for large transfers and sustained enterprise workloads</td></tr>
+ <tr><td>Latency consistency</td><td>Depends on internet conditions</td><td>More consistent and predictable</td></tr>
+ <tr><td>Typical use</td><td>Backup path, branch access, quick deployment</td><td>Primary private path for production and data-heavy integration</td></tr>
+ <tr><td>Routing</td><td>Static or BGP dynamic routes</td><td>BGP common via Direct Connect Gateway / private virtual interfaces</td></tr>
+ </tbody></table></div><p class="muted">Exact speeds, limits, and pricing vary by Region, partner, and circuit type; always verify current AWS documentation for your design.</p></section>
+ <section class="panel" id="routing"><h2>04 · BGP routing and packet flow</h2>
+ <h3>Worked network plan</h3><div class="table-wrap"><table><thead><tr><th>Domain</th><th>CIDR</th><th>Connectivity</th><th>Purpose</th></tr></thead><tbody>
+ <tr><td>On-premises network</td><td><code>172.20.0.0/16</code>, <code>172.21.0.0/16</code>, <code>192.168.0.0/16</code></td><td>Customer Gateway → VPN / DX</td><td>Corporate networks and branch offices</td></tr>
+ <tr><td>Application VPC</td><td><code>10.20.0.0/16</code></td><td>TGW attachment</td><td>ALB, application servers, databases</td></tr>
+ <tr><td>Shared Services VPC</td><td><code>10.30.0.0/16</code></td><td>TGW attachment</td><td>Inspection, logging, monitoring</td></tr>
+ </tbody></table></div>
+ <h3>Example AWS routing logic</h3><div class="table-wrap"><table><thead><tr><th>Hop</th><th>What happens</th></tr></thead><tbody>
+ <tr><td>1 · On-prem router</td><td>Advertises corporate prefixes and learns AWS prefixes using BGP over VPN or Direct Connect.</td></tr>
+ <tr><td>2 · Hybrid attachment</td><td>Traffic enters AWS through VPN tunnels or a Direct Connect gateway path.</td></tr>
+ <tr><td>3 · Transit Gateway</td><td>TGW route tables choose whether packets go to Application VPC or Shared Services VPC.</td></tr>
+ <tr><td>4 · VPC route tables</td><td>Subnet route tables direct return traffic back toward the Transit Gateway.</td></tr>
+ <tr><td>5 · Security evaluation</td><td>Security groups and network ACLs still decide whether the application traffic is allowed.</td></tr>
+ </tbody></table></div>
+ <div class="callout"><strong>Operational reality:</strong> Successful hybrid routing requires symmetry and return routing. It is not enough for AWS to know the on-premises prefix—your on-premises router must also know how to return to the exact AWS VPC prefixes.</div>
+ <pre><code>Example: Production application subnet route table
+Destination        Target
+10.20.0.0/16       local
+172.20.0.0/16     tgw-xxxxxxxx
+172.21.0.0/16     tgw-xxxxxxxx
+192.168.0.0/16     tgw-xxxxxxxx</code></pre>
+ </section>
+ <section class="panel" id="design"><h2>05 · Hybrid design patterns</h2>
+  <div class="step"><strong>Pattern 1 — Quick branch integration:</strong> Connect a branch office through Site-to-Site VPN to AWS for fast onboarding and secure reachability to selected VPC workloads.</div>
+  <div class="step"><strong>Pattern 2 — Enterprise primary path:</strong> Use Direct Connect as the preferred path for production traffic, especially for high throughput, lower jitter, and private network requirements.</div>
+  <div class="step"><strong>Pattern 3 — Shared services hub:</strong> Use a Transit Gateway and a Shared Services VPC to centralize security inspection, logging, DNS, and administrative tooling.</div>
+  <div class="step"><strong>Pattern 4 — Branch and datacenter coexistence:</strong> Use multiple customer gateways, multiple VPNs, or multiple Direct Connect circuits where business continuity requires path diversity.</div>
+  <div class="callout warning"><strong>Design caution:</strong> Avoid overlapping CIDR ranges between on-premises environments and AWS VPCs. Routing ambiguity is one of the most common causes of hybrid connectivity failure.</div>
+ </section>
+ <section class="panel" id="resilience"><h2>06 · Resilience and failover</h2>
+  <p>Many enterprises implement <strong>Direct Connect as the primary path</strong> and <strong>Site-to-Site VPN as the failover path</strong>. This balances performance with resiliency and can preserve business connectivity when a dedicated circuit or provider path is disrupted.</p>
+  <div class="feature-grid">
+   <div class="feature"><h3>VPN resilience</h3><p>Use both VPN tunnels, verify BGP timers and route preference, and test tunnel failover. Simulate loss of one tunnel and ensure traffic survives on the remaining path.</p></div>
+   <div class="feature"><h3>Direct Connect resilience</h3><p>For stronger resilience, use redundant circuits, diverse physical paths, multiple locations or partners, and failover routing through VPN when needed.</p></div>
+   <div class="feature"><h3>Routing preference</h3><p>BGP attributes and routing policy determine preferred versus backup paths. Document those preferences clearly to avoid unexpected route selection during incidents.</p></div>
+   <div class="feature"><h3>Validation</h3><p>Do not assume failover works—test it. Measure recovery time, packet loss, and application behavior during path switchover.</p></div>
+  </div>
+ </section>
+ <section class="panel" id="security"><h2>07 · Security and governance</h2><div class="feature-grid">
+  <div class="feature"><h3>Segmentation</h3><p>Even with hybrid links in place, use TGW route tables, VPC subnet routes, security groups, and NACLs to restrict which on-premises networks can reach which AWS services.</p></div>
+  <div class="feature"><h3>Encryption posture</h3><p>VPN offers encryption by design. Direct Connect provides a private path but not automatic IPsec encryption; add encryption when regulatory or policy requirements demand it.</p></div>
+  <div class="feature"><h3>Monitoring</h3><p>Use CloudWatch, Transit Gateway metrics, VPN tunnel status, Direct Connect metrics, VPC Flow Logs, and on-premises router telemetry for end-to-end visibility.</p></div>
+  <div class="feature"><h3>Change governance</h3><p>Manage BGP advertisements, TGW route tables, and subnet route changes through controlled processes or infrastructure-as-code to reduce outage risk.</p></div>
+ </div></section>
+ <section class="panel" id="lab"><h2>08 · Guided AWS console lab</h2><p><strong>Goal:</strong> Build a hybrid design using a Transit Gateway, one simulated Site-to-Site VPN attachment, and one Direct Connect-oriented architecture discussion path.</p>
+ <div class="step"><strong>Step 1:</strong> Create an Application VPC (<code>10.20.0.0/16</code>) and a Shared Services VPC (<code>10.30.0.0/16</code>) with private subnets.</div>
+ <div class="step"><strong>Step 2:</strong> Create a Transit Gateway and attach both VPCs. Add TGW routes allowing the two VPCs to communicate.</div>
+ <div class="step"><strong>Step 3:</strong> Create a Customer Gateway object using a representative on-premises router IP. Create a Site-to-Site VPN attachment to the TGW only if you control a real or emulated compatible VPN endpoint and can establish the tunnels; otherwise stop at configuration review.</div>
+ <div class="step"><strong>Step 4:</strong> Review the generated VPN configuration, tunnel outside IPs, and BGP ASN settings. Understand how the on-premises device would be configured in production.</div>
+ <div class="step"><strong>Step 5:</strong> Add VPC subnet routes for on-premises prefixes to the TGW. Add reciprocal learned or configured routes on the on-premises side.</div>
+ <div class="step"><strong>Step 6:</strong> For Direct Connect, document the intended private virtual interface, Direct Connect gateway association, and route advertisement model. In many labs this remains conceptual due to physical circuit requirements.</div>
+ <div class="step"><strong>Step 7:</strong> If both VPN tunnels are operational, test connectivity and controlled tunnel failover. Otherwise describe the expected BGP and failover sequence without claiming functional connectivity.</div>
+ <div class="step"><strong>Step 8:</strong> Clean up TGW attachments, VPN resources, and disposable workloads after the lab to avoid charges.</div>
+ </section>
+ <section class="panel" id="troubleshooting"><h2>09 · Troubleshooting guide</h2><div class="table-wrap"><table><thead><tr><th>Symptom</th><th>Likely cause</th><th>Diagnostic action</th></tr></thead><tbody>
+ <tr><td>VPN tunnels stay down</td><td>Customer gateway config mismatch</td><td>Verify tunnel PSKs, IKE/IPsec parameters, BGP ASN, and device configuration</td></tr>
+ <tr><td>BGP session not established</td><td>ASN, addressing, or ACL problem</td><td>Check BGP neighbor IPs, ASN values, and firewall allowances</td></tr>
+ <tr><td>Traffic reaches AWS but not the workload</td><td>Missing subnet route or SG rule</td><td>Inspect VPC route tables, TGW route tables, security groups, and NACLs</td></tr>
+ <tr><td>Traffic uses wrong path</td><td>BGP preference not tuned</td><td>Review route preference attributes and intended primary/backup design</td></tr>
+ <tr><td>Direct Connect path unavailable</td><td>Circuit/provider issue</td><td>Check Direct Connect console metrics, provider status, and fallback VPN path</td></tr>
+ <tr><td>One-way communication</td><td>Missing reverse route</td><td>Validate return routes on both AWS and on-premises networks</td></tr>
+ </tbody></table></div></section>
+ <section class="panel" id="cost"><h2>10 · Cost, performance, and operations</h2>
+ <p>Site-to-Site VPN generally has lower entry cost and faster setup, but internet path variability affects latency and throughput. Direct Connect usually carries higher setup and recurring cost, but can deliver better operational stability for heavy production traffic.</p>
+ <p>Operationally, choose the simplest design that meets the requirement: branch or backup access often fits VPN, while core enterprise integration commonly justifies Direct Connect. Many mature designs use both.</p>
+ </section>
+ <section class="panel" id="assessment"><h2>11 · Knowledge assessment</h2><ol>
+  <li>What business and technical factors make Site-to-Site VPN a better fit than Direct Connect?</li>
+  <li>Why do many enterprises use Direct Connect as primary and VPN as failover?</li>
+  <li>What role does BGP play in hybrid AWS networking?</li>
+  <li>Why is return routing essential in hybrid designs?</li>
+  <li>What controls would you use to prevent all on-premises networks from reaching every AWS workload?</li>
+  <li>How does Transit Gateway simplify multi-VPC hybrid architecture?</li>
+  <li>Why might encryption still matter even when using a private dedicated path?</li>
+ </ol></section>
+ <section class="panel" id="glossary"><h2>12 · Key terms and further reading</h2>
+ <p><strong>Customer Gateway:</strong> your on-premises VPN endpoint definition in AWS. <strong>Transit Gateway:</strong> centralized routing hub for VPC and hybrid attachments. <strong>Direct Connect Gateway:</strong> construct that helps connect Direct Connect to one or more VPC-side architectures. <strong>BGP:</strong> dynamic routing protocol used to exchange prefixes and enable failover behavior.</p>
+ <p>Official documentation: <a href="https://docs.aws.amazon.com/vpn/latest/s2svpn/VPC_VPN.html" target="_blank" rel="noopener noreferrer">Site-to-Site VPN</a> · <a href="https://docs.aws.amazon.com/directconnect/latest/UserGuide/Welcome.html" target="_blank" rel="noopener noreferrer">AWS Direct Connect</a> · <a href="https://docs.aws.amazon.com/vpc/latest/tgw/what-is-transit-gateway.html" target="_blank" rel="noopener noreferrer">Transit Gateway</a>.</p>
+ </section>
+</div>
+</main>
+</html>
